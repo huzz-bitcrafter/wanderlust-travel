@@ -3,7 +3,16 @@ import { MapPin } from "lucide-react";
 import { Rating } from "@/components/shared/Rating";
 import type { DestinationCardData } from "@/lib/catalog.functions";
 
-export function DestinationCard({ destination }: { destination: DestinationCardData }) {
+export function DestinationCard({
+  destination,
+  rating,
+}: {
+  destination: DestinationCardData;
+  rating?: { avg_rating: number; review_count: number };
+}) {
+  const ratingValue = rating && rating.review_count > 0 ? rating.avg_rating : 4.8;
+  const ratingCount = rating && rating.review_count > 0 ? rating.review_count : undefined;
+
   return (
     <Link
       to="/destinations/$slug"
@@ -35,7 +44,7 @@ export function DestinationCard({ destination }: { destination: DestinationCardD
           <h3 className="font-display text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
             {destination.name}
           </h3>
-          <Rating value={4.8} />
+          <Rating value={ratingValue} count={ratingCount} />
         </div>
         <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
           {destination.short_description}

@@ -37,6 +37,7 @@ import {
 } from "lucide-react";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { BookingCTA } from "@/components/shared/BookingCTA";
+import { ReviewSection } from "@/components/shared/ReviewSection";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -433,27 +434,8 @@ function HotelDetailPage() {
               </div>
             </div>
 
-            {/* Reviews Section (Phase 9 Placeholder) */}
-            <div className="rounded-2xl border border-border/70 bg-card p-6 sm:p-8 shadow-sm">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-secondary/10 text-secondary">
-                    <MessageSquare className="h-5 w-5" aria-hidden="true" />
-                  </div>
-                  <div>
-                    <h3 className="font-display text-xl text-foreground">
-                      Guest Reviews & Ratings
-                    </h3>
-                    <p className="text-xs text-muted-foreground">
-                      Verified guest reviews from travellers will be available in Phase 9.
-                    </p>
-                  </div>
-                </div>
-                <span className="rounded-full bg-muted px-2.5 py-0.5 text-xs font-semibold text-muted-foreground">
-                  Phase 9
-                </span>
-              </div>
-            </div>
+            {/* Reviews Section */}
+            <ReviewSection targetId={hotel.id} targetType="hotel" className="mt-12" />
           </div>
 
           {/* Sticky Interactive Booking Card (1 col) */}

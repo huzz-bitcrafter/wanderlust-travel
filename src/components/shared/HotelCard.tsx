@@ -1,12 +1,22 @@
 import { Link } from "@tanstack/react-router";
 import { MapPin, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Rating } from "@/components/shared/Rating";
 import type { HotelCardData } from "@/lib/catalog.functions";
 
-export function HotelCard({ hotel }: { hotel: HotelCardData }) {
+export function HotelCard({
+  hotel,
+  rating,
+}: {
+  hotel: HotelCardData;
+  rating?: { avg_rating: number; review_count: number };
+}) {
   const destinationText = hotel.destination
     ? `${hotel.destination.name}, ${hotel.destination.country}`
     : "World Destination";
+
+  const ratingValue = rating && rating.review_count > 0 ? rating.avg_rating : undefined;
+  const ratingCount = rating && rating.review_count > 0 ? rating.review_count : undefined;
 
   return (
     <Link
@@ -46,7 +56,9 @@ export function HotelCard({ hotel }: { hotel: HotelCardData }) {
             <MapPin className="h-3 w-3 shrink-0" aria-hidden="true" />
             <span className="truncate">{destinationText}</span>
           </p>
-          {hotel.address ? (
+          {ratingValue ? (
+            <Rating value={ratingValue} count={ratingCount} />
+          ) : hotel.address ? (
             <span className="truncate text-xs text-muted-foreground">{hotel.address}</span>
           ) : null}
         </div>

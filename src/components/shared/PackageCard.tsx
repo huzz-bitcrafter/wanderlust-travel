@@ -4,10 +4,19 @@ import { Badge } from "@/components/ui/badge";
 import { Rating } from "@/components/shared/Rating";
 import type { PackageCardData } from "@/lib/catalog.functions";
 
-export function PackageCard({ pkg }: { pkg: PackageCardData }) {
+export function PackageCard({
+  pkg,
+  rating,
+}: {
+  pkg: PackageCardData;
+  rating?: { avg_rating: number; review_count: number };
+}) {
   const destinationText = pkg.destination
     ? `${pkg.destination.name}, ${pkg.destination.country}`
     : "Multi-destination";
+
+  const ratingValue = rating && rating.review_count > 0 ? rating.avg_rating : 4.8;
+  const ratingCount = rating && rating.review_count > 0 ? rating.review_count : undefined;
 
   return (
     <Link
@@ -45,7 +54,7 @@ export function PackageCard({ pkg }: { pkg: PackageCardData }) {
             <MapPin className="h-3 w-3 shrink-0" aria-hidden="true" />
             <span className="truncate">{destinationText}</span>
           </p>
-          <Rating value={4.8} />
+          <Rating value={ratingValue} count={ratingCount} />
         </div>
 
         <h3 className="mt-2 font-display text-xl font-semibold text-foreground group-hover:text-primary transition-colors">

@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { Rating } from "@/components/shared/Rating";
+import { ReviewSection } from "@/components/shared/ReviewSection";
 import { BookingCTA } from "@/components/shared/BookingCTA";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -375,6 +376,9 @@ function PackageDetailPage() {
                   </ul>
                 </div>
               </div>
+
+              {/* Reviews Section */}
+              <ReviewSection targetId={pkg.id} targetType="tour" className="mt-12" />
             </div>
           </div>
 
