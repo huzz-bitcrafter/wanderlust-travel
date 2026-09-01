@@ -16,11 +16,13 @@
 - [x] Phase 9 — Reviews & Ratings (shared ReviewSection with aggregate score, star distribution breakdown, approved reviews stream, and authenticated review submission form with pending approval moderation note; live ReviewSection mounted across destinations, packages, and hotels detail pages; dynamic review aggregates wired into DestinationCard, PackageCard, and HotelCard via batch `fetchReviewAggregates` query).
 - [x] Phase 10 — Bookings & Checkout (client-rendered checkout flow at `/checkout` with URL `validateSearch`, 3-step navigation for trip summary, guest details form, and simulated credit card payment; retry-safe reference generator with format `WL-` + 6 unambiguous chars; confirmation receipt at `/checkout/confirmation` with print view; all `BookingCTA` buttons live across tours, hotels, and flights).
 - [x] Phase 11 — User Dashboard (activated all account sidebar tabs; Overview at `/account/overview` with metrics row, upcoming trip spotlight card with countdown badge, recent activity timeline, and quick actions; My Bookings at `/account/bookings` with Upcoming/Past/Cancelled tabs, booking cards, and 48h cancellation modal; My Reviews at `/account/reviews` with approved/pending reviews list, edit modal with moderation reset, and delete confirmation; Profile & Settings at `/account/profile` with personal information, avatar photo upload to Supabase Storage avatars bucket with instant preview, and password update form).
-- [ ] Phases 12A–14
+- [x] Phase 12A — Admin Portal Foundation & User/Booking Operations (admin route guard with `requireAdminGuard` and 403 Forbidden state; responsive Admin Portal layout at `/admin` with management sidebar; Overview Dashboard at `/admin/overview` with real-time KPI metrics, revenue tracking, and recent bookings stream; Bookings Management at `/admin/bookings` with multi-facet search/filtering, detailed reservation drawer, and status/payment update modal; Users & Roles Management at `/admin/users` with user search, admin role assignment/revocation with self-demotion lockout protection; documented database migration `004_user_roles_admin_policy.sql`).
+- [ ] Phase 12B — Content CRUD, Review Moderation, Contact Inbox
+- [ ] Phases 13–14
 
 ## In Progress
 
-- None. Next is Phase 12A (Admin Portal Foundation — Guard, Dashboard, Bookings, Users).
+- None. Next is Phase 12B (Admin Content CRUD, Review Moderation & Contact Inbox).
 
 ## Key Decisions
 
