@@ -25,6 +25,7 @@
 ## Key Decisions
 
 - Stack is **TanStack Start**, not React Router SPA: pages live in `src/routes/` (file-based), design tokens in `src/styles.css` (oklch), head metadata via the route `head()` option. No `src/pages/`, no react-router-dom, no react-helmet.
+- Database migrated from old Lovable-managed project to user-owned Supabase project (`https://loypxmczumghuusljnnj.supabase.co`). Old Lovable project deprecated.
 - Roles live in a separate `user_roles` table with `has_role()` / `is_admin()` security-definer functions — NOT a role column on profiles.
 - `tour_packages.itinerary` is a jsonb array of `{day,title,description}` (added beyond Architecture.md §5).
 - `bookings` has extra `reference` and `end_date` columns; `reviews` has `author_name`.
