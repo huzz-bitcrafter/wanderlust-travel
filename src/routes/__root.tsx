@@ -14,21 +14,64 @@ import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/hooks/use-auth";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
+import { Compass, AlertCircle, Home, MapPin, Package, ArrowLeft, RotateCcw } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
-        </p>
-        <div className="mt-6">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 py-16 text-center relative overflow-hidden">
+      {/* Background subtle radial glow */}
+      <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-accent/10 blur-3xl pointer-events-none" />
+
+      <div className="relative max-w-lg mx-auto space-y-6">
+        <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-primary/10 text-primary mx-auto shadow-sm animate-in zoom-in duration-300">
+          <Compass className="h-10 w-10 animate-[spin_12s_linear_infinite]" />
+        </div>
+
+        <div className="space-y-2">
+          <span className="font-mono text-xs font-bold uppercase tracking-widest text-primary">
+            Error 404 • Destination Unknown
+          </span>
+          <h1 className="font-display text-4xl sm:text-5xl font-bold text-foreground">
+            Off the Map
+          </h1>
+          <p className="text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
+            The coordinates you were heading toward don't exist, may have been relocated, or are
+            currently uncharted territory.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+          <Button asChild size="default" className="shadow-sm">
+            <Link to="/">
+              <Home className="mr-2 h-4 w-4" />
+              Return to Homepage
+            </Link>
+          </Button>
+
+          <Button asChild variant="outline" size="default">
+            <Link to="/destinations">
+              <MapPin className="mr-2 h-4 w-4 text-primary" />
+              Explore Destinations
+            </Link>
+          </Button>
+        </div>
+
+        <div className="pt-8 border-t border-border/80 flex items-center justify-center gap-6 text-xs text-muted-foreground">
           <Link
-            to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            to="/packages"
+            className="hover:text-primary transition-colors flex items-center gap-1"
           >
-            Go home
+            <Package className="h-3.5 w-3.5" /> Tour Packages
+          </Link>
+          <span>•</span>
+          <Link to="/gallery" className="hover:text-primary transition-colors">
+            Photo Gallery
+          </Link>
+          <span>•</span>
+          <Link to="/contact" className="hover:text-primary transition-colors">
+            Help &amp; Support
           </Link>
         </div>
       </div>
@@ -44,30 +87,41 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   }, [error]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong on our end. You can try refreshing or head back home.
-        </p>
-        <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <button
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 py-16 text-center">
+      <div className="max-w-md mx-auto space-y-6">
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-destructive/10 text-destructive mx-auto">
+          <AlertCircle className="h-8 w-8" />
+        </div>
+
+        <div className="space-y-2">
+          <span className="font-mono text-xs font-bold uppercase tracking-wider text-destructive">
+            Unexpected Turbulence
+          </span>
+          <h1 className="font-display text-3xl font-bold text-foreground">Something went wrong</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+            We ran into an unexpected issue rendering this section. You can attempt to refresh the
+            view or return to the main lobby.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap justify-center gap-3 pt-2">
+          <Button
             onClick={() => {
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="shadow-sm"
           >
-            Try again
-          </button>
-          <a
-            href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
-          >
-            Go home
-          </a>
+            <RotateCcw className="mr-2 h-4 w-4" />
+            Try Again
+          </Button>
+
+          <Button asChild variant="outline">
+            <Link to="/">
+              <Home className="mr-2 h-4 w-4" />
+              Go Home
+            </Link>
+          </Button>
         </div>
       </div>
     </div>
