@@ -10,19 +10,31 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AccountRouteImport } from './routes/account'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DestinationsRouteImport } from './routes/destinations'
 import { Route as FlightsRouteImport } from './routes/flights'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as HotelsRouteImport } from './routes/hotels'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PackagesRouteImport } from './routes/packages'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as AccountIndexRouteImport } from './routes/account/index'
+import { Route as AccountItinerariesRouteImport } from './routes/account/itineraries'
 import { Route as DestinationsSlugRouteImport } from './routes/destinations.$slug'
+import { Route as HotelsIdRouteImport } from './routes/hotels.$id'
+import { Route as PackagesSlugRouteImport } from './routes/packages.$slug'
+import { Route as AccountItinerariesIdRouteImport } from './routes/account/itineraries.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -38,6 +50,11 @@ const DestinationsRoute = DestinationsRouteImport.update({
 const FlightsRoute = FlightsRouteImport.update({
   id: '/flights',
   path: '/flights',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GalleryRoute = GalleryRouteImport.update({
@@ -65,97 +82,164 @@ const RegisterRoute = RegisterRouteImport.update({
   path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccountIndexRoute = AccountIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AccountRoute,
+} as any)
+const AccountItinerariesRoute = AccountItinerariesRouteImport.update({
+  id: '/itineraries',
+  path: '/itineraries',
+  getParentRoute: () => AccountRoute,
+} as any)
 const DestinationsSlugRoute = DestinationsSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
   getParentRoute: () => DestinationsRoute,
 } as any)
+const HotelsIdRoute = HotelsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => HotelsRoute,
+} as any)
+const PackagesSlugRoute = PackagesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => PackagesRoute,
+} as any)
+const AccountItinerariesIdRoute = AccountItinerariesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AccountItinerariesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/account': typeof AccountRouteWithChildren
   '/contact': typeof ContactRoute
   '/destinations': typeof DestinationsRouteWithChildren
   '/flights': typeof FlightsRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/gallery': typeof GalleryRoute
-  '/hotels': typeof HotelsRoute
+  '/hotels': typeof HotelsRouteWithChildren
   '/login': typeof LoginRoute
-  '/packages': typeof PackagesRoute
+  '/packages': typeof PackagesRouteWithChildren
   '/register': typeof RegisterRoute
+  '/account/itineraries': typeof AccountItinerariesRouteWithChildren
   '/destinations/$slug': typeof DestinationsSlugRoute
+  '/hotels/$id': typeof HotelsIdRoute
+  '/packages/$slug': typeof PackagesSlugRoute
+  '/account/': typeof AccountIndexRoute
+  '/account/itineraries/$id': typeof AccountItinerariesIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/contact': typeof ContactRoute
   '/destinations': typeof DestinationsRouteWithChildren
   '/flights': typeof FlightsRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/gallery': typeof GalleryRoute
-  '/hotels': typeof HotelsRoute
+  '/hotels': typeof HotelsRouteWithChildren
   '/login': typeof LoginRoute
-  '/packages': typeof PackagesRoute
+  '/packages': typeof PackagesRouteWithChildren
   '/register': typeof RegisterRoute
+  '/account/itineraries': typeof AccountItinerariesRouteWithChildren
   '/destinations/$slug': typeof DestinationsSlugRoute
+  '/hotels/$id': typeof HotelsIdRoute
+  '/packages/$slug': typeof PackagesSlugRoute
+  '/account': typeof AccountIndexRoute
+  '/account/itineraries/$id': typeof AccountItinerariesIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/account': typeof AccountRouteWithChildren
   '/contact': typeof ContactRoute
   '/destinations': typeof DestinationsRouteWithChildren
   '/flights': typeof FlightsRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/gallery': typeof GalleryRoute
-  '/hotels': typeof HotelsRoute
+  '/hotels': typeof HotelsRouteWithChildren
   '/login': typeof LoginRoute
-  '/packages': typeof PackagesRoute
+  '/packages': typeof PackagesRouteWithChildren
   '/register': typeof RegisterRoute
+  '/account/itineraries': typeof AccountItinerariesRouteWithChildren
   '/destinations/$slug': typeof DestinationsSlugRoute
+  '/hotels/$id': typeof HotelsIdRoute
+  '/packages/$slug': typeof PackagesSlugRoute
+  '/account/': typeof AccountIndexRoute
+  '/account/itineraries/$id': typeof AccountItinerariesIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/account'
     | '/contact'
     | '/destinations'
     | '/flights'
+    | '/forgot-password'
     | '/gallery'
     | '/hotels'
     | '/login'
     | '/packages'
     | '/register'
+    | '/account/itineraries'
     | '/destinations/$slug'
+    | '/hotels/$id'
+    | '/packages/$slug'
+    | '/account/'
+    | '/account/itineraries/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/contact'
     | '/destinations'
     | '/flights'
+    | '/forgot-password'
     | '/gallery'
     | '/hotels'
     | '/login'
     | '/packages'
     | '/register'
+    | '/account/itineraries'
     | '/destinations/$slug'
+    | '/hotels/$id'
+    | '/packages/$slug'
+    | '/account'
+    | '/account/itineraries/$id'
   id:
     | '__root__'
     | '/'
+    | '/account'
     | '/contact'
     | '/destinations'
     | '/flights'
+    | '/forgot-password'
     | '/gallery'
     | '/hotels'
     | '/login'
     | '/packages'
     | '/register'
+    | '/account/itineraries'
     | '/destinations/$slug'
+    | '/hotels/$id'
+    | '/packages/$slug'
+    | '/account/'
+    | '/account/itineraries/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AccountRoute: typeof AccountRouteWithChildren
   ContactRoute: typeof ContactRoute
   DestinationsRoute: typeof DestinationsRouteWithChildren
   FlightsRoute: typeof FlightsRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   GalleryRoute: typeof GalleryRoute
-  HotelsRoute: typeof HotelsRoute
+  HotelsRoute: typeof HotelsRouteWithChildren
   LoginRoute: typeof LoginRoute
-  PackagesRoute: typeof PackagesRoute
+  PackagesRoute: typeof PackagesRouteWithChildren
   RegisterRoute: typeof RegisterRoute
 }
 
@@ -166,6 +250,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -187,6 +278,13 @@ declare module '@tanstack/react-router' {
       path: '/flights'
       fullPath: '/flights'
       preLoaderRoute: typeof FlightsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gallery': {
@@ -224,6 +322,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/account/': {
+      id: '/account/'
+      path: '/'
+      fullPath: '/account/'
+      preLoaderRoute: typeof AccountIndexRouteImport
+      parentRoute: typeof AccountRoute
+    }
+    '/account/itineraries': {
+      id: '/account/itineraries'
+      path: '/itineraries'
+      fullPath: '/account/itineraries'
+      preLoaderRoute: typeof AccountItinerariesRouteImport
+      parentRoute: typeof AccountRoute
+    }
     '/destinations/$slug': {
       id: '/destinations/$slug'
       path: '/$slug'
@@ -231,8 +343,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DestinationsSlugRouteImport
       parentRoute: typeof DestinationsRoute
     }
+    '/hotels/$id': {
+      id: '/hotels/$id'
+      path: '/$id'
+      fullPath: '/hotels/$id'
+      preLoaderRoute: typeof HotelsIdRouteImport
+      parentRoute: typeof HotelsRoute
+    }
+    '/packages/$slug': {
+      id: '/packages/$slug'
+      path: '/$slug'
+      fullPath: '/packages/$slug'
+      preLoaderRoute: typeof PackagesSlugRouteImport
+      parentRoute: typeof PackagesRoute
+    }
+    '/account/itineraries/$id': {
+      id: '/account/itineraries/$id'
+      path: '/$id'
+      fullPath: '/account/itineraries/$id'
+      preLoaderRoute: typeof AccountItinerariesIdRouteImport
+      parentRoute: typeof AccountItinerariesRoute
+    }
   }
 }
+
+interface AccountItinerariesRouteChildren {
+  AccountItinerariesIdRoute: typeof AccountItinerariesIdRoute
+}
+
+const AccountItinerariesRouteChildren: AccountItinerariesRouteChildren = {
+  AccountItinerariesIdRoute: AccountItinerariesIdRoute,
+}
+
+const AccountItinerariesRouteWithChildren =
+  AccountItinerariesRoute._addFileChildren(AccountItinerariesRouteChildren)
+
+interface AccountRouteChildren {
+  AccountItinerariesRoute: typeof AccountItinerariesRouteWithChildren
+  AccountIndexRoute: typeof AccountIndexRoute
+}
+
+const AccountRouteChildren: AccountRouteChildren = {
+  AccountItinerariesRoute: AccountItinerariesRouteWithChildren,
+  AccountIndexRoute: AccountIndexRoute,
+}
+
+const AccountRouteWithChildren =
+  AccountRoute._addFileChildren(AccountRouteChildren)
 
 interface DestinationsRouteChildren {
   DestinationsSlugRoute: typeof DestinationsSlugRoute
@@ -246,15 +403,40 @@ const DestinationsRouteWithChildren = DestinationsRoute._addFileChildren(
   DestinationsRouteChildren,
 )
 
+interface HotelsRouteChildren {
+  HotelsIdRoute: typeof HotelsIdRoute
+}
+
+const HotelsRouteChildren: HotelsRouteChildren = {
+  HotelsIdRoute: HotelsIdRoute,
+}
+
+const HotelsRouteWithChildren =
+  HotelsRoute._addFileChildren(HotelsRouteChildren)
+
+interface PackagesRouteChildren {
+  PackagesSlugRoute: typeof PackagesSlugRoute
+}
+
+const PackagesRouteChildren: PackagesRouteChildren = {
+  PackagesSlugRoute: PackagesSlugRoute,
+}
+
+const PackagesRouteWithChildren = PackagesRoute._addFileChildren(
+  PackagesRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccountRoute: AccountRouteWithChildren,
   ContactRoute: ContactRoute,
   DestinationsRoute: DestinationsRouteWithChildren,
   FlightsRoute: FlightsRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   GalleryRoute: GalleryRoute,
-  HotelsRoute: HotelsRoute,
+  HotelsRoute: HotelsRouteWithChildren,
   LoginRoute: LoginRoute,
-  PackagesRoute: PackagesRoute,
+  PackagesRoute: PackagesRouteWithChildren,
   RegisterRoute: RegisterRoute,
 }
 export const routeTree = rootRouteImport
