@@ -18,12 +18,12 @@
 - [x] Phase 11 — User Dashboard (activated all account sidebar tabs; Overview at `/account/overview` with metrics row, upcoming trip spotlight card with countdown badge, recent activity timeline, and quick actions; My Bookings at `/account/bookings` with Upcoming/Past/Cancelled tabs, booking cards, and 48h cancellation modal; My Reviews at `/account/reviews` with approved/pending reviews list, edit modal with moderation reset, and delete confirmation; Profile & Settings at `/account/profile` with personal information, avatar photo upload to Supabase Storage avatars bucket with instant preview, and password update form).
 - [x] Phase 12A — Admin Portal Foundation & User/Booking Operations (admin route guard with `requireAdminGuard` and 403 Forbidden state; responsive Admin Portal layout at `/admin` with management sidebar; Overview Dashboard at `/admin/overview` with real-time KPI metrics, revenue tracking, and recent bookings stream; Bookings Management at `/admin/bookings` with multi-facet search/filtering, detailed reservation drawer, and status/payment update modal; Users & Roles Management at `/admin/users` with user search, admin role assignment/revocation with self-demotion lockout protection; documented database migration `004_user_roles_admin_policy.sql`).
 - [x] Phase 12B — Content CRUD, Review Moderation & Contact Inbox (Destinations CRUD at `/admin/destinations` with continent filter, cover photo preview, auto-slug generator, and delete dialog; Tour Packages CRUD at `/admin/packages` with destination linkage, duration/price/difficulty specs, multi-day itinerary JSON builder, inclusions/exclusions tags, and live public preview link; Hotels CRUD at `/admin/hotels` with destination linkage, star rating selector, rate per night, interactive amenities checklist, and live public preview link; Flights CRUD at `/admin/flights` with airline, flight number, origin/destination codes, datetime-local timestamps, seat inventory tracking, and cabin class filtering; Review Moderation Queue at `/admin/reviews` with Pending Moderation, Approved & Live, and All tabs, single-click approve/unapprove actions, and permanent deletion; Customer Inbox at `/admin/inbox` with status filters, inquiry reader modal, status state machine, and reply-via-email link).
-- [ ] Phase 13 — Gallery Lightbox & Contact Form
+- [x] Phase 13 — Gallery Lightbox & Contact Form (SSR gallery at `/gallery` with destination URL filters, responsive Masonry grid, hover overlays with location tags, interactive fullscreen Lightbox modal with keyboard navigation [Arrows + Escape] and photo index counters; Contact Page at `/contact` with Zod-validated submission to `contact_messages` table, user auto-fill, inquiry tracking badge, global concierge office details, and interactive FAQ accordion).
 - [ ] Phase 14 — QA & Polish
 
 ## In Progress
 
-- None. Next is Phase 13 (Gallery Lightbox & Contact Form).
+- None. Next is Phase 14 (QA & Polish).
 
 ## Key Decisions
 
@@ -51,6 +51,7 @@
 - Phase 4 authentication provides a client-side `AuthProvider` mounted at root with dual-client architecture (`src/integrations/supabase/client.ts` for browser auth/profile hydration and `user_roles` permission checking). Navbar dynamically reacts to login/logout events and presents avatar dropdown and admin link without page refreshes.
 - Phase 8 Itinerary Builder is entirely client-side rendered using `supabase` client with `requireAuthGuard`. Implements account shell with responsive tabbed nav, user itinerary listing with destination and activity counters, and full interactive day-by-day activity editor with optimistic reordering and print view.
 - Phase 12 Admin Portal provides complete backend administration with dedicated sub-routes for Overview KPIs, Bookings Management, User Roles, Destinations CRUD, Packages CRUD, Hotels CRUD, Flights Inventory, Review Moderation, and Customer Inbox.
+- Phase 13 delivers a full-screen interactive lightbox gallery with URL destination filters and a live concierge contact portal with automated inquiry ticket generation and FAQs.
 - Flights/hotels seeded in the database; no external APIs. Payments simulated. Light theme only.
 
 ## Schema Changes (keep in sync with Architecture.md §5)
@@ -62,12 +63,11 @@
 
 ## Known Bugs / TODO
 
-- None. All catalog CRUD, moderation, bookings, and inbox tooling operational.
+- None.
 
 ## Next Steps
 
-1. Phase 13 — Gallery Lightbox & Contact Form.
-2. Phase 14 — QA & Polish.
+1. Phase 14 — QA & Polish.
 
 ## Reminders for the AI
 

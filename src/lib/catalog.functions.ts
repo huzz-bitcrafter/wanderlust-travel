@@ -858,3 +858,93 @@ export const searchFlights = createServerFn({ method: "GET" })
       created_at: String(f.created_at),
     })) as FlightData[];
   });
+
+export type GalleryImageData = {
+  id: string;
+  url: string;
+  caption: string | null;
+  created_at: string;
+  destination_id: string | null;
+  destination: {
+    id: string;
+    name: string;
+    country: string;
+    slug: string;
+  } | null;
+};
+
+export const fetchGalleryImages = createServerFn({ method: "GET" })
+  .validator((params: { destinationSlug?: string } | undefined) => params)
+  .handler(async ({ data: params }) => {
+    const { getPublicSupabase } = await import("./supabase-public.server");
+    const supabase = getPublicSupabase();
+
+    let query = supabase
+      .from("gallery_images")
+      .select("id, url, caption, created_at, destination_id, destinations(id, name, country, slug)")
+      .order("created_at", { ascending: false });
+
+    if (params?.destinationSlug && params.destinationSlug !== "all") {
+      // Look up destination ID by slug first
+      const { data: dest } = await supabase
+        .from("destinations")
+        .select("id")
+        .eq("slug", params.destinationSlug)
+        .maybeSingle();
+
+      if (dest) {
+        query = query.eq("destination_id", dest.id);
+      }
+    }
+
+    const { data, error } = await query;
+    if (error) {
+      console.error("fetchGalleryImages", error);
+      throw new Error("Could not load gallery images");
+    }
+
+    type RawGalleryRow = {
+      id: string;
+      url: string;
+      caption: string | null;
+      created_at: string;
+      destination_id: string | null;
+      destinations: { id: string; name: string; country: string; slug: string } | null;
+    };
+
+    return ((data || []) as unknown as RawGalleryRow[]).map((row) => ({
+      id: String(row.id),
+      url: String(row.url),
+      caption: row.caption ? String(row.caption) : null,
+      created_at: String(row.created_at),
+      destination_id: row.destination_id ? String(row.destination_id) : null,
+      destination: row.destinations
+        ? {
+            id: String(row.destinations.id),
+            name: String(row.destinations.name),
+            country: String(row.destinations.country),
+            slug: String(row.destinations.slug),
+          }
+        : null,
+    })) as GalleryImageData[];
+  });
+
+export const fetchGalleryDestinations = createServerFn({ method: "GET" }).handler(async () => {
+  const { getPublicSupabase } = await import("./supabase-public.server");
+  const { data, error } = await getPublicSupabase()
+    .from("destinations")
+    .select("id, name, country, slug")
+    .order("name", { ascending: true });
+
+  if (error) {
+    console.error("fetchGalleryDestinations", error);
+    throw new Error("Could not load gallery destinations");
+  }
+
+  return (data || []).map((d) => ({
+    id: String(d.id),
+    name: String(d.name),
+    country: String(d.country),
+    slug: String(d.slug),
+  }));
+});
