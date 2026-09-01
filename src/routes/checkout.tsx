@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   createFileRoute,
   useNavigate,
@@ -35,6 +35,7 @@ import {
   Hotel as HotelIcon,
   Compass,
   AlertCircle,
+  Building,
 } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -104,12 +105,26 @@ function CheckoutRouteComponent() {
 }
 
 // Validation schemas
-const guestDetailsSchema = z.object({
+const tourHotelGuestDetailsSchema = z.object({
   fullName: z.string().trim().min(2, "Full name must be at least 2 characters"),
   email: z.string().trim().email("Please enter a valid email address"),
   phone: z.string().trim().min(6, "Please enter a valid phone number"),
   specialRequests: z.string().optional(),
   additionalGuests: z.array(z.string().trim().min(2, "Guest name is required")),
+});
+
+const flightPassengerSchema = z.object({
+  passengers: z
+    .array(
+      z.object({
+        firstName: z.string().trim().min(1, "First name is required"),
+        lastName: z.string().trim().min(1, "Last name is required"),
+      }),
+    )
+    .min(1, "At least one passenger is required"),
+  email: z.string().trim().email("Please enter a valid email address"),
+  phone: z.string().trim().min(6, "Please enter a valid phone number"),
+  specialRequests: z.string().optional(),
 });
 
 const paymentSchema = z.object({
@@ -138,6 +153,12 @@ interface ItemData {
   location?: string;
   unitPrice: number;
   extraInfo?: string;
+  groupSizeMax?: number;
+}
+
+export interface FlightPassenger {
+  firstName: string;
+  lastName: string;
 }
 
 function CheckoutPage() {
@@ -147,16 +168,31 @@ function CheckoutPage() {
 
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
 
-  // Form State
+  // Stepper state for multi-guest & room booking
+  const [guests, setGuests] = useState<number>(searchParams.guests || 1);
+  const [rooms, setRooms] = useState<number>(searchParams.rooms || 1);
+
+  // Form State for Tour & Hotel
   const [fullName, setFullName] = useState(user?.user_metadata?.full_name || "");
   const [email, setEmail] = useState(user?.email || "");
   const [phone, setPhone] = useState(user?.user_metadata?.phone || "");
   const [specialRequests, setSpecialRequests] = useState("");
   const [additionalGuests, setAdditionalGuests] = useState<string[]>(() =>
-    searchParams.guests && searchParams.guests > 1
-      ? Array.from({ length: searchParams.guests - 1 }, () => "")
-      : [],
+    guests > 1 ? Array.from({ length: guests - 1 }, () => "") : [],
   );
+
+  // Form State for Flight Passengers (Per-passenger first + last name)
+  const [passengers, setPassengers] = useState<FlightPassenger[]>(() => {
+    const defaultLead = (user?.user_metadata?.full_name || "").split(" ");
+    const leadFirst = defaultLead[0] || "";
+    const leadLast = defaultLead.slice(1).join(" ") || "";
+
+    const list: FlightPassenger[] = [{ firstName: leadFirst, lastName: leadLast }];
+    for (let i = 1; i < guests; i++) {
+      list.push({ firstName: "", lastName: "" });
+    }
+    return list;
+  });
 
   // Payment Form State
   const [cardholderName, setCardholderName] = useState(
@@ -182,7 +218,7 @@ function CheckoutPage() {
         const { data, error } = await supabase
           .from("tour_packages")
           .select(
-            "id, title, summary, price_per_person, duration_days, image_url, destination:destinations(name, country)",
+            "id, title, summary, price_per_person, duration_days, group_size_max, image_url, destination:destinations(name, country)",
           )
           .eq("id", searchParams.itemId)
           .single();
@@ -199,6 +235,7 @@ function CheckoutPage() {
             : undefined,
           unitPrice: Number(data.price_per_person),
           extraInfo: `${data.duration_days} Days Tour`,
+          groupSizeMax: data.group_size_max || 12,
         };
       }
 
@@ -252,10 +289,35 @@ function CheckoutPage() {
     enabled: !!searchParams.itemId,
   });
 
-  // Calculate pricing
+  // Synchronize additional guests & flight passengers arrays when guests count changes
+  useEffect(() => {
+    // Sync Tour/Hotel additional guests
+    const additionalCount = Math.max(0, guests - 1);
+    setAdditionalGuests((prev) => {
+      if (prev.length === additionalCount) return prev;
+      return Array.from({ length: additionalCount }, (_, i) => prev[i] || "");
+    });
+
+    // Sync Flight passengers
+    setPassengers((prev) => {
+      if (prev.length === guests) return prev;
+      const updated: FlightPassenger[] = [];
+      for (let i = 0; i < guests; i++) {
+        if (prev[i]) {
+          updated.push(prev[i]);
+        } else {
+          updated.push({ firstName: "", lastName: "" });
+        }
+      }
+      return updated;
+    });
+  }, [guests]);
+
+  // Calculate live pricing according to prompt requirements:
+  // - TOUR: price_per_person * guests
+  // - HOTEL: nights * price_per_night * rooms
+  // - FLIGHT: fare * passengers
   const pricing = useMemo(() => {
-    const guests = searchParams.guests || 1;
-    const rooms = searchParams.rooms || 1;
     const baseRate = itemData?.unitPrice || 0;
 
     let baseAmount = 0;
@@ -282,47 +344,56 @@ function CheckoutPage() {
       rateLabel = `$${baseRate.toLocaleString()} × ${guests} ${guests === 1 ? "passenger" : "passengers"}`;
     }
 
-    const taxesAndFees = Math.round(baseAmount * 0.1);
-    const totalAmount = baseAmount + taxesAndFees;
+    const totalAmount = baseAmount;
 
     return {
       baseAmount,
       rateLabel,
-      taxesAndFees,
       totalAmount,
     };
-  }, [itemData, searchParams]);
-
-  // Sync additional guests length if searchParams.guests changes
-  React.useEffect(() => {
-    const count = (searchParams.guests || 1) - 1;
-    setAdditionalGuests((prev) => {
-      if (count <= 0) return [];
-      if (prev.length === count) return prev;
-      return Array.from({ length: count }, (_, i) => prev[i] || "");
-    });
-  }, [searchParams.guests]);
+  }, [itemData, searchParams.itemType, searchParams.startDate, searchParams.endDate, guests, rooms]);
 
   // Step 2 validation
   const handleProceedToPayment = (e: React.FormEvent) => {
     e.preventDefault();
-    const result = guestDetailsSchema.safeParse({
-      fullName,
-      email,
-      phone,
-      specialRequests,
-      additionalGuests,
-    });
 
-    if (!result.success) {
-      const fieldErrors: Record<string, string> = {};
-      result.error.issues.forEach((issue) => {
-        const path = issue.path.join(".");
-        fieldErrors[path] = issue.message;
+    if (searchParams.itemType === "flight") {
+      const result = flightPassengerSchema.safeParse({
+        passengers,
+        email,
+        phone,
+        specialRequests,
       });
-      setGuestErrors(fieldErrors);
-      toast.error("Please fill in all required guest information.");
-      return;
+
+      if (!result.success) {
+        const fieldErrors: Record<string, string> = {};
+        result.error.issues.forEach((issue) => {
+          const path = issue.path.join(".");
+          fieldErrors[path] = issue.message;
+        });
+        setGuestErrors(fieldErrors);
+        toast.error("Please fill in first and last name for all passengers.");
+        return;
+      }
+    } else {
+      const result = tourHotelGuestDetailsSchema.safeParse({
+        fullName,
+        email,
+        phone,
+        specialRequests,
+        additionalGuests,
+      });
+
+      if (!result.success) {
+        const fieldErrors: Record<string, string> = {};
+        result.error.issues.forEach((issue) => {
+          const path = issue.path.join(".");
+          fieldErrors[path] = issue.message;
+        });
+        setGuestErrors(fieldErrors);
+        toast.error("Please fill in all required guest information.");
+        return;
+      }
     }
 
     setGuestErrors({});
@@ -361,21 +432,36 @@ function CheckoutPage() {
 
     try {
       // Simulate secure processing latency
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 800));
 
       const last4 = cardNumber.replace(/\s+/g, "").slice(-4) || "4242";
 
-      const bookingPayload = {
-        user_id: user.id,
-        booking_type: searchParams.itemType,
-        item_id: searchParams.itemId,
-        travel_date: searchParams.startDate || format(addDays(new Date(), 7), "yyyy-MM-dd"),
-        end_date: searchParams.endDate || null,
-        guests: searchParams.guests || 1,
-        total_price: pricing.totalAmount,
-        status: "confirmed",
-        payment_status: "paid",
-        guest_details: {
+      let guestDetailsPayload: Record<string, unknown> = {};
+
+      if (searchParams.itemType === "flight") {
+        const leadPassenger = passengers[0] || { firstName: "Passenger", lastName: "1" };
+        guestDetailsPayload = {
+          primaryGuest: {
+            fullName: `${leadPassenger.firstName} ${leadPassenger.lastName}`.trim(),
+            email,
+            phone,
+            specialRequests,
+          },
+          passengers,
+          payment: {
+            method: "Credit Card",
+            last4,
+            cardholderName,
+          },
+          itemSnapshot: {
+            title: itemData?.title || "Flight Booking",
+            subtitle: itemData?.subtitle,
+            location: itemData?.location,
+            rateLabel: pricing.rateLabel,
+          },
+        };
+      } else {
+        guestDetailsPayload = {
           primaryGuest: {
             fullName,
             email,
@@ -383,6 +469,7 @@ function CheckoutPage() {
             specialRequests,
           },
           additionalGuests,
+          rooms: searchParams.itemType === "hotel" ? rooms : undefined,
           payment: {
             method: "Credit Card",
             last4,
@@ -394,7 +481,20 @@ function CheckoutPage() {
             location: itemData?.location,
             rateLabel: pricing.rateLabel,
           },
-        },
+        };
+      }
+
+      const bookingPayload = {
+        user_id: user.id,
+        booking_type: searchParams.itemType,
+        item_id: searchParams.itemId,
+        travel_date: searchParams.startDate || format(addDays(new Date(), 7), "yyyy-MM-dd"),
+        end_date: searchParams.endDate || null,
+        guests: guests,
+        total_price: pricing.totalAmount,
+        status: "confirmed",
+        payment_status: "paid",
+        guest_details: guestDetailsPayload,
       };
 
       const booking = await insertBookingWithRetry(bookingPayload);
@@ -542,8 +642,10 @@ function CheckoutPage() {
                         <div className="flex h-28 w-full sm:w-36 items-center justify-center rounded-lg bg-primary/10 text-primary">
                           {searchParams.itemType === "flight" ? (
                             <Plane className="h-8 w-8" />
-                          ) : (
+                          ) : searchParams.itemType === "hotel" ? (
                             <HotelIcon className="h-8 w-8" />
+                          ) : (
+                            <Compass className="h-8 w-8" />
                           )}
                         </div>
                       )}
@@ -571,12 +673,12 @@ function CheckoutPage() {
                       </div>
                     </div>
 
-                    {/* Booking Parameters Summary */}
-                    <div className="grid gap-4 sm:grid-cols-2 rounded-xl border border-border/60 p-4 text-sm">
+                    {/* Booking Parameters & Interactive Steppers */}
+                    <div className="rounded-xl border border-border/60 p-4 space-y-4 text-sm bg-card">
                       <div className="flex items-start gap-3">
-                        <Calendar className="mt-0.5 h-4 w-4 text-secondary" />
+                        <Calendar className="mt-0.5 h-4 w-4 text-secondary shrink-0" />
                         <div>
-                          <span className="text-xs text-muted-foreground block">Dates</span>
+                          <span className="text-xs text-muted-foreground block">Travel Schedule</span>
                           <span className="font-medium text-foreground">
                             {searchParams.startDate
                               ? format(parseISO(searchParams.startDate), "MMM d, yyyy")
@@ -587,19 +689,157 @@ function CheckoutPage() {
                         </div>
                       </div>
 
-                      <div className="flex items-start gap-3">
-                        <Users className="mt-0.5 h-4 w-4 text-secondary" />
-                        <div>
-                          <span className="text-xs text-muted-foreground block">Guests</span>
-                          <span className="font-medium text-foreground">
-                            {searchParams.guests || 1}{" "}
-                            {searchParams.guests === 1 ? "Traveler" : "Travelers"}
-                            {searchParams.itemType === "hotel" &&
-                              searchParams.rooms &&
-                              ` (${searchParams.rooms} Room)`}
-                          </span>
+                      {/* TOUR Stepper */}
+                      {searchParams.itemType === "tour" && (
+                        <div className="pt-3 border-t border-border/50 flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Users className="h-4 w-4 text-secondary" />
+                            <div>
+                              <span className="text-xs text-muted-foreground block">Guests</span>
+                              <span className="font-semibold text-foreground text-sm">
+                                {guests} {guests === 1 ? "Guest" : "Guests"}{" "}
+                                <span className="text-xs text-muted-foreground font-normal">
+                                  (Max: {itemData.groupSizeMax || 12})
+                                </span>
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2 bg-muted/50 p-1 rounded-full border border-border/70">
+                            <button
+                              type="button"
+                              onClick={() => setGuests((g) => Math.max(1, g - 1))}
+                              disabled={guests <= 1}
+                              className="h-7 w-7 rounded-full bg-background text-foreground flex items-center justify-center font-bold text-sm shadow-xs hover:bg-muted disabled:opacity-30"
+                              aria-label="Decrease guests"
+                            >
+                              -
+                            </button>
+                            <span className="w-6 text-center font-semibold text-sm">{guests}</span>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setGuests((g) =>
+                                  Math.min(itemData.groupSizeMax || 12, g + 1),
+                                )
+                              }
+                              disabled={guests >= (itemData.groupSizeMax || 12)}
+                              className="h-7 w-7 rounded-full bg-background text-foreground flex items-center justify-center font-bold text-sm shadow-xs hover:bg-muted disabled:opacity-30"
+                              aria-label="Increase guests"
+                            >
+                              +
+                            </button>
+                          </div>
                         </div>
-                      </div>
+                      )}
+
+                      {/* HOTEL Steppers (Guests & Rooms) */}
+                      {searchParams.itemType === "hotel" && (
+                        <div className="pt-3 border-t border-border/50 grid gap-4 sm:grid-cols-2">
+                          <div className="flex items-center justify-between p-2 rounded-xl bg-muted/30 border border-border/50">
+                            <div className="flex items-center gap-2">
+                              <Users className="h-4 w-4 text-secondary" />
+                              <div>
+                                <span className="text-[11px] text-muted-foreground block">Guests</span>
+                                <span className="font-semibold text-xs text-foreground">
+                                  {guests} {guests === 1 ? "Guest" : "Guests"}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                              <button
+                                type="button"
+                                onClick={() => setGuests((g) => Math.max(1, g - 1))}
+                                disabled={guests <= 1}
+                                className="h-6 w-6 rounded-full bg-background text-xs font-bold shadow-xs hover:bg-muted disabled:opacity-30"
+                                aria-label="Decrease hotel guests"
+                              >
+                                -
+                              </button>
+                              <span className="w-4 text-center font-semibold text-xs">{guests}</span>
+                              <button
+                                type="button"
+                                onClick={() => setGuests((g) => Math.min(8, g + 1))}
+                                disabled={guests >= 8}
+                                className="h-6 w-6 rounded-full bg-background text-xs font-bold shadow-xs hover:bg-muted disabled:opacity-30"
+                                aria-label="Increase hotel guests"
+                              >
+                                +
+                              </button>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-between p-2 rounded-xl bg-muted/30 border border-border/50">
+                            <div className="flex items-center gap-2">
+                              <Building className="h-4 w-4 text-secondary" />
+                              <div>
+                                <span className="text-[11px] text-muted-foreground block">Rooms</span>
+                                <span className="font-semibold text-xs text-foreground">
+                                  {rooms} {rooms === 1 ? "Room" : "Rooms"}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                              <button
+                                type="button"
+                                onClick={() => setRooms((r) => Math.max(1, r - 1))}
+                                disabled={rooms <= 1}
+                                className="h-6 w-6 rounded-full bg-background text-xs font-bold shadow-xs hover:bg-muted disabled:opacity-30"
+                                aria-label="Decrease hotel rooms"
+                              >
+                                -
+                              </button>
+                              <span className="w-4 text-center font-semibold text-xs">{rooms}</span>
+                              <button
+                                type="button"
+                                onClick={() => setRooms((r) => Math.min(4, r + 1))}
+                                disabled={rooms >= 4}
+                                className="h-6 w-6 rounded-full bg-background text-xs font-bold shadow-xs hover:bg-muted disabled:opacity-30"
+                                aria-label="Increase hotel rooms"
+                              >
+                                +
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* FLIGHT Passengers Stepper */}
+                      {searchParams.itemType === "flight" && (
+                        <div className="pt-3 border-t border-border/50 flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Users className="h-4 w-4 text-secondary" />
+                            <div>
+                              <span className="text-xs text-muted-foreground block">Passengers</span>
+                              <span className="font-semibold text-foreground text-sm">
+                                {guests} {guests === 1 ? "Passenger" : "Passengers"} (Max 9)
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2 bg-muted/50 p-1 rounded-full border border-border/70">
+                            <button
+                              type="button"
+                              onClick={() => setGuests((g) => Math.max(1, g - 1))}
+                              disabled={guests <= 1}
+                              className="h-7 w-7 rounded-full bg-background text-foreground flex items-center justify-center font-bold text-sm shadow-xs hover:bg-muted disabled:opacity-30"
+                              aria-label="Decrease passengers"
+                            >
+                              -
+                            </button>
+                            <span className="w-6 text-center font-semibold text-sm">{guests}</span>
+                            <button
+                              type="button"
+                              onClick={() => setGuests((g) => Math.min(9, g + 1))}
+                              disabled={guests >= 9}
+                              className="h-7 w-7 rounded-full bg-background text-foreground flex items-center justify-center font-bold text-sm shadow-xs hover:bg-muted disabled:opacity-30"
+                              aria-label="Increase passengers"
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     {/* Inclusions Guarantee */}
@@ -640,30 +880,132 @@ function CheckoutPage() {
                   <div className="flex items-center gap-2">
                     <User className="h-5 w-5 text-secondary" />
                     <h2 className="font-display text-xl font-bold text-foreground">
-                      Primary Contact & Traveler Information
+                      {searchParams.itemType === "flight"
+                        ? "Passenger Information"
+                        : "Primary Contact & Traveler Information"}
                     </h2>
                   </div>
                   <span className="text-xs text-muted-foreground">Step 2 of 3</span>
                 </div>
 
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="fullName" className="text-xs font-semibold">
-                      Primary Traveler Full Name <span className="text-destructive">*</span>
-                    </Label>
-                    <Input
-                      id="fullName"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      placeholder="e.g. Jane Doe"
-                      className="mt-1"
-                    />
-                    {guestErrors.fullName && (
-                      <p className="mt-1 text-xs text-destructive">{guestErrors.fullName}</p>
-                    )}
-                  </div>
+                <div className="space-y-5">
+                  {/* FLIGHT: Per-passenger Details (First + Last Name for EACH passenger) */}
+                  {searchParams.itemType === "flight" ? (
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-xs font-semibold text-foreground uppercase tracking-wider">
+                          Passenger Details ({passengers.length})
+                        </Label>
+                        <span className="text-xs text-muted-foreground">
+                          Names must match government-issued photo ID
+                        </span>
+                      </div>
 
-                  <div className="grid gap-4 sm:grid-cols-2">
+                      {passengers.map((p, idx) => (
+                        <div
+                          key={idx}
+                          className="rounded-xl border border-border/70 bg-muted/20 p-4 space-y-3"
+                        >
+                          <span className="text-xs font-bold text-secondary">
+                            Passenger {idx + 1} {idx === 0 ? "(Lead Traveler)" : ""}
+                          </span>
+                          <div className="grid gap-3 sm:grid-cols-2">
+                            <div>
+                              <Label htmlFor={`passenger-${idx}-first`} className="text-xs">
+                                First Name <span className="text-destructive">*</span>
+                              </Label>
+                              <Input
+                                id={`passenger-${idx}-first`}
+                                value={p.firstName}
+                                onChange={(e) => {
+                                  const updated = [...passengers];
+                                  updated[idx] = { ...updated[idx], firstName: e.target.value };
+                                  setPassengers(updated);
+                                }}
+                                placeholder="e.g. John"
+                                className="mt-1"
+                              />
+                              {guestErrors[`passengers.${idx}.firstName`] && (
+                                <p className="mt-1 text-xs text-destructive">
+                                  {guestErrors[`passengers.${idx}.firstName`]}
+                                </p>
+                              )}
+                            </div>
+
+                            <div>
+                              <Label htmlFor={`passenger-${idx}-last`} className="text-xs">
+                                Last Name <span className="text-destructive">*</span>
+                              </Label>
+                              <Input
+                                id={`passenger-${idx}-last`}
+                                value={p.lastName}
+                                onChange={(e) => {
+                                  const updated = [...passengers];
+                                  updated[idx] = { ...updated[idx], lastName: e.target.value };
+                                  setPassengers(updated);
+                                }}
+                                placeholder="e.g. Smith"
+                                className="mt-1"
+                              />
+                              {guestErrors[`passengers.${idx}.lastName`] && (
+                                <p className="mt-1 text-xs text-destructive">
+                                  {guestErrors[`passengers.${idx}.lastName`]}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    /* TOUR & HOTEL: Lead traveler + Additional Guests names */
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor="fullName" className="text-xs font-semibold">
+                          Lead Traveler Full Name <span className="text-destructive">*</span>
+                        </Label>
+                        <Input
+                          id="fullName"
+                          value={fullName}
+                          onChange={(e) => setFullName(e.target.value)}
+                          placeholder="e.g. Jane Doe"
+                          className="mt-1"
+                        />
+                        {guestErrors.fullName && (
+                          <p className="mt-1 text-xs text-destructive">{guestErrors.fullName}</p>
+                        )}
+                      </div>
+
+                      {additionalGuests.length > 0 && (
+                        <div className="space-y-3 pt-2">
+                          <Label className="text-xs font-semibold block text-foreground">
+                            Additional Travelers Names ({additionalGuests.length})
+                          </Label>
+                          {additionalGuests.map((name, idx) => (
+                            <div key={idx}>
+                              <Input
+                                value={name}
+                                onChange={(e) => {
+                                  const updated = [...additionalGuests];
+                                  updated[idx] = e.target.value;
+                                  setAdditionalGuests(updated);
+                                }}
+                                placeholder={`Guest ${idx + 2} Full Name`}
+                              />
+                              {guestErrors[`additionalGuests.${idx}`] && (
+                                <p className="mt-1 text-xs text-destructive">
+                                  {guestErrors[`additionalGuests.${idx}`]}
+                                </p>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Contact Details (Email & Phone) for confirmation */}
+                  <div className="grid gap-4 sm:grid-cols-2 pt-2 border-t border-border/50">
                     <div>
                       <Label htmlFor="email" className="text-xs font-semibold">
                         Email Address (for confirmation) <span className="text-destructive">*</span>
@@ -699,33 +1041,6 @@ function CheckoutPage() {
                     </div>
                   </div>
 
-                  {/* Additional Guests names */}
-                  {additionalGuests.length > 0 && (
-                    <div className="space-y-3 pt-2">
-                      <Label className="text-xs font-semibold block text-foreground">
-                        Additional Travelers Names ({additionalGuests.length})
-                      </Label>
-                      {additionalGuests.map((name, idx) => (
-                        <div key={idx}>
-                          <Input
-                            value={name}
-                            onChange={(e) => {
-                              const updated = [...additionalGuests];
-                              updated[idx] = e.target.value;
-                              setAdditionalGuests(updated);
-                            }}
-                            placeholder={`Guest ${idx + 2} Full Name`}
-                          />
-                          {guestErrors[`additionalGuests.${idx}`] && (
-                            <p className="mt-1 text-xs text-destructive">
-                              {guestErrors[`additionalGuests.${idx}`]}
-                            </p>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
                   {/* Special Requests */}
                   <div>
                     <Label htmlFor="specialRequests" className="text-xs font-semibold">
@@ -736,7 +1051,7 @@ function CheckoutPage() {
                       rows={3}
                       value={specialRequests}
                       onChange={(e) => setSpecialRequests(e.target.value)}
-                      placeholder="e.g. Vegetarian meals, high floor, quiet room, late check-in..."
+                      placeholder="e.g. Vegetarian meals, quiet room, late check-in, seat preference..."
                       className="mt-1"
                     />
                   </div>
@@ -781,10 +1096,10 @@ function CheckoutPage() {
                 <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 text-xs text-foreground flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div className="space-y-1">
                     <span className="font-semibold flex items-center gap-1 text-primary">
-                      <ShieldCheck className="h-4 w-4" /> Demo Mode Enabled
+                      <ShieldCheck className="h-4 w-4 text-emerald-600" /> Demo Payment — No Real Charge
                     </span>
                     <p className="text-muted-foreground">
-                      No real financial charge will occur. You can test freely.
+                      This platform operates in demonstration mode. No real money will be charged.
                     </p>
                   </div>
                   <Button
@@ -937,11 +1252,9 @@ function CheckoutPage() {
                     </span>
                   </div>
 
-                  <div className="flex justify-between items-center text-muted-foreground">
-                    <span>Taxes & Service Fees (10%)</span>
-                    <span className="font-medium text-foreground">
-                      ${pricing.taxesAndFees.toLocaleString()}
-                    </span>
+                  <div className="flex justify-between items-center text-xs text-muted-foreground">
+                    <span>Taxes & Service Fees</span>
+                    <span className="font-medium text-emerald-600">Included</span>
                   </div>
 
                   <div className="border-t border-dashed border-border/80 pt-3 flex justify-between items-center text-base">
@@ -960,8 +1273,7 @@ function CheckoutPage() {
                   <span>Wanderlust Buyer Protection</span>
                 </div>
                 <p>
-                  Your payment is securely processed and backed by our comprehensive traveler
-                  guarantee with 24/7 emergency support.
+                  Your reservation is backed by our comprehensive traveler guarantee with 24/7 emergency support.
                 </p>
               </div>
             </div>

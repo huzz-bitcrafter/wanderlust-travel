@@ -242,29 +242,72 @@ function CheckoutConfirmationPage() {
                 </div>
               </div>
 
-              {/* Primary Contact details */}
-              <div className="rounded-xl border border-border/60 p-4 text-sm space-y-2">
+              {/* Guest / Passenger Information */}
+              <div className="rounded-xl border border-border/60 p-4 text-sm space-y-3">
                 <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Guest Information
+                  {guestDetails.passengers && guestDetails.passengers.length > 0
+                    ? `Passenger Details (${guestDetails.passengers.length})`
+                    : "Guest Information"}
                 </h3>
-                <div className="grid gap-2 sm:grid-cols-2 text-foreground">
-                  <div>
-                    <span className="text-muted-foreground text-xs block">Lead Traveler:</span>
-                    <span className="font-medium">
-                      {guestDetails.primaryGuest?.fullName || "Guest"}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground text-xs block">Contact Phone:</span>
-                    <span className="font-medium">{guestDetails.primaryGuest?.phone || "N/A"}</span>
-                  </div>
-                </div>
 
-                {guestDetails.additionalGuests && guestDetails.additionalGuests.length > 0 && (
-                  <div className="pt-2">
-                    <span className="text-muted-foreground text-xs block">Additional Guests:</span>
-                    <p className="font-medium">{guestDetails.additionalGuests.join(", ")}</p>
+                {guestDetails.passengers && guestDetails.passengers.length > 0 ? (
+                  <div className="space-y-2">
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      {guestDetails.passengers.map((p, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center gap-2 rounded-lg bg-muted/40 px-3 py-2 border border-border/40 text-xs"
+                        >
+                          <span className="font-bold text-secondary">P{idx + 1}:</span>
+                          <span className="font-semibold text-foreground">
+                            {p.firstName} {p.lastName}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="pt-2 border-t border-border/40 grid gap-2 sm:grid-cols-2 text-xs text-muted-foreground">
+                      <div>
+                        <span>Contact Email: </span>
+                        <span className="font-medium text-foreground">
+                          {guestDetails.primaryGuest?.email || "N/A"}
+                        </span>
+                      </div>
+                      <div>
+                        <span>Contact Phone: </span>
+                        <span className="font-medium text-foreground">
+                          {guestDetails.primaryGuest?.phone || "N/A"}
+                        </span>
+                      </div>
+                    </div>
                   </div>
+                ) : (
+                  <>
+                    <div className="grid gap-2 sm:grid-cols-2 text-foreground">
+                      <div>
+                        <span className="text-muted-foreground text-xs block">Lead Traveler:</span>
+                        <span className="font-medium">
+                          {guestDetails.primaryGuest?.fullName || "Guest"}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground text-xs block">Contact Phone:</span>
+                        <span className="font-medium">
+                          {guestDetails.primaryGuest?.phone || "N/A"}
+                        </span>
+                      </div>
+                    </div>
+
+                    {guestDetails.additionalGuests && guestDetails.additionalGuests.length > 0 && (
+                      <div className="pt-2 border-t border-border/40">
+                        <span className="text-muted-foreground text-xs block">
+                          Additional Guests:
+                        </span>
+                        <p className="font-medium text-foreground">
+                          {guestDetails.additionalGuests.join(", ")}
+                        </p>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
 

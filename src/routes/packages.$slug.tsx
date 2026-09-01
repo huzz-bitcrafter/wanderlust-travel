@@ -430,7 +430,7 @@ function PackageDetailPage() {
 
                 {/* Live BookingCTA */}
                 <div className="mt-6">
-                  <BookingCTA label="Book This Tour" itemType="tour" itemId={pkg.id} guests={2} />
+                  <BookingCTA label="Book This Tour" itemType="tour" itemId={pkg.id} guests={1} />
                   <p className="mt-2 text-center text-xs text-muted-foreground">
                     Secure 256-bit encrypted reservation
                   </p>
