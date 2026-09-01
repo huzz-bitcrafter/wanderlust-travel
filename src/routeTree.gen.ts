@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AccountRouteImport } from './routes/account'
+import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DestinationsRouteImport } from './routes/destinations'
 import { Route as FlightsRouteImport } from './routes/flights'
@@ -22,6 +23,7 @@ import { Route as PackagesRouteImport } from './routes/packages'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as AccountIndexRouteImport } from './routes/account/index'
 import { Route as AccountItinerariesRouteImport } from './routes/account/itineraries'
+import { Route as CheckoutConfirmationRouteImport } from './routes/checkout/confirmation'
 import { Route as DestinationsSlugRouteImport } from './routes/destinations.$slug'
 import { Route as HotelsIdRouteImport } from './routes/hotels.$id'
 import { Route as PackagesSlugRouteImport } from './routes/packages.$slug'
@@ -35,6 +37,11 @@ const IndexRoute = IndexRouteImport.update({
 const AccountRoute = AccountRouteImport.update({
   id: '/account',
   path: '/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -92,6 +99,11 @@ const AccountItinerariesRoute = AccountItinerariesRouteImport.update({
   path: '/itineraries',
   getParentRoute: () => AccountRoute,
 } as any)
+const CheckoutConfirmationRoute = CheckoutConfirmationRouteImport.update({
+  id: '/confirmation',
+  path: '/confirmation',
+  getParentRoute: () => CheckoutRoute,
+} as any)
 const DestinationsSlugRoute = DestinationsSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -116,6 +128,7 @@ const AccountItinerariesIdRoute = AccountItinerariesIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account': typeof AccountRouteWithChildren
+  '/checkout': typeof CheckoutRouteWithChildren
   '/contact': typeof ContactRoute
   '/destinations': typeof DestinationsRouteWithChildren
   '/flights': typeof FlightsRoute
@@ -126,6 +139,7 @@ export interface FileRoutesByFullPath {
   '/packages': typeof PackagesRouteWithChildren
   '/register': typeof RegisterRoute
   '/account/itineraries': typeof AccountItinerariesRouteWithChildren
+  '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/hotels/$id': typeof HotelsIdRoute
   '/packages/$slug': typeof PackagesSlugRoute
@@ -134,6 +148,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/checkout': typeof CheckoutRouteWithChildren
   '/contact': typeof ContactRoute
   '/destinations': typeof DestinationsRouteWithChildren
   '/flights': typeof FlightsRoute
@@ -144,6 +159,7 @@ export interface FileRoutesByTo {
   '/packages': typeof PackagesRouteWithChildren
   '/register': typeof RegisterRoute
   '/account/itineraries': typeof AccountItinerariesRouteWithChildren
+  '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/hotels/$id': typeof HotelsIdRoute
   '/packages/$slug': typeof PackagesSlugRoute
@@ -154,6 +170,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/account': typeof AccountRouteWithChildren
+  '/checkout': typeof CheckoutRouteWithChildren
   '/contact': typeof ContactRoute
   '/destinations': typeof DestinationsRouteWithChildren
   '/flights': typeof FlightsRoute
@@ -164,6 +181,7 @@ export interface FileRoutesById {
   '/packages': typeof PackagesRouteWithChildren
   '/register': typeof RegisterRoute
   '/account/itineraries': typeof AccountItinerariesRouteWithChildren
+  '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/hotels/$id': typeof HotelsIdRoute
   '/packages/$slug': typeof PackagesSlugRoute
@@ -175,6 +193,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/account'
+    | '/checkout'
     | '/contact'
     | '/destinations'
     | '/flights'
@@ -185,6 +204,7 @@ export interface FileRouteTypes {
     | '/packages'
     | '/register'
     | '/account/itineraries'
+    | '/checkout/confirmation'
     | '/destinations/$slug'
     | '/hotels/$id'
     | '/packages/$slug'
@@ -193,6 +213,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/checkout'
     | '/contact'
     | '/destinations'
     | '/flights'
@@ -203,6 +224,7 @@ export interface FileRouteTypes {
     | '/packages'
     | '/register'
     | '/account/itineraries'
+    | '/checkout/confirmation'
     | '/destinations/$slug'
     | '/hotels/$id'
     | '/packages/$slug'
@@ -212,6 +234,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/account'
+    | '/checkout'
     | '/contact'
     | '/destinations'
     | '/flights'
@@ -222,6 +245,7 @@ export interface FileRouteTypes {
     | '/packages'
     | '/register'
     | '/account/itineraries'
+    | '/checkout/confirmation'
     | '/destinations/$slug'
     | '/hotels/$id'
     | '/packages/$slug'
@@ -232,6 +256,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountRoute: typeof AccountRouteWithChildren
+  CheckoutRoute: typeof CheckoutRouteWithChildren
   ContactRoute: typeof ContactRoute
   DestinationsRoute: typeof DestinationsRouteWithChildren
   FlightsRoute: typeof FlightsRoute
@@ -257,6 +282,13 @@ declare module '@tanstack/react-router' {
       path: '/account'
       fullPath: '/account'
       preLoaderRoute: typeof AccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -336,6 +368,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AccountItinerariesRouteImport
       parentRoute: typeof AccountRoute
     }
+    '/checkout/confirmation': {
+      id: '/checkout/confirmation'
+      path: '/confirmation'
+      fullPath: '/checkout/confirmation'
+      preLoaderRoute: typeof CheckoutConfirmationRouteImport
+      parentRoute: typeof CheckoutRoute
+    }
     '/destinations/$slug': {
       id: '/destinations/$slug'
       path: '/$slug'
@@ -391,6 +430,18 @@ const AccountRouteChildren: AccountRouteChildren = {
 const AccountRouteWithChildren =
   AccountRoute._addFileChildren(AccountRouteChildren)
 
+interface CheckoutRouteChildren {
+  CheckoutConfirmationRoute: typeof CheckoutConfirmationRoute
+}
+
+const CheckoutRouteChildren: CheckoutRouteChildren = {
+  CheckoutConfirmationRoute: CheckoutConfirmationRoute,
+}
+
+const CheckoutRouteWithChildren = CheckoutRoute._addFileChildren(
+  CheckoutRouteChildren,
+)
+
 interface DestinationsRouteChildren {
   DestinationsSlugRoute: typeof DestinationsSlugRoute
 }
@@ -429,6 +480,7 @@ const PackagesRouteWithChildren = PackagesRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRouteWithChildren,
+  CheckoutRoute: CheckoutRouteWithChildren,
   ContactRoute: ContactRoute,
   DestinationsRoute: DestinationsRouteWithChildren,
   FlightsRoute: FlightsRoute,

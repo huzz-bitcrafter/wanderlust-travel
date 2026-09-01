@@ -706,16 +706,22 @@ function FlightsPage() {
                 </div>
               </div>
 
-              {/* Booking CTA Stub */}
+              {/* Live Booking CTA */}
               <div className="pt-2">
                 <BookingCTA
-                  label="Confirm Flight Reservation"
+                  label="Proceed to Booking"
                   itemType="flight"
                   itemId={selectedFlight.id}
-                  disabledMessage="Booking opens soon — Phase 10 wires up checkout"
+                  startDate={
+                    selectedFlight.departure_time
+                      ? selectedFlight.departure_time.split("T")[0]
+                      : undefined
+                  }
+                  guests={currentPassengers}
+                  cabinClass={selectedFlight.class}
                 />
                 <p className="mt-2 text-center text-xs text-muted-foreground">
-                  Guaranteed seat assignment simulation in Phase 10.
+                  Instant e-ticket confirmation • 256-bit secure checkout
                 </p>
               </div>
             </div>
