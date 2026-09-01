@@ -428,16 +428,11 @@ function PackageDetailPage() {
                   </div>
                 </div>
 
-                {/* Shared BookingCTA Stub */}
+                {/* Live BookingCTA */}
                 <div className="mt-6">
-                  <BookingCTA
-                    label="Book This Tour"
-                    itemType="tour"
-                    itemId={pkg.id}
-                    disabledMessage="Booking opens soon — Phase 10 wires up checkout"
-                  />
+                  <BookingCTA label="Book This Tour" itemType="tour" itemId={pkg.id} guests={2} />
                   <p className="mt-2 text-center text-xs text-muted-foreground">
-                    Instant confirmation upon booking opening
+                    Secure 256-bit encrypted reservation
                   </p>
                 </div>
 

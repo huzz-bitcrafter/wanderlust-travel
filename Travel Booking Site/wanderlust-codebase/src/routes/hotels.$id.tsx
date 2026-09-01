@@ -609,16 +609,20 @@ function HotelDetailPage() {
                     </div>
                   )}
 
-                  {/* Submit BookingCTA Stub */}
+                  {/* Live BookingCTA */}
                   <div className="pt-2">
                     <BookingCTA
                       label="Reserve This Stay"
                       itemType="hotel"
                       itemId={hotel.id}
-                      disabledMessage="Booking opens soon — Phase 10 wires up checkout"
+                      startDate={checkIn}
+                      endDate={checkOut}
+                      guests={guests}
+                      rooms={rooms}
+                      disabled={!validationResult.success}
                     />
                     <p className="mt-2 text-center text-xs text-muted-foreground">
-                      No immediate charges. Full payment simulation in Phase 10.
+                      Instant confirmation • 256-bit encrypted checkout
                     </p>
                   </div>
                 </form>

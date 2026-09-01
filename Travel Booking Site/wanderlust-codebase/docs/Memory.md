@@ -1,6 +1,6 @@
 # Memory — Wanderlust
 
-**Last updated:** 2026-09-02 | **Current phase:** 9 complete | **Session #:** 4
+**Last updated:** 2026-09-02 | **Current phase:** 10 complete | **Session #:** 4
 
 ## Completed
 
@@ -14,11 +14,12 @@
 - [x] Phase 7 — Flights (search form with origin/destination/date/cabin-class/passengers URL-synced via validateSearch, shared FlightCard with direct flight indicators & seat availability/sold-out states, and Step 3 flight summary confirmation dialog with live passenger multiplier and BookingCTA stub).
 - [x] Phase 8 — Itinerary Builder (auth-guarded account layout at `/account` with desktop sidebar / mobile horizontal tabs, itinerary listing `/account/itineraries` with TanStack Query on own rows, create dialog with zod validation, day-by-day editor `/account/itineraries/$id` with activity CRUD, optimistic reordering, print-friendly CSS view, and 404 on foreign itineraries).
 - [x] Phase 9 — Reviews & Ratings (shared ReviewSection with aggregate score, star distribution breakdown, approved reviews stream, and authenticated review submission form with pending approval moderation note; live ReviewSection mounted across destinations, packages, and hotels detail pages; dynamic review aggregates wired into DestinationCard, PackageCard, and HotelCard via batch `fetchReviewAggregates` query).
-- [ ] Phases 10–14
+- [x] Phase 10 — Bookings & Checkout (client-rendered checkout flow at `/checkout` with URL `validateSearch`, 3-step navigation for trip summary, guest details form, and simulated credit card payment; retry-safe reference generator with format `WL-` + 6 unambiguous chars; confirmation receipt at `/checkout/confirmation` with print view; all `BookingCTA` buttons live across tours, hotels, and flights).
+- [ ] Phases 11–14
 
 ## In Progress
 
-- None. Next is Phase 10 (Bookings & Checkout Flow).
+- None. Next is Phase 11 (User Dashboard).
 
 ## Key Decisions
 
@@ -26,6 +27,10 @@
 - Roles live in a separate `user_roles` table with `has_role()` / `is_admin()` security-definer functions — NOT a role column on profiles.
 - `tour_packages.itinerary` is a jsonb array of `{day,title,description}` (added beyond Architecture.md §5).
 - `bookings` has extra `reference` and `end_date` columns; `reviews` has `author_name`.
+- Booking reference is client-generated with format `WL-` + 6 characters from unambiguous alphabet `23456789ABCDEFGHJKLMNPQRSTUVWXYZ` (excludes 0, O, 1, I). Collision retry mechanism attempts insertion up to 3 times before failing.
+- Multi-step checkout at `/checkout` requires authentication (`requireAuthGuard`), supports `'tour' | 'hotel' | 'flight'`, calculates 10% taxes/fees, collects primary and additional traveler names with Zod validation, provides demo card quick-fill, and saves full booking snapshot into `guest_details` JSON.
+- Confirmation receipt at `/checkout/confirmation` provides one-click reference code copy, detailed breakdown, `@media print` clean receipt styling, and dashboard navigation.
+- All `BookingCTA` components across packages detail, hotels detail, and flights search modal are wired directly to `/checkout` with live query parameters.
 - Public catalog reads go through `createServerFn` + publishable-key client (`src/lib/catalog.functions.ts` and `src/lib/review.functions.ts`) so pages render server-side for SEO.
 - Phase 9 reviews aggregate calculation is executed via server functions (`fetchReviewAggregate` for detail views and `fetchReviewAggregates` for batch card listings) ensuring single-query batching on catalog pages.
 - Review submission is RLS-enforced with `is_approved = false` by default, making unapproved reviews invisible to the public until moderated.
