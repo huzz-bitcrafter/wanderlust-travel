@@ -17,12 +17,13 @@
 - [x] Phase 10 — Bookings & Checkout (client-rendered checkout flow at `/checkout` with URL `validateSearch`, 3-step navigation for trip summary, guest details form, and simulated credit card payment; retry-safe reference generator with format `WL-` + 6 unambiguous chars; confirmation receipt at `/checkout/confirmation` with print view; all `BookingCTA` buttons live across tours, hotels, and flights).
 - [x] Phase 11 — User Dashboard (activated all account sidebar tabs; Overview at `/account/overview` with metrics row, upcoming trip spotlight card with countdown badge, recent activity timeline, and quick actions; My Bookings at `/account/bookings` with Upcoming/Past/Cancelled tabs, booking cards, and 48h cancellation modal; My Reviews at `/account/reviews` with approved/pending reviews list, edit modal with moderation reset, and delete confirmation; Profile & Settings at `/account/profile` with personal information, avatar photo upload to Supabase Storage avatars bucket with instant preview, and password update form).
 - [x] Phase 12A — Admin Portal Foundation & User/Booking Operations (admin route guard with `requireAdminGuard` and 403 Forbidden state; responsive Admin Portal layout at `/admin` with management sidebar; Overview Dashboard at `/admin/overview` with real-time KPI metrics, revenue tracking, and recent bookings stream; Bookings Management at `/admin/bookings` with multi-facet search/filtering, detailed reservation drawer, and status/payment update modal; Users & Roles Management at `/admin/users` with user search, admin role assignment/revocation with self-demotion lockout protection; documented database migration `004_user_roles_admin_policy.sql`).
-- [ ] Phase 12B — Content CRUD, Review Moderation, Contact Inbox
-- [ ] Phases 13–14
+- [x] Phase 12B — Content CRUD, Review Moderation & Contact Inbox (Destinations CRUD at `/admin/destinations` with continent filter, cover photo preview, auto-slug generator, and delete dialog; Tour Packages CRUD at `/admin/packages` with destination linkage, duration/price/difficulty specs, multi-day itinerary JSON builder, inclusions/exclusions tags, and live public preview link; Hotels CRUD at `/admin/hotels` with destination linkage, star rating selector, rate per night, interactive amenities checklist, and live public preview link; Flights CRUD at `/admin/flights` with airline, flight number, origin/destination codes, datetime-local timestamps, seat inventory tracking, and cabin class filtering; Review Moderation Queue at `/admin/reviews` with Pending Moderation, Approved & Live, and All tabs, single-click approve/unapprove actions, and permanent deletion; Customer Inbox at `/admin/inbox` with status filters, inquiry reader modal, status state machine, and reply-via-email link).
+- [ ] Phase 13 — Gallery Lightbox & Contact Form
+- [ ] Phase 14 — QA & Polish
 
 ## In Progress
 
-- None. Next is Phase 12B (Admin Content CRUD, Review Moderation & Contact Inbox).
+- None. Next is Phase 13 (Gallery Lightbox & Contact Form).
 
 ## Key Decisions
 
@@ -49,6 +50,7 @@
 - Phase 7 flights listing (`/flights`) implements `searchFlights` and `fetchFlightCities` server functions, origin/destination dropdowns with airport swap, departure date selection, cabin class filtering (`all`, `economy`, `business`, `first`), passengers stepper (1–9), sort options, sold-out flight handling (`seats_available === 0`), and an interactive flight confirmation summary dialog with total calculation (`$fare × passengers`) and `BookingCTA` stub.
 - Phase 4 authentication provides a client-side `AuthProvider` mounted at root with dual-client architecture (`src/integrations/supabase/client.ts` for browser auth/profile hydration and `user_roles` permission checking). Navbar dynamically reacts to login/logout events and presents avatar dropdown and admin link without page refreshes.
 - Phase 8 Itinerary Builder is entirely client-side rendered using `supabase` client with `requireAuthGuard`. Implements account shell with responsive tabbed nav, user itinerary listing with destination and activity counters, and full interactive day-by-day activity editor with optimistic reordering and print view.
+- Phase 12 Admin Portal provides complete backend administration with dedicated sub-routes for Overview KPIs, Bookings Management, User Roles, Destinations CRUD, Packages CRUD, Hotels CRUD, Flights Inventory, Review Moderation, and Customer Inbox.
 - Flights/hotels seeded in the database; no external APIs. Payments simulated. Light theme only.
 
 ## Schema Changes (keep in sync with Architecture.md §5)
@@ -56,16 +58,16 @@
 - Added `tour_packages.itinerary` (jsonb), `bookings.reference`, `bookings.end_date`, `reviews.author_name`.
 - Added `user_roles` table + `app_role` enum; profiles has no role column.
 - Added `docs/migrations/001_auth_triggers.sql` documenting the user profile and role initialization trigger.
+- Added `docs/migrations/004_user_roles_admin_policy.sql` documenting user_roles admin CRUD policy.
 
 ## Known Bugs / TODO
 
-- BookingCTA stubs across packages, hotels, and flights will be wired to checkout in Phase 10.
+- None. All catalog CRUD, moderation, bookings, and inbox tooling operational.
 
 ## Next Steps
 
-1. Phase 10 — Bookings & Checkout Flow.
-2. Phase 11 — User Dashboard.
-3. Phase 12A — Admin Portal Foundation.
+1. Phase 13 — Gallery Lightbox & Contact Form.
+2. Phase 14 — QA & Polish.
 
 ## Reminders for the AI
 

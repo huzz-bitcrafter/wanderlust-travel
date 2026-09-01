@@ -30,7 +30,13 @@ import { Route as AccountProfileRouteImport } from './routes/account/profile'
 import { Route as AccountReviewsRouteImport } from './routes/account/reviews'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminBookingsRouteImport } from './routes/admin/bookings'
+import { Route as AdminDestinationsRouteImport } from './routes/admin/destinations'
+import { Route as AdminFlightsRouteImport } from './routes/admin/flights'
+import { Route as AdminHotelsRouteImport } from './routes/admin/hotels'
+import { Route as AdminInboxRouteImport } from './routes/admin/inbox'
 import { Route as AdminOverviewRouteImport } from './routes/admin/overview'
+import { Route as AdminPackagesRouteImport } from './routes/admin/packages'
+import { Route as AdminReviewsRouteImport } from './routes/admin/reviews'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as CheckoutConfirmationRouteImport } from './routes/checkout/confirmation'
 import { Route as DestinationsSlugRouteImport } from './routes/destinations.$slug'
@@ -143,9 +149,39 @@ const AdminBookingsRoute = AdminBookingsRouteImport.update({
   path: '/bookings',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminDestinationsRoute = AdminDestinationsRouteImport.update({
+  id: '/destinations',
+  path: '/destinations',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFlightsRoute = AdminFlightsRouteImport.update({
+  id: '/flights',
+  path: '/flights',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminHotelsRoute = AdminHotelsRouteImport.update({
+  id: '/hotels',
+  path: '/hotels',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminInboxRoute = AdminInboxRouteImport.update({
+  id: '/inbox',
+  path: '/inbox',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminOverviewRoute = AdminOverviewRouteImport.update({
   id: '/overview',
   path: '/overview',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPackagesRoute = AdminPackagesRouteImport.update({
+  id: '/packages',
+  path: '/packages',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminReviewsRoute = AdminReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminUsersRoute = AdminUsersRouteImport.update({
@@ -199,7 +235,13 @@ export interface FileRoutesByFullPath {
   '/account/profile': typeof AccountProfileRoute
   '/account/reviews': typeof AccountReviewsRoute
   '/admin/bookings': typeof AdminBookingsRoute
+  '/admin/destinations': typeof AdminDestinationsRoute
+  '/admin/flights': typeof AdminFlightsRoute
+  '/admin/hotels': typeof AdminHotelsRoute
+  '/admin/inbox': typeof AdminInboxRoute
   '/admin/overview': typeof AdminOverviewRoute
+  '/admin/packages': typeof AdminPackagesRoute
+  '/admin/reviews': typeof AdminReviewsRoute
   '/admin/users': typeof AdminUsersRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
@@ -227,7 +269,13 @@ export interface FileRoutesByTo {
   '/account/profile': typeof AccountProfileRoute
   '/account/reviews': typeof AccountReviewsRoute
   '/admin/bookings': typeof AdminBookingsRoute
+  '/admin/destinations': typeof AdminDestinationsRoute
+  '/admin/flights': typeof AdminFlightsRoute
+  '/admin/hotels': typeof AdminHotelsRoute
+  '/admin/inbox': typeof AdminInboxRoute
   '/admin/overview': typeof AdminOverviewRoute
+  '/admin/packages': typeof AdminPackagesRoute
+  '/admin/reviews': typeof AdminReviewsRoute
   '/admin/users': typeof AdminUsersRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
@@ -258,7 +306,13 @@ export interface FileRoutesById {
   '/account/profile': typeof AccountProfileRoute
   '/account/reviews': typeof AccountReviewsRoute
   '/admin/bookings': typeof AdminBookingsRoute
+  '/admin/destinations': typeof AdminDestinationsRoute
+  '/admin/flights': typeof AdminFlightsRoute
+  '/admin/hotels': typeof AdminHotelsRoute
+  '/admin/inbox': typeof AdminInboxRoute
   '/admin/overview': typeof AdminOverviewRoute
+  '/admin/packages': typeof AdminPackagesRoute
+  '/admin/reviews': typeof AdminReviewsRoute
   '/admin/users': typeof AdminUsersRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
@@ -290,7 +344,13 @@ export interface FileRouteTypes {
     | '/account/profile'
     | '/account/reviews'
     | '/admin/bookings'
+    | '/admin/destinations'
+    | '/admin/flights'
+    | '/admin/hotels'
+    | '/admin/inbox'
     | '/admin/overview'
+    | '/admin/packages'
+    | '/admin/reviews'
     | '/admin/users'
     | '/checkout/confirmation'
     | '/destinations/$slug'
@@ -318,7 +378,13 @@ export interface FileRouteTypes {
     | '/account/profile'
     | '/account/reviews'
     | '/admin/bookings'
+    | '/admin/destinations'
+    | '/admin/flights'
+    | '/admin/hotels'
+    | '/admin/inbox'
     | '/admin/overview'
+    | '/admin/packages'
+    | '/admin/reviews'
     | '/admin/users'
     | '/checkout/confirmation'
     | '/destinations/$slug'
@@ -348,7 +414,13 @@ export interface FileRouteTypes {
     | '/account/profile'
     | '/account/reviews'
     | '/admin/bookings'
+    | '/admin/destinations'
+    | '/admin/flights'
+    | '/admin/hotels'
+    | '/admin/inbox'
     | '/admin/overview'
+    | '/admin/packages'
+    | '/admin/reviews'
     | '/admin/users'
     | '/checkout/confirmation'
     | '/destinations/$slug'
@@ -524,11 +596,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBookingsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/destinations': {
+      id: '/admin/destinations'
+      path: '/destinations'
+      fullPath: '/admin/destinations'
+      preLoaderRoute: typeof AdminDestinationsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/flights': {
+      id: '/admin/flights'
+      path: '/flights'
+      fullPath: '/admin/flights'
+      preLoaderRoute: typeof AdminFlightsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/hotels': {
+      id: '/admin/hotels'
+      path: '/hotels'
+      fullPath: '/admin/hotels'
+      preLoaderRoute: typeof AdminHotelsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/inbox': {
+      id: '/admin/inbox'
+      path: '/inbox'
+      fullPath: '/admin/inbox'
+      preLoaderRoute: typeof AdminInboxRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/overview': {
       id: '/admin/overview'
       path: '/overview'
       fullPath: '/admin/overview'
       preLoaderRoute: typeof AdminOverviewRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/packages': {
+      id: '/admin/packages'
+      path: '/packages'
+      fullPath: '/admin/packages'
+      preLoaderRoute: typeof AdminPackagesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/reviews': {
+      id: '/admin/reviews'
+      path: '/reviews'
+      fullPath: '/admin/reviews'
+      preLoaderRoute: typeof AdminReviewsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/users': {
@@ -610,14 +724,26 @@ const AccountRouteWithChildren =
 
 interface AdminRouteChildren {
   AdminBookingsRoute: typeof AdminBookingsRoute
+  AdminDestinationsRoute: typeof AdminDestinationsRoute
+  AdminFlightsRoute: typeof AdminFlightsRoute
+  AdminHotelsRoute: typeof AdminHotelsRoute
+  AdminInboxRoute: typeof AdminInboxRoute
   AdminOverviewRoute: typeof AdminOverviewRoute
+  AdminPackagesRoute: typeof AdminPackagesRoute
+  AdminReviewsRoute: typeof AdminReviewsRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminBookingsRoute: AdminBookingsRoute,
+  AdminDestinationsRoute: AdminDestinationsRoute,
+  AdminFlightsRoute: AdminFlightsRoute,
+  AdminHotelsRoute: AdminHotelsRoute,
+  AdminInboxRoute: AdminInboxRoute,
   AdminOverviewRoute: AdminOverviewRoute,
+  AdminPackagesRoute: AdminPackagesRoute,
+  AdminReviewsRoute: AdminReviewsRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
 }

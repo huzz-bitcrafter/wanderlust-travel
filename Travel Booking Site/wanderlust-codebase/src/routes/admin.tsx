@@ -64,37 +64,31 @@ const ADMIN_NAV_ITEMS: NavItem[] = [
     label: "Destinations",
     href: "/admin/destinations",
     icon: MapPin,
-    phase: "Phase 12B",
   },
   {
     label: "Tour Packages",
     href: "/admin/packages",
     icon: Package,
-    phase: "Phase 12B",
   },
   {
     label: "Hotels",
     href: "/admin/hotels",
     icon: Building2,
-    phase: "Phase 12B",
   },
   {
     label: "Flights",
     href: "/admin/flights",
     icon: Plane,
-    phase: "Phase 12B",
   },
   {
     label: "Reviews Moderation",
     href: "/admin/reviews",
     icon: Star,
-    phase: "Phase 12B",
   },
   {
     label: "Inbox Messages",
     href: "/admin/inbox",
     icon: Mail,
-    phase: "Phase 12B",
   },
 ];
 
