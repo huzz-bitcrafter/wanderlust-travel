@@ -1,6 +1,6 @@
 # Memory — Wanderlust
 
-**Last updated:** 2026-09-02 | **Current phase:** Acceptance Testing Fixes & Phase 14 Completion | **Session #:** 5
+**Last updated:** 2026-09-02 | **Current phase:** Final QA Fixes & Brand Assets | **Session #:** 6
 
 ## Completed
 
@@ -23,13 +23,16 @@
   - [x] **Part A (Multi-Guest Booking Bug)**: Multi-guest steppers added across all 3 product types in `/checkout` (Tours up to `group_size_max`, Hotels carrying dates/guests/rooms, Flights 1–9 passengers). Per-passenger First Name & Last Name form added for Flights in Step 2. Pricing formulas aligned to exact prompt rules. Full passenger arrays and guest details persisted to `bookings.guest_details` and actual counts to `bookings.guests`.
   - [x] **Part B (Itinerary Builder Bug)**: Fixed React Query in-place cache mutation bug in `reorderMutation` by introducing deep immutable state cloning and explicit target ID/order swaps. Added optimistic updates for item creation. Fixed timezone/date-fns interval computation for exact day generation. Converted print view to clean native `@media print` CSS.
   - [x] **Part C (Two Quick Verifications)**:
-    1. *Demo payment label*: Confirmed prominent banner and badges on `/checkout` and `/checkout/confirmation` declaring demo mode with no real monetary charge.
-    2. *48-Hour Cancellation Rule*: Located in `src/routes/hotels.$id.tsx` (L634), `src/routes/checkout.tsx` (L587), `src/routes/contact.tsx` (L72), and `src/routes/account/bookings.tsx` (L102-124, L414). Cancellation is processed via `supabase.from('bookings').update({ status: 'cancelled' })` under the traveler guarantee policy.
+    1. _Demo payment label_: Confirmed prominent banner and badges on `/checkout` and `/checkout/confirmation` declaring demo mode with no real monetary charge.
+    2. _48-Hour Cancellation Rule_: Located in `src/routes/hotels.$id.tsx` (L634), `src/routes/checkout.tsx` (L587), `src/routes/contact.tsx` (L72), and `src/routes/account/bookings.tsx` (L102-124, L414). Cancellation is processed via `supabase.from('bookings').update({ status: 'cancelled' })` under the traveler guarantee policy.
 - [x] Phase 14 — QA & Polish (A11y audits, SEO OpenGraph metadata, Supabase RLS security sweep table, end-to-end user & admin flow verification).
+- [x] Post-Acceptance Polish:
+  - [x] **Bug A (Reviews Loading on Detail Pages)**: Fixed `ReviewSection.tsx` queryFn invocation to pass `{ data: { targetId, targetType } }` into TanStack Start `createServerFn` endpoints (`fetchReviewAggregate`, `fetchReviewsByTarget`), resolving parameter extraction and eliminating 500 errors.
+  - [x] **Bug B (Brand Logo & Favicon Replacement)**: Replaced default favicon with `Logo_wanderlust.png` in `public/` and `src/routes/__root.tsx`. Integrated the brand logo in the Navbar brand link.
 
 ## In Progress
 
-- Complete. All 14 phases and acceptance testing deliverables delivered and validated.
+- Complete. All phases, acceptance fixes, and brand updates verified with 0 lint errors and clean production builds.
 
 ## Key Decisions
 
@@ -69,11 +72,11 @@
 
 ## Known Bugs / TODO
 
-- None. All functional bugs resolved.
+- None. All functional bugs and assets resolved.
 
 ## Next Steps
 
-- Final consolidation report and verification.
+- Final report to user.
 
 ## Reminders for the AI
 

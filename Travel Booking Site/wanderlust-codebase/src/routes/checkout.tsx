@@ -351,7 +351,14 @@ function CheckoutPage() {
       rateLabel,
       totalAmount,
     };
-  }, [itemData, searchParams.itemType, searchParams.startDate, searchParams.endDate, guests, rooms]);
+  }, [
+    itemData,
+    searchParams.itemType,
+    searchParams.startDate,
+    searchParams.endDate,
+    guests,
+    rooms,
+  ]);
 
   // Step 2 validation
   const handleProceedToPayment = (e: React.FormEvent) => {
@@ -678,7 +685,9 @@ function CheckoutPage() {
                       <div className="flex items-start gap-3">
                         <Calendar className="mt-0.5 h-4 w-4 text-secondary shrink-0" />
                         <div>
-                          <span className="text-xs text-muted-foreground block">Travel Schedule</span>
+                          <span className="text-xs text-muted-foreground block">
+                            Travel Schedule
+                          </span>
                           <span className="font-medium text-foreground">
                             {searchParams.startDate
                               ? format(parseISO(searchParams.startDate), "MMM d, yyyy")
@@ -719,9 +728,7 @@ function CheckoutPage() {
                             <button
                               type="button"
                               onClick={() =>
-                                setGuests((g) =>
-                                  Math.min(itemData.groupSizeMax || 12, g + 1),
-                                )
+                                setGuests((g) => Math.min(itemData.groupSizeMax || 12, g + 1))
                               }
                               disabled={guests >= (itemData.groupSizeMax || 12)}
                               className="h-7 w-7 rounded-full bg-background text-foreground flex items-center justify-center font-bold text-sm shadow-xs hover:bg-muted disabled:opacity-30"
@@ -740,7 +747,9 @@ function CheckoutPage() {
                             <div className="flex items-center gap-2">
                               <Users className="h-4 w-4 text-secondary" />
                               <div>
-                                <span className="text-[11px] text-muted-foreground block">Guests</span>
+                                <span className="text-[11px] text-muted-foreground block">
+                                  Guests
+                                </span>
                                 <span className="font-semibold text-xs text-foreground">
                                   {guests} {guests === 1 ? "Guest" : "Guests"}
                                 </span>
@@ -756,7 +765,9 @@ function CheckoutPage() {
                               >
                                 -
                               </button>
-                              <span className="w-4 text-center font-semibold text-xs">{guests}</span>
+                              <span className="w-4 text-center font-semibold text-xs">
+                                {guests}
+                              </span>
                               <button
                                 type="button"
                                 onClick={() => setGuests((g) => Math.min(8, g + 1))}
@@ -773,7 +784,9 @@ function CheckoutPage() {
                             <div className="flex items-center gap-2">
                               <Building className="h-4 w-4 text-secondary" />
                               <div>
-                                <span className="text-[11px] text-muted-foreground block">Rooms</span>
+                                <span className="text-[11px] text-muted-foreground block">
+                                  Rooms
+                                </span>
                                 <span className="font-semibold text-xs text-foreground">
                                   {rooms} {rooms === 1 ? "Room" : "Rooms"}
                                 </span>
@@ -810,7 +823,9 @@ function CheckoutPage() {
                           <div className="flex items-center gap-2">
                             <Users className="h-4 w-4 text-secondary" />
                             <div>
-                              <span className="text-xs text-muted-foreground block">Passengers</span>
+                              <span className="text-xs text-muted-foreground block">
+                                Passengers
+                              </span>
                               <span className="font-semibold text-foreground text-sm">
                                 {guests} {guests === 1 ? "Passenger" : "Passengers"} (Max 9)
                               </span>
@@ -1096,7 +1111,8 @@ function CheckoutPage() {
                 <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 text-xs text-foreground flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div className="space-y-1">
                     <span className="font-semibold flex items-center gap-1 text-primary">
-                      <ShieldCheck className="h-4 w-4 text-emerald-600" /> Demo Payment — No Real Charge
+                      <ShieldCheck className="h-4 w-4 text-emerald-600" /> Demo Payment — No Real
+                      Charge
                     </span>
                     <p className="text-muted-foreground">
                       This platform operates in demonstration mode. No real money will be charged.
@@ -1273,7 +1289,8 @@ function CheckoutPage() {
                   <span>Wanderlust Buyer Protection</span>
                 </div>
                 <p>
-                  Your reservation is backed by our comprehensive traveler guarantee with 24/7 emergency support.
+                  Your reservation is backed by our comprehensive traveler guarantee with 24/7
+                  emergency support.
                 </p>
               </div>
             </div>
