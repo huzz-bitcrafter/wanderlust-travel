@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AccountRouteImport } from './routes/account'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DestinationsRouteImport } from './routes/destinations'
@@ -27,6 +28,10 @@ import { Route as AccountItinerariesRouteImport } from './routes/account/itinera
 import { Route as AccountOverviewRouteImport } from './routes/account/overview'
 import { Route as AccountProfileRouteImport } from './routes/account/profile'
 import { Route as AccountReviewsRouteImport } from './routes/account/reviews'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminBookingsRouteImport } from './routes/admin/bookings'
+import { Route as AdminOverviewRouteImport } from './routes/admin/overview'
+import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as CheckoutConfirmationRouteImport } from './routes/checkout/confirmation'
 import { Route as DestinationsSlugRouteImport } from './routes/destinations.$slug'
 import { Route as HotelsIdRouteImport } from './routes/hotels.$id'
@@ -41,6 +46,11 @@ const IndexRoute = IndexRouteImport.update({
 const AccountRoute = AccountRouteImport.update({
   id: '/account',
   path: '/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CheckoutRoute = CheckoutRouteImport.update({
@@ -123,6 +133,26 @@ const AccountReviewsRoute = AccountReviewsRouteImport.update({
   path: '/reviews',
   getParentRoute: () => AccountRoute,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBookingsRoute = AdminBookingsRouteImport.update({
+  id: '/bookings',
+  path: '/bookings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminOverviewRoute = AdminOverviewRouteImport.update({
+  id: '/overview',
+  path: '/overview',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
 const CheckoutConfirmationRoute = CheckoutConfirmationRouteImport.update({
   id: '/confirmation',
   path: '/confirmation',
@@ -152,6 +182,7 @@ const AccountItinerariesIdRoute = AccountItinerariesIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account': typeof AccountRouteWithChildren
+  '/admin': typeof AdminRouteWithChildren
   '/checkout': typeof CheckoutRouteWithChildren
   '/contact': typeof ContactRoute
   '/destinations': typeof DestinationsRouteWithChildren
@@ -167,11 +198,15 @@ export interface FileRoutesByFullPath {
   '/account/overview': typeof AccountOverviewRoute
   '/account/profile': typeof AccountProfileRoute
   '/account/reviews': typeof AccountReviewsRoute
+  '/admin/bookings': typeof AdminBookingsRoute
+  '/admin/overview': typeof AdminOverviewRoute
+  '/admin/users': typeof AdminUsersRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/hotels/$id': typeof HotelsIdRoute
   '/packages/$slug': typeof PackagesSlugRoute
   '/account/': typeof AccountIndexRoute
+  '/admin/': typeof AdminIndexRoute
   '/account/itineraries/$id': typeof AccountItinerariesIdRoute
 }
 export interface FileRoutesByTo {
@@ -191,17 +226,22 @@ export interface FileRoutesByTo {
   '/account/overview': typeof AccountOverviewRoute
   '/account/profile': typeof AccountProfileRoute
   '/account/reviews': typeof AccountReviewsRoute
+  '/admin/bookings': typeof AdminBookingsRoute
+  '/admin/overview': typeof AdminOverviewRoute
+  '/admin/users': typeof AdminUsersRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/hotels/$id': typeof HotelsIdRoute
   '/packages/$slug': typeof PackagesSlugRoute
   '/account': typeof AccountIndexRoute
+  '/admin': typeof AdminIndexRoute
   '/account/itineraries/$id': typeof AccountItinerariesIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/account': typeof AccountRouteWithChildren
+  '/admin': typeof AdminRouteWithChildren
   '/checkout': typeof CheckoutRouteWithChildren
   '/contact': typeof ContactRoute
   '/destinations': typeof DestinationsRouteWithChildren
@@ -217,11 +257,15 @@ export interface FileRoutesById {
   '/account/overview': typeof AccountOverviewRoute
   '/account/profile': typeof AccountProfileRoute
   '/account/reviews': typeof AccountReviewsRoute
+  '/admin/bookings': typeof AdminBookingsRoute
+  '/admin/overview': typeof AdminOverviewRoute
+  '/admin/users': typeof AdminUsersRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/hotels/$id': typeof HotelsIdRoute
   '/packages/$slug': typeof PackagesSlugRoute
   '/account/': typeof AccountIndexRoute
+  '/admin/': typeof AdminIndexRoute
   '/account/itineraries/$id': typeof AccountItinerariesIdRoute
 }
 export interface FileRouteTypes {
@@ -229,6 +273,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/account'
+    | '/admin'
     | '/checkout'
     | '/contact'
     | '/destinations'
@@ -244,11 +289,15 @@ export interface FileRouteTypes {
     | '/account/overview'
     | '/account/profile'
     | '/account/reviews'
+    | '/admin/bookings'
+    | '/admin/overview'
+    | '/admin/users'
     | '/checkout/confirmation'
     | '/destinations/$slug'
     | '/hotels/$id'
     | '/packages/$slug'
     | '/account/'
+    | '/admin/'
     | '/account/itineraries/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -268,16 +317,21 @@ export interface FileRouteTypes {
     | '/account/overview'
     | '/account/profile'
     | '/account/reviews'
+    | '/admin/bookings'
+    | '/admin/overview'
+    | '/admin/users'
     | '/checkout/confirmation'
     | '/destinations/$slug'
     | '/hotels/$id'
     | '/packages/$slug'
     | '/account'
+    | '/admin'
     | '/account/itineraries/$id'
   id:
     | '__root__'
     | '/'
     | '/account'
+    | '/admin'
     | '/checkout'
     | '/contact'
     | '/destinations'
@@ -293,17 +347,22 @@ export interface FileRouteTypes {
     | '/account/overview'
     | '/account/profile'
     | '/account/reviews'
+    | '/admin/bookings'
+    | '/admin/overview'
+    | '/admin/users'
     | '/checkout/confirmation'
     | '/destinations/$slug'
     | '/hotels/$id'
     | '/packages/$slug'
     | '/account/'
+    | '/admin/'
     | '/account/itineraries/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountRoute: typeof AccountRouteWithChildren
+  AdminRoute: typeof AdminRouteWithChildren
   CheckoutRoute: typeof CheckoutRouteWithChildren
   ContactRoute: typeof ContactRoute
   DestinationsRoute: typeof DestinationsRouteWithChildren
@@ -330,6 +389,13 @@ declare module '@tanstack/react-router' {
       path: '/account'
       fullPath: '/account'
       preLoaderRoute: typeof AccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/checkout': {
@@ -444,6 +510,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AccountReviewsRouteImport
       parentRoute: typeof AccountRoute
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/bookings': {
+      id: '/admin/bookings'
+      path: '/bookings'
+      fullPath: '/admin/bookings'
+      preLoaderRoute: typeof AdminBookingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/overview': {
+      id: '/admin/overview'
+      path: '/overview'
+      fullPath: '/admin/overview'
+      preLoaderRoute: typeof AdminOverviewRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/checkout/confirmation': {
       id: '/checkout/confirmation'
       path: '/confirmation'
@@ -514,6 +608,22 @@ const AccountRouteChildren: AccountRouteChildren = {
 const AccountRouteWithChildren =
   AccountRoute._addFileChildren(AccountRouteChildren)
 
+interface AdminRouteChildren {
+  AdminBookingsRoute: typeof AdminBookingsRoute
+  AdminOverviewRoute: typeof AdminOverviewRoute
+  AdminUsersRoute: typeof AdminUsersRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminBookingsRoute: AdminBookingsRoute,
+  AdminOverviewRoute: AdminOverviewRoute,
+  AdminUsersRoute: AdminUsersRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 interface CheckoutRouteChildren {
   CheckoutConfirmationRoute: typeof CheckoutConfirmationRoute
 }
@@ -564,6 +674,7 @@ const PackagesRouteWithChildren = PackagesRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRouteWithChildren,
+  AdminRoute: AdminRouteWithChildren,
   CheckoutRoute: CheckoutRouteWithChildren,
   ContactRoute: ContactRoute,
   DestinationsRoute: DestinationsRouteWithChildren,
