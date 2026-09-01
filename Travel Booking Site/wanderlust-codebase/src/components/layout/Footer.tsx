@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Compass, Facebook, Instagram, Twitter } from "lucide-react";
+import { Compass, Facebook, Instagram, Twitter, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 
 const COLUMNS = [
   {
@@ -25,6 +27,17 @@ const COLUMNS = [
 ] as const;
 
 export function Footer() {
+  const [email, setEmail] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setSubscribed(true);
+    toast.success("Thank you for subscribing to Wanderlust Dispatch!");
+    setEmail("");
+  };
+
   return (
     <footer className="bg-primary text-primary-foreground">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 lg:grid-cols-4 lg:px-8">
@@ -72,29 +85,33 @@ export function Footer() {
           <p className="mt-4 text-sm text-primary-foreground/60">
             Trip ideas and seasonal fares, once a month.
           </p>
-          <form
-            className="mt-4 flex gap-2"
-            onSubmit={(event) => {
-              event.preventDefault();
-            }}
-          >
-            <label className="sr-only" htmlFor="newsletter-email">
-              Email address
-            </label>
-            <Input
-              id="newsletter-email"
-              type="email"
-              required
-              placeholder="you@email.com"
-              className="rounded-full border-primary-foreground/20 bg-primary-foreground/10 text-primary-foreground placeholder:text-primary-foreground/40"
-            />
-            <Button
-              type="submit"
-              className="rounded-full bg-accent text-accent-foreground hover:bg-accent/90"
-            >
-              Join
-            </Button>
-          </form>
+          {subscribed ? (
+            <div className="mt-4 p-3 rounded-2xl bg-primary-foreground/10 border border-primary-foreground/20 text-xs text-primary-foreground flex items-center gap-2">
+              <Check className="h-4 w-4 text-accent" />
+              <span>You are subscribed to Wanderlust Dispatch!</span>
+            </div>
+          ) : (
+            <form className="mt-4 flex gap-2" onSubmit={handleSubscribe}>
+              <label className="sr-only" htmlFor="newsletter-email">
+                Email address
+              </label>
+              <Input
+                id="newsletter-email"
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@email.com"
+                className="rounded-full border-primary-foreground/20 bg-primary-foreground/10 text-primary-foreground placeholder:text-primary-foreground/40"
+              />
+              <Button
+                type="submit"
+                className="rounded-full bg-accent text-accent-foreground hover:bg-accent/90"
+              >
+                Join
+              </Button>
+            </form>
+          )}
         </div>
       </div>
 

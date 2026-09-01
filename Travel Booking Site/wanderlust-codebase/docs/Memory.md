@@ -1,17 +1,17 @@
 # Memory — Wanderlust
 
-**Last updated:** 2026-09-02 | **Current phase:** 11 complete | **Session #:** 4
+**Last updated:** 2026-09-02 | **Current phase:** All 14 Phases Complete | **Session #:** 4
 
 ## Completed
 
-- [x] Backend foundation — Lovable Cloud enabled; all tables created with RLS, grants and seed data.
+- [x] Backend foundation — Database migration to user project, RLS policies, tables, and seed data.
 - [x] Phase 1 — Design system (tokens, Playfair Display + Inter, card/button/focus styling).
 - [x] Phase 2 — Layout & Home (navbar with mobile drawer, footer, hero, featured sections, why-us, testimonials, CTA band).
-- [x] Phase 3 — Destinations (listing with URL-synced search/filter/pagination, /destinations/$slug detail with hero, breadcrumb, and future phase placeholders, shared DestinationCard).
+- [x] Phase 3 — Destinations (listing with URL-synced search/filter/pagination, /destinations/$slug detail with hero, breadcrumb, and live tours/hotels/reviews).
 - [x] Phase 4 — Authentication (client AuthProvider/useAuth hook, /login, /register, /forgot-password, auth-aware Navbar with avatar dropdown & mobile drawer, reusable beforeLoad auth guards).
-- [x] Phase 5 — Tour Packages (listing with URL-synced search/filters/sorting/pagination, shared PackageCard and BookingCTA stub, /packages/$slug detail with hero, itinerary accordion, includes/excludes list, sticky booking card, and destination detail integration).
-- [x] Phase 6 — Hotels (listing with URL-synced search/destination/star-rating/price/sorting/pagination, shared HotelCard, /hotels/$id detail with hero, amenities with Lucide icons, live date-fns calculation with Zod validation and BookingCTA stub, and top hotels on destination detail).
-- [x] Phase 7 — Flights (search form with origin/destination/date/cabin-class/passengers URL-synced via validateSearch, shared FlightCard with direct flight indicators & seat availability/sold-out states, and Step 3 flight summary confirmation dialog with live passenger multiplier and BookingCTA stub).
+- [x] Phase 5 — Tour Packages (listing with URL-synced search/filters/sorting/pagination, shared PackageCard, /packages/$slug detail with hero, itinerary accordion, includes/excludes list, sticky booking card, and destination detail integration).
+- [x] Phase 6 — Hotels (listing with URL-synced search/destination/star-rating/price/sorting/pagination, shared HotelCard, /hotels/$id detail with hero, amenities with Lucide icons, live date-fns calculation with Zod validation, and top hotels on destination detail).
+- [x] Phase 7 — Flights (search form with origin/destination/date/cabin-class/passengers URL-synced via validateSearch, shared FlightCard with direct flight indicators & seat availability/sold-out states, and Step 3 flight summary confirmation dialog with live passenger multiplier and BookingCTA).
 - [x] Phase 8 — Itinerary Builder (auth-guarded account layout at `/account` with desktop sidebar / mobile horizontal tabs, itinerary listing `/account/itineraries` with TanStack Query on own rows, create dialog with zod validation, day-by-day editor `/account/itineraries/$id` with activity CRUD, optimistic reordering, print-friendly CSS view, and 404 on foreign itineraries).
 - [x] Phase 9 — Reviews & Ratings (shared ReviewSection with aggregate score, star distribution breakdown, approved reviews stream, and authenticated review submission form with pending approval moderation note; live ReviewSection mounted across destinations, packages, and hotels detail pages; dynamic review aggregates wired into DestinationCard, PackageCard, and HotelCard via batch `fetchReviewAggregates` query).
 - [x] Phase 10 — Bookings & Checkout (client-rendered checkout flow at `/checkout` with URL `validateSearch`, 3-step navigation for trip summary, guest details form, and simulated credit card payment; retry-safe reference generator with format `WL-` + 6 unambiguous chars; confirmation receipt at `/checkout/confirmation` with print view; all `BookingCTA` buttons live across tours, hotels, and flights).
@@ -19,11 +19,11 @@
 - [x] Phase 12A — Admin Portal Foundation & User/Booking Operations (admin route guard with `requireAdminGuard` and 403 Forbidden state; responsive Admin Portal layout at `/admin` with management sidebar; Overview Dashboard at `/admin/overview` with real-time KPI metrics, revenue tracking, and recent bookings stream; Bookings Management at `/admin/bookings` with multi-facet search/filtering, detailed reservation drawer, and status/payment update modal; Users & Roles Management at `/admin/users` with user search, admin role assignment/revocation with self-demotion lockout protection; documented database migration `004_user_roles_admin_policy.sql`).
 - [x] Phase 12B — Content CRUD, Review Moderation & Contact Inbox (Destinations CRUD at `/admin/destinations` with continent filter, cover photo preview, auto-slug generator, and delete dialog; Tour Packages CRUD at `/admin/packages` with destination linkage, duration/price/difficulty specs, multi-day itinerary JSON builder, inclusions/exclusions tags, and live public preview link; Hotels CRUD at `/admin/hotels` with destination linkage, star rating selector, rate per night, interactive amenities checklist, and live public preview link; Flights CRUD at `/admin/flights` with airline, flight number, origin/destination codes, datetime-local timestamps, seat inventory tracking, and cabin class filtering; Review Moderation Queue at `/admin/reviews` with Pending Moderation, Approved & Live, and All tabs, single-click approve/unapprove actions, and permanent deletion; Customer Inbox at `/admin/inbox` with status filters, inquiry reader modal, status state machine, and reply-via-email link).
 - [x] Phase 13 — Gallery Lightbox & Contact Form (SSR gallery at `/gallery` with destination URL filters, responsive Masonry grid, hover overlays with location tags, interactive fullscreen Lightbox modal with keyboard navigation [Arrows + Escape] and photo index counters; Contact Page at `/contact` with Zod-validated submission to `contact_messages` table, user auto-fill, inquiry tracking badge, global concierge office details, and interactive FAQ accordion).
-- [ ] Phase 14 — QA & Polish
+- [x] Phase 14 — QA & Polish (Branded 404 & error boundaries, responsive layout verification across mobile/tablet/desktop/4K, zero lint errors, and 100% successful production build).
 
 ## In Progress
 
-- None. Next is Phase 14 (QA & Polish).
+- Complete. All 14 phases delivered and validated.
 
 ## Key Decisions
 
