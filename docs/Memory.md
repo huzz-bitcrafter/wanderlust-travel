@@ -1,6 +1,6 @@
 # Memory — Wanderlust
 
-**Last updated:** 2026-09-02 | **Current phase:** All 14 Phases Complete | **Session #:** 4
+**Last updated:** 2026-09-02 | **Current phase:** Acceptance Testing Fixes & Phase 14 Completion | **Session #:** 5
 
 ## Completed
 
@@ -19,11 +19,17 @@
 - [x] Phase 12A — Admin Portal Foundation & User/Booking Operations (admin route guard with `requireAdminGuard` and 403 Forbidden state; responsive Admin Portal layout at `/admin` with management sidebar; Overview Dashboard at `/admin/overview` with real-time KPI metrics, revenue tracking, and recent bookings stream; Bookings Management at `/admin/bookings` with multi-facet search/filtering, detailed reservation drawer, and status/payment update modal; Users & Roles Management at `/admin/users` with user search, admin role assignment/revocation with self-demotion lockout protection; documented database migration `004_user_roles_admin_policy.sql`).
 - [x] Phase 12B — Content CRUD, Review Moderation & Contact Inbox (Destinations CRUD at `/admin/destinations` with continent filter, cover photo preview, auto-slug generator, and delete dialog; Tour Packages CRUD at `/admin/packages` with destination linkage, duration/price/difficulty specs, multi-day itinerary JSON builder, inclusions/exclusions tags, and live public preview link; Hotels CRUD at `/admin/hotels` with destination linkage, star rating selector, rate per night, interactive amenities checklist, and live public preview link; Flights CRUD at `/admin/flights` with airline, flight number, origin/destination codes, datetime-local timestamps, seat inventory tracking, and cabin class filtering; Review Moderation Queue at `/admin/reviews` with Pending Moderation, Approved & Live, and All tabs, single-click approve/unapprove actions, and permanent deletion; Customer Inbox at `/admin/inbox` with status filters, inquiry reader modal, status state machine, and reply-via-email link).
 - [x] Phase 13 — Gallery Lightbox & Contact Form (SSR gallery at `/gallery` with destination URL filters, responsive Masonry grid, hover overlays with location tags, interactive fullscreen Lightbox modal with keyboard navigation [Arrows + Escape] and photo index counters; Contact Page at `/contact` with Zod-validated submission to `contact_messages` table, user auto-fill, inquiry tracking badge, global concierge office details, and interactive FAQ accordion).
-- [x] Phase 14 — QA & Polish (Branded 404 & error boundaries, responsive layout verification across mobile/tablet/desktop/4K, zero lint errors, and 100% successful production build).
+- [x] Acceptance Testing Fixes:
+  - [x] **Part A (Multi-Guest Booking Bug)**: Multi-guest steppers added across all 3 product types in `/checkout` (Tours up to `group_size_max`, Hotels carrying dates/guests/rooms, Flights 1–9 passengers). Per-passenger First Name & Last Name form added for Flights in Step 2. Pricing formulas aligned to exact prompt rules. Full passenger arrays and guest details persisted to `bookings.guest_details` and actual counts to `bookings.guests`.
+  - [x] **Part B (Itinerary Builder Bug)**: Fixed React Query in-place cache mutation bug in `reorderMutation` by introducing deep immutable state cloning and explicit target ID/order swaps. Added optimistic updates for item creation. Fixed timezone/date-fns interval computation for exact day generation. Converted print view to clean native `@media print` CSS.
+  - [x] **Part C (Two Quick Verifications)**:
+    1. *Demo payment label*: Confirmed prominent banner and badges on `/checkout` and `/checkout/confirmation` declaring demo mode with no real monetary charge.
+    2. *48-Hour Cancellation Rule*: Located in `src/routes/hotels.$id.tsx` (L634), `src/routes/checkout.tsx` (L587), `src/routes/contact.tsx` (L72), and `src/routes/account/bookings.tsx` (L102-124, L414). Cancellation is processed via `supabase.from('bookings').update({ status: 'cancelled' })` under the traveler guarantee policy.
+- [x] Phase 14 — QA & Polish (A11y audits, SEO OpenGraph metadata, Supabase RLS security sweep table, end-to-end user & admin flow verification).
 
 ## In Progress
 
-- Complete. All 14 phases delivered and validated.
+- Complete. All 14 phases and acceptance testing deliverables delivered and validated.
 
 ## Key Decisions
 
@@ -35,8 +41,8 @@
 - Booking reference is client-generated with format `WL-` + 6 characters from unambiguous alphabet `23456789ABCDEFGHJKLMNPQRSTUVWXYZ` (excludes 0, O, 1, I). Collision retry mechanism attempts insertion up to 3 times before failing.
 - Account dashboard routes under `/account` are protected by `requireAuthGuard`, rendering Overview, Itineraries, Bookings, Reviews, and Profile.
 - Storage policy for avatar uploads documented in `docs/migrations/003_avatars_storage_policy.sql`.
-- Multi-step checkout at `/checkout` requires authentication (`requireAuthGuard`), supports `'tour' | 'hotel' | 'flight'`, calculates 10% taxes/fees, collects primary and additional traveler names with Zod validation, provides demo card quick-fill, and saves full booking snapshot into `guest_details` JSON.
-- Confirmation receipt at `/checkout/confirmation` provides one-click reference code copy, detailed breakdown, `@media print` clean receipt styling, and dashboard navigation.
+- Multi-step checkout at `/checkout` requires authentication (`requireAuthGuard`), supports `'tour' | 'hotel' | 'flight'`, calculates exact flat prices (Tour: `price × guests`, Hotel: `nights × price × rooms`, Flight: `fare × passengers`), collects primary and additional/passenger names with Zod validation, provides demo card quick-fill, and saves full booking snapshot into `guest_details` JSON.
+- Confirmation receipt at `/checkout/confirmation` provides one-click reference code copy, detailed breakdown, per-passenger list for flights, `@media print` clean receipt styling, and dashboard navigation.
 - All `BookingCTA` components across packages detail, hotels detail, and flights search modal are wired directly to `/checkout` with live query parameters.
 - Public catalog reads go through `createServerFn` + publishable-key client (`src/lib/catalog.functions.ts` and `src/lib/review.functions.ts`) so pages render server-side for SEO.
 - Phase 9 reviews aggregate calculation is executed via server functions (`fetchReviewAggregate` for detail views and `fetchReviewAggregates` for batch card listings) ensuring single-query batching on catalog pages.
@@ -63,11 +69,11 @@
 
 ## Known Bugs / TODO
 
-- None.
+- None. All functional bugs resolved.
 
 ## Next Steps
 
-1. Phase 14 — QA & Polish.
+- Final consolidation report and verification.
 
 ## Reminders for the AI
 
