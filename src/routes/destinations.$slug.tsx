@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { Rating } from "@/components/shared/Rating";
+import { PackageCard } from "@/components/shared/PackageCard";
+import { HotelCard } from "@/components/shared/HotelCard";
 import { Button } from "@/components/ui/button";
 import {
   Breadcrumb,
@@ -23,12 +25,28 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { fetchDestinationBySlug } from "@/lib/catalog.functions";
+import {
+  fetchDestinationBySlug,
+  fetchPackagesByDestination,
+  fetchHotelsByDestination,
+} from "@/lib/catalog.functions";
 
 const destinationDetailQueryOptions = (slug: string) =>
   queryOptions({
     queryKey: ["destinations", "detail", slug],
     queryFn: () => fetchDestinationBySlug({ data: slug }),
+  });
+
+const destinationPackagesQueryOptions = (destinationId: string) =>
+  queryOptions({
+    queryKey: ["packages", "by-destination", destinationId],
+    queryFn: () => fetchPackagesByDestination({ data: destinationId }),
+  });
+
+const destinationHotelsQueryOptions = (destinationId: string) =>
+  queryOptions({
+    queryKey: ["hotels", "by-destination", destinationId],
+    queryFn: () => fetchHotelsByDestination({ data: destinationId }),
   });
 
 export const Route = createFileRoute("/destinations/$slug")({
@@ -39,6 +57,10 @@ export const Route = createFileRoute("/destinations/$slug")({
     if (!destination) {
       throw notFound();
     }
+    await Promise.all([
+      context.queryClient.ensureQueryData(destinationPackagesQueryOptions(destination.id)),
+      context.queryClient.ensureQueryData(destinationHotelsQueryOptions(destination.id)),
+    ]);
     return destination;
   },
   head: ({ loaderData }) => {
@@ -105,6 +127,12 @@ function DestinationDetailPage() {
   const { slug } = Route.useParams();
   const query = useSuspenseQuery(destinationDetailQueryOptions(slug));
   const destination = query.data;
+
+  const packagesQuery = useSuspenseQuery(destinationPackagesQueryOptions(destination?.id ?? ""));
+  const destinationPackages = packagesQuery.data ?? [];
+
+  const hotelsQuery = useSuspenseQuery(destinationHotelsQueryOptions(destination?.id ?? ""));
+  const destinationHotels = hotelsQuery.data ?? [];
 
   if (!destination) {
     return <DestinationNotFound />;
@@ -266,66 +294,101 @@ function DestinationDetailPage() {
               </div>
             </div>
 
-            {/* Upcoming Phase Features / Placeholders */}
+            {/* Tour Packages Section (Live in Phase 5) */}
+            <div className="space-y-6">
+              <div className="flex flex-wrap items-end justify-between gap-4">
+                <div>
+                  <span className="eyebrow text-secondary">Guided Experiences</span>
+                  <h3 className="mt-1 font-display text-2xl text-foreground">
+                    Tour Packages in {destination.name}
+                  </h3>
+                </div>
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  className="rounded-full border-border/80 text-xs"
+                >
+                  <Link to="/packages" search={{ destination: destination.slug }}>
+                    View all {destination.name} tours
+                  </Link>
+                </Button>
+              </div>
+
+              {destinationPackages.length > 0 ? (
+                <div className="grid gap-6 sm:grid-cols-2">
+                  {destinationPackages.map((pkg) => (
+                    <PackageCard key={pkg.id} pkg={pkg} />
+                  ))}
+                </div>
+              ) : (
+                <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center">
+                  <Package className="mx-auto h-8 w-8 text-muted-foreground" aria-hidden="true" />
+                  <p className="mt-3 font-medium text-sm text-foreground">
+                    No dedicated packages listed for {destination.name} yet.
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Explore our other worldwide tour itineraries or create a custom inquiry.
+                  </p>
+                  <Button asChild size="sm" className="mt-4 rounded-full bg-primary text-xs">
+                    <Link to="/packages">Browse all packages</Link>
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            {/* Top Hotels Section (Live in Phase 6) */}
+            <div className="space-y-6">
+              <div className="flex flex-wrap items-end justify-between gap-4">
+                <div>
+                  <span className="eyebrow text-secondary">Accommodations</span>
+                  <h3 className="mt-1 font-display text-2xl text-foreground">
+                    Top Stays & Hotels in {destination.name}
+                  </h3>
+                </div>
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  className="rounded-full border-border/80 text-xs"
+                >
+                  <Link to="/hotels" search={{ destination: destination.slug }}>
+                    View all {destination.name} hotels
+                  </Link>
+                </Button>
+              </div>
+
+              {destinationHotels.length > 0 ? (
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  {destinationHotels.map((hotel) => (
+                    <HotelCard key={hotel.id} hotel={hotel} />
+                  ))}
+                </div>
+              ) : (
+                <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center">
+                  <Hotel className="mx-auto h-8 w-8 text-muted-foreground" aria-hidden="true" />
+                  <p className="mt-3 font-medium text-sm text-foreground">
+                    No hotels listed for {destination.name} yet.
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Browse our full catalog of stays worldwide.
+                  </p>
+                  <Button asChild size="sm" className="mt-4 rounded-full bg-primary text-xs">
+                    <Link to="/hotels">Browse all hotels</Link>
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            {/* Reviews Section (Phase 9 Placeholder) */}
             <div className="space-y-6">
               <div>
-                <span className="eyebrow text-secondary">Trip Planner</span>
+                <span className="eyebrow text-secondary">Community</span>
                 <h3 className="mt-1 font-display text-2xl text-foreground">
-                  Experiences & Accommodations
+                  Traveller Feedback & Stories
                 </h3>
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
-                {/* Tour Packages (Phase 5 Placeholder) */}
-                <div className="rounded-2xl border border-border/70 bg-card p-6 shadow-sm">
-                  <div className="flex items-center justify-between">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-secondary/10 text-secondary">
-                      <Package className="h-5 w-5" aria-hidden="true" />
-                    </div>
-                    <span className="rounded-full bg-muted px-2.5 py-0.5 text-xs font-semibold text-muted-foreground">
-                      Phase 5
-                    </span>
-                  </div>
-                  <h4 className="mt-4 font-display text-lg text-foreground">Tour Packages</h4>
-                  <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                    Discover guided multi-day itineraries and day excursions in {destination.name}.
-                  </p>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled
-                    className="mt-5 w-full rounded-full border-border/80 text-xs font-medium"
-                  >
-                    Tours arriving in Phase 5
-                  </Button>
-                </div>
-
-                {/* Hotels (Phase 6 Placeholder) */}
-                <div className="rounded-2xl border border-border/70 bg-card p-6 shadow-sm">
-                  <div className="flex items-center justify-between">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 text-accent">
-                      <Hotel className="h-5 w-5" aria-hidden="true" />
-                    </div>
-                    <span className="rounded-full bg-muted px-2.5 py-0.5 text-xs font-semibold text-muted-foreground">
-                      Phase 6
-                    </span>
-                  </div>
-                  <h4 className="mt-4 font-display text-lg text-foreground">Top Hotels</h4>
-                  <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                    Browse boutique hotels, luxury resorts, and villas in {destination.name}.
-                  </p>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled
-                    className="mt-5 w-full rounded-full border-border/80 text-xs font-medium"
-                  >
-                    Hotels arriving in Phase 6
-                  </Button>
-                </div>
-              </div>
-
-              {/* Reviews & Community (Phase 9 Placeholder) */}
               <div className="rounded-2xl border border-border/70 bg-card p-6 shadow-sm">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">

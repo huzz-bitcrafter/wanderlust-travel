@@ -108,7 +108,11 @@ export const Route = createFileRoute("/destinations")({
 
 function DestinationsRouteComponent() {
   const childMatches = useChildMatches();
-  if (childMatches.length > 0) {
+  const hasChildRoute = childMatches.some(
+    (m) =>
+      m.routeId !== Route.id && m.pathname !== "/destinations" && m.pathname !== "/destinations/",
+  );
+  if (hasChildRoute) {
     return <Outlet />;
   }
   return <DestinationsPage />;

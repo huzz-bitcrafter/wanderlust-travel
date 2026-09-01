@@ -1,53 +1,8 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Clock, Users } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { ArrowRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PackageCard } from "@/components/shared/PackageCard";
 import type { PackageCardData } from "@/lib/catalog.functions";
-
-export function PackageCard({ pkg }: { pkg: PackageCardData }) {
-  return (
-    <Link to="/packages" className="card-lift group block overflow-hidden rounded-xl bg-card">
-      <div className="relative aspect-[16/10] overflow-hidden bg-muted">
-        {pkg.image_url ? (
-          <img
-            src={pkg.image_url}
-            alt={pkg.title}
-            loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        ) : null}
-        <span className="absolute left-4 top-4 rounded-full bg-secondary px-3 py-1 text-xs font-semibold capitalize text-secondary-foreground">
-          {pkg.difficulty}
-        </span>
-      </div>
-      <div className="p-5">
-        <p className="text-xs text-muted-foreground">
-          {pkg.destination
-            ? `${pkg.destination.name}, ${pkg.destination.country}`
-            : "Multi-country"}
-        </p>
-        <h3 className="mt-2 font-display text-xl">{pkg.title}</h3>
-        <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{pkg.summary}</p>
-        <div className="mt-4 flex flex-wrap items-center gap-2">
-          <Badge variant="secondary" className="rounded-full bg-muted text-muted-foreground">
-            <Clock className="mr-1 h-3 w-3" aria-hidden="true" />
-            {pkg.duration_days} days
-          </Badge>
-          <Badge variant="secondary" className="rounded-full bg-muted text-muted-foreground">
-            <Users className="mr-1 h-3 w-3" aria-hidden="true" />
-            Small group
-          </Badge>
-        </div>
-        <div className="mt-5 flex items-baseline justify-between border-t border-border pt-4">
-          <span className="text-sm text-muted-foreground">from</span>
-          <span className="font-display text-2xl text-accent">
-            ${pkg.price_per_person.toLocaleString()}
-          </span>
-        </div>
-      </div>
-    </Link>
-  );
-}
 
 export function FeaturedPackages({
   packages,
