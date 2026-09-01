@@ -297,24 +297,30 @@ function AdminOverviewPage() {
           <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
         </Link>
 
-        <div className="rounded-2xl border border-dashed border-border bg-muted/20 p-5 flex items-center justify-between opacity-85">
+        <Link
+          to="/admin/reviews"
+          className="group rounded-2xl border border-border bg-card p-5 shadow-xs hover:border-primary/40 hover:shadow-md transition-all flex items-center justify-between"
+        >
           <div className="flex items-center gap-3.5">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-muted-foreground">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/15 text-amber-600 group-hover:bg-amber-500 group-hover:text-white transition-colors">
               <Star className="h-5 w-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-semibold text-sm text-foreground">Catalog & Moderation</h3>
-                <Badge variant="outline" className="text-[10px] py-0">
-                  Phase 12B
-                </Badge>
+                <h3 className="font-semibold text-sm text-foreground">Review Moderation</h3>
+                {metrics.pendingReviews > 0 && (
+                  <Badge variant="default" className="text-[10px] py-0 bg-amber-600">
+                    {metrics.pendingReviews} Pending
+                  </Badge>
+                )}
               </div>
               <p className="text-xs text-muted-foreground">
-                Destinations, packages, and review inbox
+                Audit feedback and approve traveler ratings
               </p>
             </div>
           </div>
-        </div>
+          <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
+        </Link>
       </div>
 
       {/* Recent Bookings Table */}
