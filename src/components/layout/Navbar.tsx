@@ -85,10 +85,14 @@ export function Navbar({ transparentOverHero = false }: { transparentOverHero?: 
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link
           to="/"
-          className="flex items-center gap-2 text-primary-foreground"
+          className="flex items-center gap-2.5 text-primary-foreground"
           onClick={() => setOpen(false)}
         >
-          <Compass className="h-6 w-6 text-accent" aria-hidden="true" />
+          <img
+            src="/Logo_wanderlust.png"
+            alt="Wanderlust"
+            className="h-8 w-8 rounded-full object-cover ring-1 ring-primary-foreground/20"
+          />
           <span className="font-display text-xl font-bold tracking-tight">Wanderlust</span>
         </Link>
 

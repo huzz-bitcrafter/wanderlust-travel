@@ -154,7 +154,7 @@ function ItineraryEditorPage() {
     } catch {
       return [];
     }
-  }, [itineraryQuery.data?.start_date, itineraryQuery.data?.end_date]);
+  }, [itineraryQuery.data]);
 
   // Add item mutation with optimistic update
   const addItemMutation = useMutation({
@@ -184,9 +184,7 @@ function ItineraryEditorPage() {
       await queryClient.cancelQueries({ queryKey: ["itinerary-items", id] });
       const previous = queryClient.getQueryData<ItineraryItem[]>(["itinerary-items", id]);
 
-      const existingItems = (previous ?? []).filter(
-        (i) => i.day_number === values.day_number,
-      );
+      const existingItems = (previous ?? []).filter((i) => i.day_number === values.day_number);
       const maxOrder = existingItems.reduce((max, i) => Math.max(max, i.order_index), -1);
 
       const tempId = `temp-${Date.now()}`;
@@ -314,14 +312,8 @@ function ItineraryEditorPage() {
       swapOrder: number;
     }) => {
       const [res1, res2] = await Promise.all([
-        supabase
-          .from("itinerary_items")
-          .update({ order_index: targetOrder })
-          .eq("id", targetId),
-        supabase
-          .from("itinerary_items")
-          .update({ order_index: swapOrder })
-          .eq("id", swapId),
+        supabase.from("itinerary_items").update({ order_index: targetOrder }).eq("id", targetId),
+        supabase.from("itinerary_items").update({ order_index: swapOrder }).eq("id", swapId),
       ]);
 
       if (res1.error) throw res1.error;

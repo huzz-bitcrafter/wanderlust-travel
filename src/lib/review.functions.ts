@@ -39,7 +39,7 @@ export const fetchReviewsByTarget = createServerFn({ method: "GET" })
 
     if (error) {
       console.error("fetchReviewsByTarget", error);
-      throw new Error("Could not load reviews");
+      return [] as ReviewData[];
     }
 
     return (reviews ?? []) as ReviewData[];

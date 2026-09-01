@@ -92,13 +92,13 @@ export function ReviewSection({ targetId, targetType, className }: ReviewSection
   // Aggregate data
   const aggregateQuery = useQuery({
     queryKey: ["review-aggregate", targetType, targetId],
-    queryFn: () => fetchReviewAggregate({ targetId, targetType }),
+    queryFn: () => fetchReviewAggregate({ data: { targetId, targetType } }),
   });
 
   // Reviews list
   const reviewsQuery = useQuery({
     queryKey: ["reviews", targetType, targetId],
-    queryFn: () => fetchReviewsByTarget({ targetId, targetType }),
+    queryFn: () => fetchReviewsByTarget({ data: { targetId, targetType } }),
   });
 
   // Submit mutation
