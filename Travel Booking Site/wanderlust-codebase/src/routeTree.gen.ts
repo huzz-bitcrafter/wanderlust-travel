@@ -22,7 +22,11 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as PackagesRouteImport } from './routes/packages'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as AccountIndexRouteImport } from './routes/account/index'
+import { Route as AccountBookingsRouteImport } from './routes/account/bookings'
 import { Route as AccountItinerariesRouteImport } from './routes/account/itineraries'
+import { Route as AccountOverviewRouteImport } from './routes/account/overview'
+import { Route as AccountProfileRouteImport } from './routes/account/profile'
+import { Route as AccountReviewsRouteImport } from './routes/account/reviews'
 import { Route as CheckoutConfirmationRouteImport } from './routes/checkout/confirmation'
 import { Route as DestinationsSlugRouteImport } from './routes/destinations.$slug'
 import { Route as HotelsIdRouteImport } from './routes/hotels.$id'
@@ -94,9 +98,29 @@ const AccountIndexRoute = AccountIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AccountRoute,
 } as any)
+const AccountBookingsRoute = AccountBookingsRouteImport.update({
+  id: '/bookings',
+  path: '/bookings',
+  getParentRoute: () => AccountRoute,
+} as any)
 const AccountItinerariesRoute = AccountItinerariesRouteImport.update({
   id: '/itineraries',
   path: '/itineraries',
+  getParentRoute: () => AccountRoute,
+} as any)
+const AccountOverviewRoute = AccountOverviewRouteImport.update({
+  id: '/overview',
+  path: '/overview',
+  getParentRoute: () => AccountRoute,
+} as any)
+const AccountProfileRoute = AccountProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AccountRoute,
+} as any)
+const AccountReviewsRoute = AccountReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
   getParentRoute: () => AccountRoute,
 } as any)
 const CheckoutConfirmationRoute = CheckoutConfirmationRouteImport.update({
@@ -138,7 +162,11 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/packages': typeof PackagesRouteWithChildren
   '/register': typeof RegisterRoute
+  '/account/bookings': typeof AccountBookingsRoute
   '/account/itineraries': typeof AccountItinerariesRouteWithChildren
+  '/account/overview': typeof AccountOverviewRoute
+  '/account/profile': typeof AccountProfileRoute
+  '/account/reviews': typeof AccountReviewsRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/hotels/$id': typeof HotelsIdRoute
@@ -158,7 +186,11 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/packages': typeof PackagesRouteWithChildren
   '/register': typeof RegisterRoute
+  '/account/bookings': typeof AccountBookingsRoute
   '/account/itineraries': typeof AccountItinerariesRouteWithChildren
+  '/account/overview': typeof AccountOverviewRoute
+  '/account/profile': typeof AccountProfileRoute
+  '/account/reviews': typeof AccountReviewsRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/hotels/$id': typeof HotelsIdRoute
@@ -180,7 +212,11 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/packages': typeof PackagesRouteWithChildren
   '/register': typeof RegisterRoute
+  '/account/bookings': typeof AccountBookingsRoute
   '/account/itineraries': typeof AccountItinerariesRouteWithChildren
+  '/account/overview': typeof AccountOverviewRoute
+  '/account/profile': typeof AccountProfileRoute
+  '/account/reviews': typeof AccountReviewsRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/hotels/$id': typeof HotelsIdRoute
@@ -203,7 +239,11 @@ export interface FileRouteTypes {
     | '/login'
     | '/packages'
     | '/register'
+    | '/account/bookings'
     | '/account/itineraries'
+    | '/account/overview'
+    | '/account/profile'
+    | '/account/reviews'
     | '/checkout/confirmation'
     | '/destinations/$slug'
     | '/hotels/$id'
@@ -223,7 +263,11 @@ export interface FileRouteTypes {
     | '/login'
     | '/packages'
     | '/register'
+    | '/account/bookings'
     | '/account/itineraries'
+    | '/account/overview'
+    | '/account/profile'
+    | '/account/reviews'
     | '/checkout/confirmation'
     | '/destinations/$slug'
     | '/hotels/$id'
@@ -244,7 +288,11 @@ export interface FileRouteTypes {
     | '/login'
     | '/packages'
     | '/register'
+    | '/account/bookings'
     | '/account/itineraries'
+    | '/account/overview'
+    | '/account/profile'
+    | '/account/reviews'
     | '/checkout/confirmation'
     | '/destinations/$slug'
     | '/hotels/$id'
@@ -361,11 +409,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AccountIndexRouteImport
       parentRoute: typeof AccountRoute
     }
+    '/account/bookings': {
+      id: '/account/bookings'
+      path: '/bookings'
+      fullPath: '/account/bookings'
+      preLoaderRoute: typeof AccountBookingsRouteImport
+      parentRoute: typeof AccountRoute
+    }
     '/account/itineraries': {
       id: '/account/itineraries'
       path: '/itineraries'
       fullPath: '/account/itineraries'
       preLoaderRoute: typeof AccountItinerariesRouteImport
+      parentRoute: typeof AccountRoute
+    }
+    '/account/overview': {
+      id: '/account/overview'
+      path: '/overview'
+      fullPath: '/account/overview'
+      preLoaderRoute: typeof AccountOverviewRouteImport
+      parentRoute: typeof AccountRoute
+    }
+    '/account/profile': {
+      id: '/account/profile'
+      path: '/profile'
+      fullPath: '/account/profile'
+      preLoaderRoute: typeof AccountProfileRouteImport
+      parentRoute: typeof AccountRoute
+    }
+    '/account/reviews': {
+      id: '/account/reviews'
+      path: '/reviews'
+      fullPath: '/account/reviews'
+      preLoaderRoute: typeof AccountReviewsRouteImport
       parentRoute: typeof AccountRoute
     }
     '/checkout/confirmation': {
@@ -418,12 +494,20 @@ const AccountItinerariesRouteWithChildren =
   AccountItinerariesRoute._addFileChildren(AccountItinerariesRouteChildren)
 
 interface AccountRouteChildren {
+  AccountBookingsRoute: typeof AccountBookingsRoute
   AccountItinerariesRoute: typeof AccountItinerariesRouteWithChildren
+  AccountOverviewRoute: typeof AccountOverviewRoute
+  AccountProfileRoute: typeof AccountProfileRoute
+  AccountReviewsRoute: typeof AccountReviewsRoute
   AccountIndexRoute: typeof AccountIndexRoute
 }
 
 const AccountRouteChildren: AccountRouteChildren = {
+  AccountBookingsRoute: AccountBookingsRoute,
   AccountItinerariesRoute: AccountItinerariesRouteWithChildren,
+  AccountOverviewRoute: AccountOverviewRoute,
+  AccountProfileRoute: AccountProfileRoute,
+  AccountReviewsRoute: AccountReviewsRoute,
   AccountIndexRoute: AccountIndexRoute,
 }
 

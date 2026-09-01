@@ -28,11 +28,11 @@ type NavItem = {
 };
 
 const NAV_ITEMS: NavItem[] = [
-  { to: "/account/overview", label: "Overview", icon: LayoutDashboard, disabled: true },
+  { to: "/account/overview", label: "Overview", icon: LayoutDashboard },
   { to: "/account/itineraries", label: "Itineraries", icon: Map },
-  { to: "/account/bookings", label: "Bookings", icon: Ticket, disabled: true },
-  { to: "/account/reviews", label: "Reviews", icon: Star, disabled: true },
-  { to: "/account/profile", label: "Profile", icon: UserCircle, disabled: true },
+  { to: "/account/bookings", label: "Bookings", icon: Ticket },
+  { to: "/account/reviews", label: "Reviews", icon: Star },
+  { to: "/account/profile", label: "Profile", icon: UserCircle },
 ];
 
 function AccountLayout() {
