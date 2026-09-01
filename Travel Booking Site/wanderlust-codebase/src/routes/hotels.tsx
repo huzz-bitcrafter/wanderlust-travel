@@ -1,6 +1,6 @@
-import { useState, useTransition } from "react";
+import { useState, useTransition, useMemo } from "react";
 import { createFileRoute, useNavigate, useChildMatches, Outlet } from "@tanstack/react-router";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery, useQuery } from "@tanstack/react-query";
 import {
   Search,
   X,
@@ -29,6 +29,7 @@ import {
   fetchFilterDestinations,
   type HotelsFilterParams,
 } from "@/lib/catalog.functions";
+import { fetchReviewAggregates } from "@/lib/review.functions";
 
 const title = "Hotels & Resorts — Wanderlust";
 const description =
@@ -178,6 +179,16 @@ function HotelsPage() {
   const destinations = destinationsQuery.data ?? [];
 
   const { items, total, totalPages } = query.data;
+
+  const hotelIds = useMemo(() => items.map((h) => h.id), [items]);
+  const { data: reviewAggregates } = useQuery({
+    queryKey: ["review-aggregates", "hotel", hotelIds],
+    queryFn: () =>
+      fetchReviewAggregates({
+        data: { targetIds: hotelIds, targetType: "hotel" },
+      }),
+    enabled: hotelIds.length > 0,
+  });
 
   const updateSearch = (newParams: Partial<HotelsSearch>) => {
     startTransition(() => {
@@ -528,7 +539,7 @@ function HotelsPage() {
         ) : (
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {items.map((hotel) => (
-              <HotelCard key={hotel.id} hotel={hotel} />
+              <HotelCard key={hotel.id} hotel={hotel} rating={reviewAggregates?.[hotel.id]} />
             ))}
           </div>
         )}

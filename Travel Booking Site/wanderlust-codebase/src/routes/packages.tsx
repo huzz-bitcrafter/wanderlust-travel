@@ -1,6 +1,6 @@
-import { useState, useTransition } from "react";
+import { useState, useTransition, useMemo } from "react";
 import { createFileRoute, useNavigate, useChildMatches, Outlet } from "@tanstack/react-router";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery, useQuery } from "@tanstack/react-query";
 import {
   Search,
   X,
@@ -30,6 +30,7 @@ import {
   PACKAGE_DIFFICULTIES,
   type PackagesFilterParams,
 } from "@/lib/catalog.functions";
+import { fetchReviewAggregates } from "@/lib/review.functions";
 
 const title = "Tour Packages — Wanderlust";
 const description =
@@ -191,6 +192,16 @@ function PackagesPage() {
   const destinations = destinationsQuery.data ?? [];
 
   const { items, total, totalPages } = query.data;
+
+  const packageIds = useMemo(() => items.map((p) => p.id), [items]);
+  const { data: reviewAggregates } = useQuery({
+    queryKey: ["review-aggregates", "tour", packageIds],
+    queryFn: () =>
+      fetchReviewAggregates({
+        data: { targetIds: packageIds, targetType: "tour" },
+      }),
+    enabled: packageIds.length > 0,
+  });
 
   const updateSearch = (newParams: Partial<PackagesSearch>) => {
     startTransition(() => {
@@ -572,7 +583,7 @@ function PackagesPage() {
         ) : (
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {items.map((pkg) => (
-              <PackageCard key={pkg.id} pkg={pkg} />
+              <PackageCard key={pkg.id} pkg={pkg} rating={reviewAggregates?.[pkg.id]} />
             ))}
           </div>
         )}

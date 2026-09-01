@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { Rating } from "@/components/shared/Rating";
+import { ReviewSection } from "@/components/shared/ReviewSection";
 import { PackageCard } from "@/components/shared/PackageCard";
 import { HotelCard } from "@/components/shared/HotelCard";
 import { Button } from "@/components/ui/button";
@@ -380,34 +381,8 @@ function DestinationDetailPage() {
               )}
             </div>
 
-            {/* Reviews Section (Phase 9 Placeholder) */}
-            <div className="space-y-6">
-              <div>
-                <span className="eyebrow text-secondary">Community</span>
-                <h3 className="mt-1 font-display text-2xl text-foreground">
-                  Traveller Feedback & Stories
-                </h3>
-              </div>
-
-              <div className="rounded-2xl border border-border/70 bg-card p-6 shadow-sm">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-secondary/10 text-secondary">
-                      <MessageSquare className="h-5 w-5" aria-hidden="true" />
-                    </div>
-                    <div>
-                      <h4 className="font-display text-lg text-foreground">Traveller Reviews</h4>
-                      <p className="text-xs text-muted-foreground">
-                        Verified ratings and travel stories from the Wanderlust community.
-                      </p>
-                    </div>
-                  </div>
-                  <span className="rounded-full bg-muted px-2.5 py-0.5 text-xs font-semibold text-muted-foreground">
-                    Phase 9
-                  </span>
-                </div>
-              </div>
-            </div>
+            {/* Reviews Section */}
+            <ReviewSection targetId={destination.id} targetType="destination" className="mt-12" />
           </div>
 
           {/* Quick Facts & Booking Sidebar (1 col) */}

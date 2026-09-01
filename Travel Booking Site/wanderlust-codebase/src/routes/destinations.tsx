@@ -1,6 +1,6 @@
-import { useState, useTransition } from "react";
+import { useState, useTransition, useMemo } from "react";
 import { createFileRoute, useNavigate, useChildMatches, Outlet } from "@tanstack/react-router";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery, useQuery } from "@tanstack/react-query";
 import {
   Search,
   X,
@@ -29,6 +29,7 @@ import {
   REGIONS,
   type DestinationsFilterParams,
 } from "@/lib/catalog.functions";
+import { fetchReviewAggregates } from "@/lib/review.functions";
 
 const title = "Explore Destinations — Wanderlust";
 const description =
@@ -140,6 +141,16 @@ function DestinationsPage() {
   );
 
   const { items, total, totalPages } = query.data;
+
+  const destinationIds = useMemo(() => items.map((d) => d.id), [items]);
+  const { data: reviewAggregates } = useQuery({
+    queryKey: ["review-aggregates", "destination", destinationIds],
+    queryFn: () =>
+      fetchReviewAggregates({
+        data: { targetIds: destinationIds, targetType: "destination" },
+      }),
+    enabled: destinationIds.length > 0,
+  });
 
   const updateSearch = (newParams: Partial<DestinationsSearch>) => {
     startTransition(() => {
@@ -400,7 +411,11 @@ function DestinationsPage() {
         ) : (
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {items.map((destination) => (
-              <DestinationCard key={destination.id} destination={destination} />
+              <DestinationCard
+                key={destination.id}
+                destination={destination}
+                rating={reviewAggregates?.[destination.id]}
+              />
             ))}
           </div>
         )}
