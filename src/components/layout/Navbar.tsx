@@ -78,8 +78,8 @@ export function Navbar({ transparentOverHero = false }: { transparentOverHero?: 
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
-        solid ? "bg-primary shadow-card" : "bg-transparent",
+        "fixed inset-x-0 top-0 z-50 transition-all duration-300",
+        solid ? "glass-navbar text-primary-foreground" : "bg-transparent text-primary-foreground",
       )}
     >
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -213,7 +213,7 @@ export function Navbar({ transparentOverHero = false }: { transparentOverHero?: 
       {/* Mobile Drawer */}
       <div
         className={cn(
-          "overflow-hidden border-t border-primary-foreground/10 bg-primary transition-[max-height] duration-300 lg:hidden",
+          "overflow-hidden glass-drawer transition-[max-height] duration-300 lg:hidden",
           open ? "max-h-[36rem]" : "max-h-0",
         )}
       >

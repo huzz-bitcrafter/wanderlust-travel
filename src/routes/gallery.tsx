@@ -219,7 +219,7 @@ function GalleryPage() {
           role="dialog"
           aria-modal="true"
           aria-label="Image lightbox"
-          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col justify-between p-4 sm:p-6 select-none animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col justify-between p-4 sm:p-6 select-none animate-in fade-in duration-200"
           onClick={closeLightbox}
         >
           {/* Top Bar: Counter & Close */}
@@ -275,7 +275,7 @@ function GalleryPage() {
             {/* Previous Button */}
             <button
               onClick={showPrev}
-              className="absolute left-2 sm:left-4 z-20 h-11 w-11 rounded-full bg-black/50 hover:bg-black/80 text-white border border-white/10 backdrop-blur-md flex items-center justify-center transition-transform hover:scale-110"
+              className="absolute left-2 sm:left-4 z-20 h-11 w-11 rounded-full bg-black/50 hover:bg-black/80 text-white border border-white/10 backdrop-blur-md flex items-center justify-center transition-transform hover:scale-105 active:scale-95"
               title="Previous photo (Left arrow)"
             >
               <ChevronLeft className="h-6 w-6" />
@@ -286,14 +286,14 @@ function GalleryPage() {
               <img
                 src={activeImage.url}
                 alt={activeImage.caption || "Fullscreen view"}
-                className="max-h-[75vh] max-w-full object-contain rounded-xl shadow-2xl transition-all duration-300"
+                className="max-h-[75vh] max-w-full object-contain rounded-xl shadow-2xl ring-1 ring-white/10 transition-all duration-300"
               />
             </div>
 
             {/* Next Button */}
             <button
               onClick={showNext}
-              className="absolute right-2 sm:right-4 z-20 h-11 w-11 rounded-full bg-black/50 hover:bg-black/80 text-white border border-white/10 backdrop-blur-md flex items-center justify-center transition-transform hover:scale-110"
+              className="absolute right-2 sm:right-4 z-20 h-11 w-11 rounded-full bg-black/50 hover:bg-black/80 text-white border border-white/10 backdrop-blur-md flex items-center justify-center transition-transform hover:scale-105 active:scale-95"
               title="Next photo (Right arrow)"
             >
               <ChevronRight className="h-6 w-6" />
