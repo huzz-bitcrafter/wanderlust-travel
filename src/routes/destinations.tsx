@@ -43,6 +43,7 @@ const destinationsQueryOptions = (params: DestinationsFilterParams) =>
       params.search ?? "",
       params.continent ?? "All",
       params.region ?? "All",
+      params.country ?? "All",
       params.page ?? 1,
     ],
     queryFn: () =>
@@ -51,6 +52,7 @@ const destinationsQueryOptions = (params: DestinationsFilterParams) =>
           search: params.search,
           continent: params.continent,
           region: params.region,
+          country: params.country,
           page: params.page,
           pageSize: 9,
         },
@@ -61,6 +63,7 @@ export type DestinationsSearch = {
   q?: string;
   continent?: string;
   region?: string;
+  country?: string;
   page?: number;
 };
 
@@ -73,12 +76,30 @@ export const Route = createFileRoute("/destinations")({
         : undefined;
     const region =
       typeof search.region === "string" && search.region !== "All" ? search.region : undefined;
+
+    let country: string | undefined = undefined;
+    if (typeof search.country === "string" && search.country !== "All") {
+      const trimmed = search.country.trim();
+      if (trimmed === "India") {
+        country = "India";
+      } else if (
+        trimmed === "!India" ||
+        trimmed === "country!=India" ||
+        trimmed.toLowerCase() === "international"
+      ) {
+        country = "!India";
+      } else {
+        country = trimmed;
+      }
+    }
+
     const page = Number(search.page) > 0 ? Number(search.page) : 1;
 
     return {
       ...(q ? { q } : {}),
       ...(continent ? { continent } : {}),
       ...(region ? { region } : {}),
+      ...(country ? { country } : {}),
       ...(page > 1 ? { page } : {}),
     };
   },
@@ -86,6 +107,7 @@ export const Route = createFileRoute("/destinations")({
     search: search.q,
     continent: search.continent,
     region: search.region,
+    country: search.country,
     page: search.page ?? 1,
   }),
   loader: async ({ context, deps, location }) => {
@@ -127,6 +149,7 @@ function DestinationsPage() {
   const currentSearch = searchParams.q ?? "";
   const currentContinent = searchParams.continent ?? "All";
   const currentRegion = searchParams.region ?? "All";
+  const currentCountry = searchParams.country ?? "All";
   const currentPage = searchParams.page ?? 1;
 
   const [searchInput, setSearchInput] = useState(currentSearch);
@@ -136,6 +159,7 @@ function DestinationsPage() {
       search: currentSearch,
       continent: currentContinent,
       region: currentRegion,
+      country: currentCountry,
       page: currentPage,
     }),
   );
@@ -168,6 +192,7 @@ function DestinationsPage() {
           if (!merged["q"]) delete merged["q"];
           if (merged["continent"] === "All") delete merged["continent"];
           if (merged["region"] === "All") delete merged["region"];
+          if (merged["country"] === "All" || !merged["country"]) delete merged["country"];
           if (merged["page"] === 1) delete merged["page"];
 
           return merged as DestinationsSearch;
@@ -196,7 +221,10 @@ function DestinationsPage() {
   };
 
   const hasActiveFilters = Boolean(
-    currentSearch || currentContinent !== "All" || currentRegion !== "All",
+    currentSearch ||
+      currentContinent !== "All" ||
+      currentRegion !== "All" ||
+      (currentCountry && currentCountry !== "All"),
   );
 
   return (
@@ -281,8 +309,40 @@ function DestinationsPage() {
             </div>
           </div>
 
+          {/* Quick Filter Scope: All | India | International */}
+          <div className="mt-4 pt-4 border-t border-border/50 flex flex-wrap items-center gap-2">
+            <span className="shrink-0 text-xs font-semibold text-muted-foreground mr-1">
+              Scope:
+            </span>
+            {[
+              { label: "All", value: undefined, id: "scope-all" },
+              { label: "India", value: "India", id: "scope-india" },
+              { label: "International", value: "!India", id: "scope-intl" },
+            ].map((pill) => {
+              const isActive =
+                pill.value === undefined
+                  ? !currentCountry || currentCountry === "All"
+                  : currentCountry === pill.value;
+              return (
+                <button
+                  key={pill.id}
+                  type="button"
+                  onClick={() => updateSearch({ country: pill.value })}
+                  className={`inline-flex shrink-0 items-center rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all ${
+                    isActive
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "bg-background text-muted-foreground hover:bg-muted hover:text-foreground border border-border/60"
+                  }`}
+                  aria-pressed={isActive}
+                >
+                  {pill.label}
+                </button>
+              );
+            })}
+          </div>
+
           {/* Continent Filter Pills */}
-          <div className="mt-4 pt-4 border-t border-border/50">
+          <div className="mt-3 pt-3 border-t border-border/30">
             <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
               <span className="shrink-0 text-xs font-medium text-muted-foreground mr-1 hidden sm:inline">
                 Continent:
@@ -317,6 +377,11 @@ function DestinationsPage() {
               Showing <span className="font-semibold text-primary">{items.length}</span> of{" "}
               <span className="font-semibold text-primary">{total}</span>{" "}
               {total === 1 ? "destination" : "destinations"}
+              {currentCountry === "India"
+                ? " in India"
+                : currentCountry === "!India"
+                  ? " (International)"
+                  : ""}
               {currentContinent !== "All" ? ` in ${currentContinent}` : ""}
               {currentRegion !== "All" ? ` (${currentRegion})` : ""}
             </p>
@@ -324,6 +389,19 @@ function DestinationsPage() {
 
           {hasActiveFilters ? (
             <div className="flex flex-wrap items-center gap-1.5 text-xs">
+              {currentCountry && currentCountry !== "All" ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-secondary/10 px-2.5 py-1 text-secondary font-medium">
+                  Scope: {currentCountry === "India" ? "India" : "International"}
+                  <button
+                    type="button"
+                    onClick={() => updateSearch({ country: undefined })}
+                    aria-label="Remove country scope filter"
+                    className="hover:opacity-75"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              ) : null}
               {currentSearch ? (
                 <span className="inline-flex items-center gap-1 rounded-full bg-secondary/10 px-2.5 py-1 text-secondary font-medium">
                   Keyword: "{currentSearch}"
