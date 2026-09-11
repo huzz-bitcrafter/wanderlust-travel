@@ -37,9 +37,30 @@ type RawPackage = Omit<PackageCardData, "destination" | "price_per_person"> & {
   destinations: { name: string; country: string; slug: string } | null;
 };
 
+function resolveDestinationHero<T extends { slug: string; hero_image: string | null }>(dest: T): T {
+  if (dest.slug === "hampi" || dest.hero_image?.includes("photo-1600100397720-3331c26b9a89")) {
+    return { ...dest, hero_image: "/images/destinations/hampi.jpg" };
+  }
+  if (dest.slug === "rishikesh" || dest.hero_image?.includes("photo-1600100397608-f010f443834a")) {
+    return { ...dest, hero_image: "/images/destinations/rishikesh.jpg" };
+  }
+  return dest;
+}
+
+function resolvePackageImage(slug: string, imageUrl: string | null): string | null {
+  if (slug === "hampi-boulder-realm-vijayanagara-ruins" || imageUrl?.includes("photo-1600100397720-3331c26b9a89")) {
+    return "/images/destinations/hampi.jpg";
+  }
+  if (slug === "rishikesh-yoga-and-river-adventure" || imageUrl?.includes("photo-1600100397608-f010f443834a")) {
+    return "/images/destinations/rishikesh.jpg";
+  }
+  return imageUrl;
+}
+
 function mapPackage(row: RawPackage): PackageCardData {
   const { destinations, price_per_person, ...rest } = row;
-  return { ...rest, price_per_person: Number(price_per_person), destination: destinations };
+  const image_url = resolvePackageImage(rest.slug, rest.image_url);
+  return { ...rest, image_url, price_per_person: Number(price_per_person), destination: destinations };
 }
 
 export const listFeaturedDestinations = createServerFn({ method: "GET" }).handler(async () => {
@@ -55,7 +76,7 @@ export const listFeaturedDestinations = createServerFn({ method: "GET" }).handle
     console.error("listFeaturedDestinations", error);
     throw new Error("Could not load destinations");
   }
-  return (data ?? []) as DestinationCardData[];
+  return ((data ?? []) as DestinationCardData[]).map(resolveDestinationHero);
 });
 
 export const listFeaturedPackages = createServerFn({ method: "GET" }).handler(async () => {
@@ -208,7 +229,7 @@ export const fetchDestinations = createServerFn({ method: "GET" })
 
     const total = count ?? 0;
     return {
-      items: (items ?? []) as DestinationCardData[],
+      items: ((items ?? []) as DestinationCardData[]).map(resolveDestinationHero),
       total,
       page: p,
       pageSize: size,
@@ -230,7 +251,7 @@ export const fetchDestinationBySlug = createServerFn({ method: "GET" })
       console.error("fetchDestinationBySlug", error);
       throw new Error("Could not load destination");
     }
-    return data as DestinationDetailData | null;
+    return data ? resolveDestinationHero(data as DestinationDetailData) : null;
   });
 
 export type ItineraryDay = {
@@ -465,7 +486,7 @@ export const fetchPackageBySlug = createServerFn({ method: "GET" })
       price_per_person: Number(raw["price_per_person"]) || 0,
       difficulty: String(raw["difficulty"] || "moderate"),
       group_size_max: Number(raw["group_size_max"]) || 12,
-      image_url: raw["image_url"] ? String(raw["image_url"]) : null,
+      image_url: resolvePackageImage(String(raw["slug"]), raw["image_url"] ? String(raw["image_url"]) : null),
       is_featured: Boolean(raw["is_featured"]),
       status: String(raw["status"] || "published"),
       includes,
