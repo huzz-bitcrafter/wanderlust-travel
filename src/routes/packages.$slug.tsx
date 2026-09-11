@@ -159,7 +159,18 @@ function PackageDetailPage() {
       <section className="relative overflow-hidden bg-primary text-primary-foreground">
         <div className="relative h-[380px] sm:h-[460px] lg:h-[520px] w-full">
           {pkg.image_url ? (
-            <img src={pkg.image_url} alt={pkg.title} className="h-full w-full object-cover" />
+            <img
+              src={pkg.image_url}
+              alt={pkg.title}
+              onError={(e) => {
+                if (pkg.slug === "hampi-boulder-realm-vijayanagara-ruins") {
+                  e.currentTarget.src = "/images/destinations/hampi.jpg";
+                } else if (pkg.slug === "rishikesh-yoga-and-river-adventure") {
+                  e.currentTarget.src = "/images/destinations/rishikesh.jpg";
+                }
+              }}
+              className="h-full w-full object-cover"
+            />
           ) : (
             <div className="h-full w-full bg-primary/90" />
           )}

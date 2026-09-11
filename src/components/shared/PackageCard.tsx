@@ -31,6 +31,13 @@ export function PackageCard({
             src={pkg.image_url}
             alt={pkg.title}
             loading="lazy"
+            onError={(e) => {
+              if (pkg.slug === "hampi-boulder-realm-vijayanagara-ruins") {
+                e.currentTarget.src = "/images/destinations/hampi.jpg";
+              } else if (pkg.slug === "rishikesh-yoga-and-river-adventure") {
+                e.currentTarget.src = "/images/destinations/rishikesh.jpg";
+              }
+            }}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (

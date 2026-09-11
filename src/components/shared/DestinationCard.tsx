@@ -26,6 +26,13 @@ export function DestinationCard({
             src={destination.hero_image}
             alt={`${destination.name}, ${destination.country}`}
             loading="lazy"
+            onError={(e) => {
+              if (destination.slug === "hampi") {
+                e.currentTarget.src = "/images/destinations/hampi.jpg";
+              } else if (destination.slug === "rishikesh") {
+                e.currentTarget.src = "/images/destinations/rishikesh.jpg";
+              }
+            }}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : null}

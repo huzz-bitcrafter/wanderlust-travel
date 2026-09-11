@@ -105,7 +105,7 @@ VALUES
     'Asia',
     'The yoga capital of the world nestled where the emerald Ganges meets the Himalayas.',
     'Set against the foothills of the Garhwal Himalayas, Rishikesh is renowned worldwide as a sanctuary for yoga, meditation, and outdoor adventure. Cross the iconic suspension bridges of Ram Jhula and Lakshman Jhula, navigate thrilling whitewater rapids, and unwind at riverside ashrams with Ayurvedic rituals.',
-    'https://images.unsplash.com/photo-1600100397608-f010f443834a?auto=format&fit=crop&w=1920&q=80',
+    '/images/destinations/rishikesh.jpg',
     'September – April',
     false,
     now()
@@ -175,7 +175,7 @@ VALUES
     'Asia',
     'Surreal boulder-strewn landscape sheltering the monumental ruins of Vijayanagara.',
     'A UNESCO World Heritage marvel, Hampi transports travelers to the magnificent 14th-century capital of the Vijayanagara Empire. Wander between intricately sculpted stone temples, iconic stone chariots, and stepwells set against gigantic balancing boulders, and cross the Tungabhadra River on traditional round coracle boats.',
-    'https://images.unsplash.com/photo-1600100397720-3331c26b9a89?auto=format&fit=crop&w=1920&q=80',
+    '/images/destinations/hampi.jpg',
     'October – March',
     false,
     now()
@@ -611,7 +611,7 @@ VALUES
       {"day": 4, "title": "Neer Gaddu Waterfall Hike", "description": "Scenic trek through mountain terraced villages to the crystal pools of Neer Gaddu waterfall with swimming opportunities."},
       {"day": 5, "title": "Kunjapuri Sunrise & Farewell", "description": "Early morning drive to Kunjapuri Temple for sunrise over snow-capped Himalayan peaks before departure."}
     ]'::jsonb,
-    'https://images.unsplash.com/photo-1600100397608-f010f443834a?auto=format&fit=crop&w=1200&q=80',
+    '/images/destinations/rishikesh.jpg',
     'published',
     false,
     now()
@@ -689,7 +689,7 @@ VALUES
       {"day": 3, "title": "Royal Enclosure & Coracle Ride", "description": "Tour the stepped tank and Queen''s Bath in the Royal Enclosure, then take a round coracle boat across to Anegundi."},
       {"day": 4, "title": "Matanga Hill Sunrise & Departure", "description": "Climb Matanga Hill for a 360-degree sunrise over the temple ruins and boulder landscape before departure."}
     ]'::jsonb,
-    'https://images.unsplash.com/photo-1600100397720-3331c26b9a89?auto=format&fit=crop&w=1200&q=80',
+    '/images/destinations/hampi.jpg',
     'published',
     false,
     now()

@@ -25,6 +25,8 @@
   - Generated migration `docs/migrations/006_domestic_seed.sql` with 12 Indian destinations, 20 hotels, 9 tour packages, and 28 domestic flights across DEL, BOM, BLR, GOI, JAI, IXC, CCU, MAA, COK.
   - Extended `fetchDestinations` in `src/lib/catalog.functions.ts` with `country` filter support.
   - Added URL-synced `All | India | International` quick pills to `/destinations` filter bar with SSR preservation.
+  - Resolved image 404s for Hampi and Rishikesh: added local high-res assets to `public/images/destinations/hampi.jpg` (user-supplied stone chariot photo) and `public/images/destinations/rishikesh.jpg` (Lakshman Jhula suspension bridge over the emerald Ganges with the Himalayas).
+  - Updated `006_domestic_seed.sql` and wired automatic server/client fallbacks in `src/lib/catalog.functions.ts`, `DestinationCard.tsx`, and `PackageCard.tsx`.
 
 ## In Progress
 
