@@ -1,6 +1,6 @@
 # Memory — Wanderlust
 
-**Last updated:** 2026-09-02 | **Current phase:** Final QA Fixes & Brand Assets | **Session #:** 6
+**Last updated:** 2026-09-12 | **Current phase:** Domestic (India) Content Expansion | **Session #:** 7
 
 ## Completed
 
@@ -19,20 +19,16 @@
 - [x] Phase 12A — Admin Portal Foundation & User/Booking Operations (admin route guard with `requireAdminGuard` and 403 Forbidden state; responsive Admin Portal layout at `/admin` with management sidebar; Overview Dashboard at `/admin/overview` with real-time KPI metrics, revenue tracking, and recent bookings stream; Bookings Management at `/admin/bookings` with multi-facet search/filtering, detailed reservation drawer, and status/payment update modal; Users & Roles Management at `/admin/users` with user search, admin role assignment/revocation with self-demotion lockout protection; documented database migration `004_user_roles_admin_policy.sql`).
 - [x] Phase 12B — Content CRUD, Review Moderation & Contact Inbox (Destinations CRUD at `/admin/destinations` with continent filter, cover photo preview, auto-slug generator, and delete dialog; Tour Packages CRUD at `/admin/packages` with destination linkage, duration/price/difficulty specs, multi-day itinerary JSON builder, inclusions/exclusions tags, and live public preview link; Hotels CRUD at `/admin/hotels` with destination linkage, star rating selector, rate per night, interactive amenities checklist, and live public preview link; Flights CRUD at `/admin/flights` with airline, flight number, origin/destination codes, datetime-local timestamps, seat inventory tracking, and cabin class filtering; Review Moderation Queue at `/admin/reviews` with Pending Moderation, Approved & Live, and All tabs, single-click approve/unapprove actions, and permanent deletion; Customer Inbox at `/admin/inbox` with status filters, inquiry reader modal, status state machine, and reply-via-email link).
 - [x] Phase 13 — Gallery Lightbox & Contact Form (SSR gallery at `/gallery` with destination URL filters, responsive Masonry grid, hover overlays with location tags, interactive fullscreen Lightbox modal with keyboard navigation [Arrows + Escape] and photo index counters; Contact Page at `/contact` with Zod-validated submission to `contact_messages` table, user auto-fill, inquiry tracking badge, global concierge office details, and interactive FAQ accordion).
-- [x] Acceptance Testing Fixes:
-  - [x] **Part A (Multi-Guest Booking Bug)**: Multi-guest steppers added across all 3 product types in `/checkout` (Tours up to `group_size_max`, Hotels carrying dates/guests/rooms, Flights 1–9 passengers). Per-passenger First Name & Last Name form added for Flights in Step 2. Pricing formulas aligned to exact prompt rules. Full passenger arrays and guest details persisted to `bookings.guest_details` and actual counts to `bookings.guests`.
-  - [x] **Part B (Itinerary Builder Bug)**: Fixed React Query in-place cache mutation bug in `reorderMutation` by introducing deep immutable state cloning and explicit target ID/order swaps. Added optimistic updates for item creation. Fixed timezone/date-fns interval computation for exact day generation. Converted print view to clean native `@media print` CSS.
-  - [x] **Part C (Two Quick Verifications)**:
-    1. _Demo payment label_: Confirmed prominent banner and badges on `/checkout` and `/checkout/confirmation` declaring demo mode with no real monetary charge.
-    2. _48-Hour Cancellation Rule_: Located in `src/routes/hotels.$id.tsx` (L634), `src/routes/checkout.tsx` (L587), `src/routes/contact.tsx` (L72), and `src/routes/account/bookings.tsx` (L102-124, L414). Cancellation is processed via `supabase.from('bookings').update({ status: 'cancelled' })` under the traveler guarantee policy.
+- [x] Acceptance Testing Fixes (Multi-guest booking, itinerary reordering, demo payment notice, 48h cancellation rule).
 - [x] Phase 14 — QA & Polish (A11y audits, SEO OpenGraph metadata, Supabase RLS security sweep table, end-to-end user & admin flow verification).
-- [x] Post-Acceptance Polish:
-  - [x] **Bug A (Reviews Loading on Detail Pages)**: Fixed `ReviewSection.tsx` queryFn invocation to pass `{ data: { targetId, targetType } }` into TanStack Start `createServerFn` endpoints (`fetchReviewAggregate`, `fetchReviewsByTarget`), resolving parameter extraction and eliminating 500 errors.
-  - [x] **Bug B (Brand Logo & Favicon Replacement)**: Replaced default favicon with `Logo_wanderlust.png` in `public/` and `src/routes/__root.tsx`. Integrated the brand logo in the Navbar brand link.
+- [x] Content Expansion (Domestic India):
+  - Generated migration `docs/migrations/006_domestic_seed.sql` with 12 Indian destinations, 20 hotels, 9 tour packages, and 28 domestic flights across DEL, BOM, BLR, GOI, JAI, IXC, CCU, MAA, COK.
+  - Extended `fetchDestinations` in `src/lib/catalog.functions.ts` with `country` filter support.
+  - Added URL-synced `All | India | International` quick pills to `/destinations` filter bar with SSR preservation.
 
 ## In Progress
 
-- Complete. All phases, acceptance fixes, and brand updates verified with 0 lint errors and clean production builds.
+- Complete. Verified with 0 lint/type errors and clean production builds.
 
 ## Key Decisions
 

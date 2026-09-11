@@ -94,6 +94,7 @@ export type DestinationsFilterParams = {
   search?: string;
   continent?: string;
   region?: string;
+  country?: string;
   page?: number;
   pageSize?: number;
 };
@@ -119,17 +120,27 @@ export const CONTINENTS = [
 export const REGIONS = [
   "All",
   "Alberta",
+  "Andaman & Nicobar",
   "Campania",
   "Cyclades",
+  "Himachal Pradesh",
   "Kansai",
+  "Karnataka",
+  "Kerala",
+  "Ladakh",
   "Lesser Sunda",
   "Lisboa",
   "Magallanes",
   "Mara",
   "Marrakesh-Safi",
+  "North India",
   "North Malé Atoll",
   "Otago",
+  "Rajasthan",
   "Southern Region",
+  "Uttarakhand",
+  "West Bengal",
+  "West India",
 ] as const;
 
 export const fetchDestinations = createServerFn({ method: "GET" })
@@ -138,12 +149,13 @@ export const fetchDestinations = createServerFn({ method: "GET" })
       search?: string;
       continent?: string;
       region?: string;
+      country?: string;
       page?: number;
       pageSize?: number;
     }) => params ?? {},
   )
   .handler(async ({ data }) => {
-    const { search, continent, region, page = 1, pageSize = 9 } = data;
+    const { search, continent, region, country, page = 1, pageSize = 9 } = data;
     const { getPublicSupabase } = await import("./supabase-public.server");
     const supabase = getPublicSupabase();
 
@@ -162,6 +174,22 @@ export const fetchDestinations = createServerFn({ method: "GET" })
 
     if (region && region.toLowerCase() !== "all") {
       query = query.eq("region", region);
+    }
+
+    if (country && country.toLowerCase() !== "all") {
+      if (country === "India") {
+        query = query.eq("country", "India");
+      } else if (
+        country === "!India" ||
+        country === "country!=India" ||
+        country.toLowerCase() === "international"
+      ) {
+        query = query.neq("country", "India");
+      } else if (country.startsWith("!")) {
+        query = query.neq("country", country.slice(1));
+      } else {
+        query = query.eq("country", country);
+      }
     }
 
     const p = Math.max(1, Number(page) || 1);
