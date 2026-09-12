@@ -157,4 +157,25 @@ Translucency acts as a functional structural layer rather than an opaque block.
   - **Text Legibility**: Headline and subline styled with `text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45)`, maintaining WCAG legibility over high-exposure frames without requiring aggressive full-frame video darkening.
 - **Reduced Motion**: Under `prefers-reduced-motion: reduce`, `.ken-burns` keyframe animation and transform scale are explicitly disabled, displaying a crisp static high-res poster with identical neutral scrims.
 
+### 6. Expressive Gallery Specification & Vendored Component Porting Record (Phase 5)
+
+#### Gallery Specification
+- **Curated Spotlight**: Features an interactive desktop spotlight collage powered by the ported `ImageCollage` component (`src/components/vendored/ImageCollage.tsx`) using up to 9 featured photographs from the active destination selection.
+- **Expressive Interaction**: Provides a tactile layout toggle between **Collage view** (artistic scattered layout with natural angle rotations and offsets) and **Editorial view** (clean synchronized deck). Clicking anywhere on the collage stage or toggle buttons smoothly animates between states.
+- **Fullscreen Lightbox Integration**: Every photo card in the collage is an accessible interactive element (`role="button"`, `tabIndex={0}`, Enter/Space key support). Clicking any card directly triggers the fullscreen accessible Lightbox at that image index, maintaining seamless arrow navigation (Left/Right), ESC to close, and focus retention.
+- **Mobile Responsive Fallback**: On mobile devices (viewport width ≤768px), the collage component is omitted (`hidden md:block`), presenting the fast, high-density responsive masonry columns.
+- **Reduced-Motion Fallback**: Under `prefers-reduced-motion: reduce`, all spring physics, offsets, and rotation animations are disabled (`duration: 0`), instantly switching views with zero vestibulary movement.
+- **Complete Archive Preservation**: The full masonry collection is positioned directly below the spotlight, ensuring 100% of photographs remain immediately discoverable and accessible across all screen sizes.
+
+#### Vendored Component Porting Record
+- **Component Source**: Vengeance UI (`https://www.vengenceui.com/components/image-collage`, original file: `src/components/ui/image-collage.tsx`).
+- **Vendored Path**: `src/components/vendored/ImageCollage.tsx`.
+- **Porting Adaptations**:
+  1. **Next.js Elimination**: Removed `"use client"` directive to ensure clean universal rendering under TanStack Start SSR.
+  2. **Motion Library Alignment**: Migrated from `framer-motion` to `motion/react` (motion.dev v13, React 19 native).
+  3. **Token Alignment**: Replaced ungrounded hard-coded hex and zinc classes with Wanderlust OKLCH tokens (`bg-card`, `border-border/80`, `shadow-card-hover`, `focus-visible:ring-secondary`).
+  4. **Interactive Callback & A11y**: Added `onImageClick` callback with full keyboard support (`Enter`/`Space`) and ARIA labels, linking directly to the existing Lightbox modal.
+  5. **Reduced Motion**: Wired `useReducedMotion()` from `motion/react` with zero-duration spring suppression.
+
+
 

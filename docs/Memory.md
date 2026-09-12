@@ -1,6 +1,6 @@
 # Memory — Wanderlust
 
-**Last updated:** 2026-09-12 | **Current phase:** UI Polish (Phase 4 Complete, at HARD GATE before Phase 5) | **Session #:** 8
+**Last updated:** 2026-09-12 | **Current phase:** UI Polish (Phase 5 Complete, proceeding to Phase 6 Final Audit) | **Session #:** 8
 
 ## Completed
 
@@ -94,9 +94,22 @@
   - Full reduced-motion override disables edge light (`display: none !important`) and image transform (`transform: none !important`).
   - Zero external/registry components installed; native CSS only.
 
+- [x] UI Polish Phase 5 — Gallery: Vengeance UI Image Collage Integration (Ported):
+  - Fetched and inspected raw `image-collage.tsx` component from Vengeance UI registry (`https://raw.githubusercontent.com/Ashutoshx7/VengeanceUI/main/src/components/ui/image-collage.tsx`).
+  - Vendored and ported component into `src/components/vendored/ImageCollage.tsx`.
+  - Removed `"use client"` directive for seamless TanStack Start SSR compatibility.
+  - Migrated animation primitives from `framer-motion` to React 19 native `motion/react` (motion.dev v13).
+  - Aligned styling with Wanderlust OKLCH tokens (`bg-card`, `border-border/80`, `shadow-card-hover`, `ring-secondary`).
+  - Added tactile "Editorial view (Organized)" ↔ "Collage view (Scattered)" layout toggle in `src/routes/gallery.tsx` using 9 featured photographs from the active destination filter.
+  - Wired accessible keyboard (`role="button"`, `tabIndex={0}`, Enter/Space) and pointer click handlers on every collage photo to trigger the existing accessible fullscreen Lightbox modal at that image's index.
+  - Mobile (≤768px): static responsive masonry grid displayed; collage spotlight hidden (`hidden md:block`).
+  - Reduced-motion: wired `useReducedMotion()` to immediately switch views with zero spring animation, zero offset translation, and zero rotation.
+  - SSR non-negotiable verified: `curl -sL http://localhost:8080/gallery` outputs complete SSR HTML payload with 100% of images and destination metadata.
+  - All existing destination URL filters (`?destination=slug`), lightbox arrow navigation (Left/Right), ESC to close, and full archive grid beneath spotlight preserved 100%.
+
 ## In Progress
 
-- UI Polish Phase 4 complete and verified. Reached ⛔ HARD GATE: Awaiting user action to push repository to GitHub as backup before Phase 5 (Gallery: Vengeance UI Image Collage).
+- UI Polish Phase 5 complete and verified. Next: Phase 6 — Final Audit & Regression (A11y, performance, reduced-motion, contrast re-check, and comprehensive functional regression flow).
 
 ## Key Decisions
 
