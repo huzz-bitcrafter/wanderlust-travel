@@ -77,24 +77,26 @@ export function Navbar({ transparentOverHero = false }: { transparentOverHero?: 
   };
 
   return (
-    <header
-      className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-300",
-        solid ? "glass-navbar text-primary-foreground" : "bg-transparent text-primary-foreground",
-      )}
-    >
-      <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-6 sm:pt-4 pointer-events-none transition-all duration-300">
+      <nav
+        className={cn(
+          "mx-auto flex h-14 sm:h-16 max-w-7xl items-center justify-between px-4 sm:px-6 transition-all duration-300 pointer-events-auto rounded-full glass-navbar text-white",
+          solid ? "shadow-2xl" : "bg-opacity-80 shadow-lg",
+        )}
+      >
         <Link
           to="/"
-          className="flex items-center gap-2.5 text-primary-foreground"
+          className="flex items-center gap-2.5 text-white transition-opacity hover:opacity-90"
           onClick={() => setOpen(false)}
         >
           <img
             src="/Logo_wanderlust.png"
             alt="Wanderlust"
-            className="h-8 w-8 rounded-full object-cover ring-1 ring-primary-foreground/20"
+            className="h-8 w-8 rounded-full object-cover ring-2 ring-white/30 shadow-sm"
           />
-          <span className="font-display text-xl font-bold tracking-tight">Wanderlust</span>
+          <span className="font-display text-lg sm:text-xl font-bold tracking-tight text-white drop-shadow-sm">
+            Wanderlust
+          </span>
         </Link>
 
         <ul className="hidden items-center gap-1 lg:flex">
@@ -102,8 +104,11 @@ export function Navbar({ transparentOverHero = false }: { transparentOverHero?: 
             <li key={link.to}>
               <Link
                 to={link.to}
-                className="rounded-full px-3 py-2 text-sm font-medium text-primary-foreground/80 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground"
-                activeProps={{ className: "text-primary-foreground bg-primary-foreground/10" }}
+                className="nav-glass-link"
+                activeProps={{
+                  className:
+                    "nav-glass-link bg-white/20 text-white font-semibold shadow-[inset_1px_1px_3px_rgba(255,255,255,0.4),inset_-1px_-1px_3px_rgba(255,255,255,0.15)]",
+                }}
                 activeOptions={{ exact: link.to === "/" }}
               >
                 {link.label}
@@ -114,28 +119,28 @@ export function Navbar({ transparentOverHero = false }: { transparentOverHero?: 
 
         {/* Desktop Auth Section */}
         <div className="hidden items-center gap-2 lg:flex">
-          <AnimatedThemeToggler className="text-primary-foreground/80 hover:bg-primary-foreground/10 hover:text-primary-foreground" />
+          <AnimatedThemeToggler className="text-white/85 hover:bg-white/15 hover:text-white" />
           {!loading && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
                   type="button"
-                  className="flex items-center gap-2 rounded-full p-1 text-primary-foreground transition hover:ring-2 hover:ring-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                  className="flex items-center gap-2 rounded-full p-1 text-white transition hover:ring-2 hover:ring-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
                   aria-label="User account menu"
                 >
-                  <Avatar className="h-9 w-9 border border-primary-foreground/20">
+                  <Avatar className="h-9 w-9 border-2 border-white/30 shadow-sm">
                     <AvatarImage src={profile?.avatar_url ?? undefined} alt={displayName} />
                     <AvatarFallback className="bg-accent text-xs font-bold text-accent-foreground">
                       {initials}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="max-w-[130px] truncate text-sm font-medium text-primary-foreground">
+                  <span className="max-w-[130px] truncate text-sm font-medium text-white drop-shadow-sm">
                     {displayName}
                   </span>
-                  <ChevronDown className="h-4 w-4 text-primary-foreground/70" aria-hidden="true" />
+                  <ChevronDown className="h-4 w-4 text-white/75" aria-hidden="true" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 p-1.5 shadow-lg">
+              <DropdownMenuContent align="end" className="w-56 p-1.5 shadow-xl">
                 <DropdownMenuLabel className="px-2 py-1.5 font-normal">
                   <div className="flex flex-col space-y-1">
                     <div className="flex items-center gap-1.5">
@@ -186,13 +191,13 @@ export function Navbar({ transparentOverHero = false }: { transparentOverHero?: 
               <Button
                 asChild
                 variant="ghost"
-                className="rounded-full text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
+                className="rounded-full text-white hover:bg-white/15 hover:text-white"
               >
                 <Link to="/login">Sign in</Link>
               </Button>
               <Button
                 asChild
-                className="rounded-full bg-accent text-accent-foreground hover:bg-accent/90"
+                className="rounded-full bg-accent text-accent-foreground hover:bg-accent/90 shadow-sm font-semibold"
               >
                 <Link to="/register">Get started</Link>
               </Button>
@@ -202,10 +207,10 @@ export function Navbar({ transparentOverHero = false }: { transparentOverHero?: 
 
         {/* Mobile controls */}
         <div className="flex items-center gap-1 lg:hidden">
-          <AnimatedThemeToggler className="text-primary-foreground/80 hover:bg-primary-foreground/10 hover:text-primary-foreground" />
+          <AnimatedThemeToggler className="text-white/85 hover:bg-white/15 hover:text-white" />
           <button
             type="button"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full text-primary-foreground"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full text-white hover:bg-white/15 transition-colors"
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
@@ -218,15 +223,17 @@ export function Navbar({ transparentOverHero = false }: { transparentOverHero?: 
       {/* Mobile Drawer */}
       <div
         className={cn(
-          "overflow-hidden glass-drawer transition-[max-height] duration-300 lg:hidden",
-          open ? "max-h-[36rem]" : "max-h-0",
+          "mx-auto mt-2 max-w-lg overflow-hidden glass-drawer transition-[max-height,opacity] duration-300 lg:hidden pointer-events-auto text-white",
+          open
+            ? "max-h-[38rem] opacity-100 p-4"
+            : "max-h-0 opacity-0 p-0 pointer-events-none border-0",
         )}
       >
-        <ul className="space-y-1 px-4 py-4">
+        <ul className="space-y-1">
           {!loading && user ? (
-            <li className="mb-3 border-b border-primary-foreground/10 pb-3">
+            <li className="mb-3 border-b border-white/15 pb-3">
               <div className="flex items-center gap-3 px-2 py-1">
-                <Avatar className="h-10 w-10 border border-primary-foreground/20">
+                <Avatar className="h-10 w-10 border-2 border-white/30">
                   <AvatarImage src={profile?.avatar_url ?? undefined} alt={displayName} />
                   <AvatarFallback className="bg-accent text-sm font-bold text-accent-foreground">
                     {initials}
@@ -234,23 +241,21 @@ export function Navbar({ transparentOverHero = false }: { transparentOverHero?: 
                 </Avatar>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5">
-                    <p className="truncate text-sm font-semibold text-primary-foreground">
-                      {displayName}
-                    </p>
+                    <p className="truncate text-sm font-semibold text-white">{displayName}</p>
                     {isAdmin ? (
                       <span className="rounded-full bg-accent/20 px-1.5 py-0.5 text-[10px] font-medium text-accent">
                         Admin
                       </span>
                     ) : null}
                   </div>
-                  <p className="truncate text-xs text-primary-foreground/70">{displayEmail}</p>
+                  <p className="truncate text-xs text-white/70">{displayEmail}</p>
                 </div>
               </div>
               <div className="mt-2 space-y-1">
                 <Link
                   to="/account"
                   onClick={() => setOpen(false)}
-                  className="flex min-h-10 items-center gap-2.5 rounded-lg px-2 text-sm font-medium text-primary-foreground/85 hover:bg-primary-foreground/10"
+                  className="flex min-h-10 items-center gap-2.5 rounded-lg px-2 text-sm font-medium text-white/90 hover:bg-white/15"
                 >
                   <User className="h-4 w-4" aria-hidden="true" />
                   My Account
@@ -259,7 +264,7 @@ export function Navbar({ transparentOverHero = false }: { transparentOverHero?: 
                   <Link
                     to="/admin"
                     onClick={() => setOpen(false)}
-                    className="flex min-h-10 items-center gap-2.5 rounded-lg px-2 text-sm font-medium text-accent hover:bg-primary-foreground/10"
+                    className="flex min-h-10 items-center gap-2.5 rounded-lg px-2 text-sm font-medium text-accent hover:bg-white/15"
                   >
                     <Shield className="h-4 w-4" aria-hidden="true" />
                     Admin Portal
@@ -282,8 +287,11 @@ export function Navbar({ transparentOverHero = false }: { transparentOverHero?: 
               <Link
                 to={link.to}
                 onClick={() => setOpen(false)}
-                className="flex min-h-11 items-center rounded-lg px-3 text-base font-medium text-primary-foreground/85 hover:bg-primary-foreground/10"
-                activeProps={{ className: "text-primary-foreground bg-primary-foreground/10" }}
+                className="flex min-h-11 items-center rounded-xl px-3 text-base font-medium text-white/85 hover:bg-white/15 hover:text-white transition-colors"
+                activeProps={{
+                  className:
+                    "text-white bg-white/20 font-semibold shadow-[inset_1px_1px_3px_rgba(255,255,255,0.3)]",
+                }}
                 activeOptions={{ exact: link.to === "/" }}
               >
                 {link.label}
@@ -296,7 +304,7 @@ export function Navbar({ transparentOverHero = false }: { transparentOverHero?: 
               <Button
                 asChild
                 variant="outline"
-                className="flex-1 rounded-full border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
+                className="flex-1 rounded-full border-white/30 bg-white/10 text-white hover:bg-white/20 hover:text-white"
               >
                 <Link to="/login" onClick={() => setOpen(false)}>
                   Sign in
@@ -304,7 +312,7 @@ export function Navbar({ transparentOverHero = false }: { transparentOverHero?: 
               </Button>
               <Button
                 asChild
-                className="flex-1 rounded-full bg-accent text-accent-foreground hover:bg-accent/90"
+                className="flex-1 rounded-full bg-accent text-accent-foreground hover:bg-accent/90 shadow-sm font-semibold"
               >
                 <Link to="/register" onClick={() => setOpen(false)}>
                   Get started

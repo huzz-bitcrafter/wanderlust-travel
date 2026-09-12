@@ -13,7 +13,7 @@ export function SiteLayout({
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Navbar transparentOverHero={transparentNav} />
-      <main className={cn("flex-1", transparentNav ? "" : "pt-16")}>{children}</main>
+      <main className={cn("flex-1", transparentNav ? "" : "pt-20 sm:pt-24")}>{children}</main>
       <Footer />
     </div>
   );

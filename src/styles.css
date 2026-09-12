@@ -351,20 +351,56 @@
   }
 }
 
-/* Translucent Materials & Depth (Apple Design §12) */
+/* Translucent Materials & Depth (Apple Design §12 + Uiverse Liquid Glass) */
 @utility glass-navbar {
-  background-color: oklch(0.24 0.066 256 / 0.82);
-  backdrop-filter: blur(16px) saturate(180%);
+  position: relative;
+  background-color: oklch(0.24 0.066 256 / 0.85);
+  backdrop-filter: blur(16px) saturate(180%) contrast(115%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border-bottom: 1px solid oklch(1 0 0 / 0.12);
-  box-shadow: 0 4px 24px -4px oklch(0.24 0.066 256 / 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  border-radius: 9999px;
+  box-shadow:
+    0 12px 32px -4px rgba(0, 0, 0, 0.25),
+    inset 2px 2px 5px -2px rgba(255, 255, 255, 0.45),
+    inset -2px -2px 5px 2px rgba(255, 255, 255, 0.15),
+    inset 0 -2px 0 rgba(255, 255, 255, 0.20);
 }
 
 @utility glass-drawer {
+  position: relative;
   background-color: oklch(0.24 0.066 256 / 0.94);
-  backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%) contrast(115%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-top: 1px solid oklch(1 0 0 / 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 1.25rem;
+  box-shadow:
+    0 16px 36px -4px rgba(0, 0, 0, 0.35),
+    inset 2px 2px 5px -2px rgba(255, 255, 255, 0.4),
+    inset -2px -2px 5px 2px rgba(255, 255, 255, 0.12),
+    inset 0 -2px 0 rgba(255, 255, 255, 0.2);
+}
+
+@utility nav-glass-link {
+  border-radius: 9999px;
+  padding: 0.375rem 0.875rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+    box-shadow:
+      inset 1px 1px 4px -1px rgba(255, 255, 255, 0.45),
+      inset -1px -1px 4px 1px rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
 }
 
 @utility glass-chrome {
@@ -488,14 +524,23 @@
 
 /* Dark Material Overrides */
 .dark .glass-navbar {
-  background-color: oklch(0.14 0.035 256 / 0.82);
-  border-bottom: 1px solid oklch(1 0 0 / 0.08);
-  box-shadow: 0 4px 24px -4px oklch(0 0 0 / 0.4);
+  background-color: oklch(0.18 0.042 256 / 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 16px 36px -6px rgba(0, 0, 0, 0.6),
+    inset 2px 2px 5px -2px rgba(255, 255, 255, 0.4),
+    inset -2px -2px 5px 2px rgba(255, 255, 255, 0.08),
+    inset 0 -2px 0 rgba(255, 255, 255, 0.18);
 }
 
 .dark .glass-drawer {
-  background-color: oklch(0.14 0.035 256 / 0.94);
-  border-top: 1px solid oklch(1 0 0 / 0.08);
+  background-color: oklch(0.18 0.042 256 / 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 20px 40px -6px rgba(0, 0, 0, 0.65),
+    inset 2px 2px 5px -2px rgba(255, 255, 255, 0.3),
+    inset -2px -2px 5px 2px rgba(255, 255, 255, 0.06),
+    inset 0 -2px 0 rgba(255, 255, 255, 0.18);
 }
 
 .dark .glass-chrome {
@@ -660,6 +705,11 @@
   .glass-navbar,
   .glass-drawer {
     background-color: var(--color-primary) !important;
+  }
+
+  .dark .glass-navbar,
+  .dark .glass-drawer {
+    background-color: var(--color-card) !important;
   }
 
   .glass-chrome,
