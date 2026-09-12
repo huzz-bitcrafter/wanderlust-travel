@@ -48,10 +48,16 @@ function resolveDestinationHero<T extends { slug: string; hero_image: string | n
 }
 
 function resolvePackageImage(slug: string, imageUrl: string | null): string | null {
-  if (slug === "hampi-boulder-realm-vijayanagara-ruins" || imageUrl?.includes("photo-1600100397720-3331c26b9a89")) {
+  if (
+    slug === "hampi-boulder-realm-vijayanagara-ruins" ||
+    imageUrl?.includes("photo-1600100397720-3331c26b9a89")
+  ) {
     return "/images/destinations/hampi.jpg";
   }
-  if (slug === "rishikesh-yoga-and-river-adventure" || imageUrl?.includes("photo-1600100397608-f010f443834a")) {
+  if (
+    slug === "rishikesh-yoga-and-river-adventure" ||
+    imageUrl?.includes("photo-1600100397608-f010f443834a")
+  ) {
     return "/images/destinations/rishikesh.jpg";
   }
   return imageUrl;
@@ -60,7 +66,12 @@ function resolvePackageImage(slug: string, imageUrl: string | null): string | nu
 function mapPackage(row: RawPackage): PackageCardData {
   const { destinations, price_per_person, ...rest } = row;
   const image_url = resolvePackageImage(rest.slug, rest.image_url);
-  return { ...rest, image_url, price_per_person: Number(price_per_person), destination: destinations };
+  return {
+    ...rest,
+    image_url,
+    price_per_person: Number(price_per_person),
+    destination: destinations,
+  };
 }
 
 export const listFeaturedDestinations = createServerFn({ method: "GET" }).handler(async () => {
@@ -486,7 +497,10 @@ export const fetchPackageBySlug = createServerFn({ method: "GET" })
       price_per_person: Number(raw["price_per_person"]) || 0,
       difficulty: String(raw["difficulty"] || "moderate"),
       group_size_max: Number(raw["group_size_max"]) || 12,
-      image_url: resolvePackageImage(String(raw["slug"]), raw["image_url"] ? String(raw["image_url"]) : null),
+      image_url: resolvePackageImage(
+        String(raw["slug"]),
+        raw["image_url"] ? String(raw["image_url"]) : null,
+      ),
       is_featured: Boolean(raw["is_featured"]),
       status: String(raw["status"] || "published"),
       includes,
