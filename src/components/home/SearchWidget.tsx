@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { FilterDestinationOption, FlightCityOption } from "@/lib/catalog.functions";
+import { SectionReveal } from "@/components/shared/SectionReveal";
 
 /* ------------------------------------------------------------------ */
 /*  Lightweight Destination Autocomplete                               */
@@ -276,7 +277,7 @@ export function SearchWidget({
   };
 
   return (
-    <div className="relative z-20 mx-auto -mt-16 max-w-5xl px-4 sm:px-6 lg:px-8">
+    <SectionReveal as="div" className="relative z-20 mx-auto -mt-16 max-w-5xl px-4 sm:px-6 lg:px-8">
       <div className="glass-search rounded-3xl p-1 sm:p-2">
         <Tabs defaultValue="flights" className="w-full">
           {/* Tab triggers */}
@@ -565,6 +566,6 @@ export function SearchWidget({
           </TabsContent>
         </Tabs>
       </div>
-    </div>
+    </SectionReveal>
   );
 }

@@ -1,10 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
+import { SectionReveal } from "@/components/shared/SectionReveal";
 
 export function CtaBand() {
   return (
     <section className="bg-accent">
-      <div className="mx-auto flex max-w-7xl flex-col items-start gap-6 px-4 py-14 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+      <SectionReveal className="mx-auto flex max-w-7xl flex-col items-start gap-6 px-4 py-14 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
         <div className="max-w-2xl text-accent-foreground">
           <h2 className="text-3xl sm:text-4xl">Ready when you are</h2>
           <p className="mt-3 text-accent-foreground/85">
@@ -29,7 +30,7 @@ export function CtaBand() {
             <Link to="/packages">Browse tours</Link>
           </Button>
         </div>
-      </div>
+      </SectionReveal>
     </section>
   );
 }

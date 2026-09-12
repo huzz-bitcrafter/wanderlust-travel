@@ -1,6 +1,6 @@
 # Memory — Wanderlust
 
-**Last updated:** 2026-09-12 | **Current phase:** UI Polish (Phase 2 Complete, awaiting Phase 3) | **Session #:** 8
+**Last updated:** 2026-09-12 | **Current phase:** UI Polish (Phase 3 Complete, awaiting Phase 4) | **Session #:** 8
 
 ## Completed
 
@@ -76,9 +76,18 @@
   - Reduced motion respects user preferences: sweep disabled (`display: none !important`), hover color and elevation preserved.
   - Zero classes added to individual buttons; secondary/ghost/outline variants completely unchanged.
 
+- [x] UI Polish Phase 3 — Section Entrance Reveals:
+  - Installed `motion` (motion.dev v13, React 19 compatible).
+  - Created shared `SectionReveal` component (`src/components/shared/SectionReveal.tsx`) utilizing `motion` with critically damped easing (`cubic-bezier(0.16, 1, 0.3, 1)`, 0 overshoot) transitioning `opacity: 0 → 1` and `translateY: 14px → 0` `whileInView` (`viewport: { once: true, amount: 0.15 }`).
+  - Applied to section GROUPS across Home (hero excluded): SearchWidget, ExploreIndia, FeaturedDestinations, FeaturedPackages, WhyUs, Testimonials, CtaBand.
+  - Applied to primary listing section groups in `destinations.tsx`, `packages.tsx`, and `hotels.tsx`.
+  - For full-width colored background bands (e.g. `bg-muted/40`, `bg-accent`), inner container is revealed so background bands remain seamless without viewport tears.
+  - SSR non-negotiable compliance verified: curl/Ctrl+U tests show 100% of headings, content, text, and links present in initial server-rendered HTML payload.
+  - Reduced-motion support: `useReducedMotion()` and CSS `[data-reveal]` rule in `src/styles.css` render elements immediately with zero translation under `prefers-reduced-motion: reduce`.
+
 ## In Progress
 
-- UI Polish Phase 2 complete and verified. Awaiting user review and explicit "continue" before Phase 3 (Section Entrance Reveals).
+- UI Polish Phase 3 complete and verified. Awaiting user review and explicit "continue" before Phase 4 (Card Hover Edge Light).
 
 ## Key Decisions
 

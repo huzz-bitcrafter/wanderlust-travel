@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DestinationCard } from "@/components/shared/DestinationCard";
+import { SectionReveal } from "@/components/shared/SectionReveal";
 import type { DestinationCardData } from "@/lib/catalog.functions";
 
 export function ExploreIndia({
@@ -13,7 +14,7 @@ export function ExploreIndia({
 }) {
   return (
     <section className="bg-muted/40 py-16 sm:py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <SectionReveal className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="eyebrow text-secondary">Discover India</p>
@@ -53,7 +54,7 @@ export function ExploreIndia({
             ))}
           </div>
         )}
-      </div>
+      </SectionReveal>
     </section>
   );
 }

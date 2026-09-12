@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { SiteLayout, PageHeader } from "@/components/layout/SiteLayout";
 import { HotelCard } from "@/components/shared/HotelCard";
+import { SectionReveal } from "@/components/shared/SectionReveal";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -255,7 +256,7 @@ function HotelsPage() {
         description="Browse luxury boutique retreats, clifftop suites, historic riads, and serene villas curated for comfort and unforgettable views."
       />
 
-      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <SectionReveal as="section" className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Filter Controls Card */}
         <div className="rounded-2xl border border-border/70 bg-card p-4 sm:p-6 shadow-sm">
           {/* Row 1: Search, Destination, and Sort */}
@@ -602,7 +603,7 @@ function HotelsPage() {
             </div>
           </div>
         ) : null}
-      </section>
+      </SectionReveal>
     </SiteLayout>
   );
 }

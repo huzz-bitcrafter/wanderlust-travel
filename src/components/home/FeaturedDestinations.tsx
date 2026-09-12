@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DestinationCard } from "@/components/shared/DestinationCard";
+import { SectionReveal } from "@/components/shared/SectionReveal";
 import type { DestinationCardData } from "@/lib/catalog.functions";
 
 export function FeaturedDestinations({
@@ -12,7 +13,7 @@ export function FeaturedDestinations({
   isLoading?: boolean;
 }) {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+    <SectionReveal as="section" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="eyebrow text-secondary">Featured destinations</p>
@@ -51,6 +52,6 @@ export function FeaturedDestinations({
           ))}
         </div>
       )}
-    </section>
+    </SectionReveal>
   );
 }

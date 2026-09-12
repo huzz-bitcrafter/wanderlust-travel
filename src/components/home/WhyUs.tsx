@@ -1,4 +1,5 @@
 import { CalendarRange, LifeBuoy, Route, ShieldCheck } from "lucide-react";
+import { SectionReveal } from "@/components/shared/SectionReveal";
 
 const REASONS = [
   {
@@ -25,7 +26,7 @@ const REASONS = [
 
 export function WhyUs() {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+    <SectionReveal as="section" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
       <div className="max-w-2xl">
         <p className="eyebrow text-secondary">Why Wanderlust</p>
         <h2 className="mt-2 text-3xl sm:text-4xl">Planning that stays out of your way</h2>
@@ -41,6 +42,6 @@ export function WhyUs() {
           </div>
         ))}
       </div>
-    </section>
+    </SectionReveal>
   );
 }

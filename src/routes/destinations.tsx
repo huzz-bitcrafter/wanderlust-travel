@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { SiteLayout, PageHeader } from "@/components/layout/SiteLayout";
 import { DestinationCard } from "@/components/shared/DestinationCard";
+import { SectionReveal } from "@/components/shared/SectionReveal";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -235,7 +236,7 @@ function DestinationsPage() {
         description="Discover awe-inspiring places across all six continents. Filter by continent, region, or keyword to find your next unforgettable journey."
       />
 
-      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <SectionReveal as="section" className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Filters & Search Controls */}
         <div className="rounded-2xl border border-border/70 bg-card p-4 sm:p-6 shadow-sm">
           {/* Search bar & Region Select */}
@@ -556,7 +557,7 @@ function DestinationsPage() {
             </div>
           </div>
         ) : null}
-      </section>
+      </SectionReveal>
     </SiteLayout>
   );
 }

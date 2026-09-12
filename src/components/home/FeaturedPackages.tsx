@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PackageCard } from "@/components/shared/PackageCard";
+import { SectionReveal } from "@/components/shared/SectionReveal";
 import type { PackageCardData } from "@/lib/catalog.functions";
 
 export function FeaturedPackages({
@@ -13,7 +14,7 @@ export function FeaturedPackages({
 }) {
   return (
     <section className="bg-muted/60 py-16 sm:py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <SectionReveal className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="eyebrow text-secondary">Tour packages</p>
@@ -52,7 +53,7 @@ export function FeaturedPackages({
             ))}
           </div>
         )}
-      </div>
+      </SectionReveal>
     </section>
   );
 }

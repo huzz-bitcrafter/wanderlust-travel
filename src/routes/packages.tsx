@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { SiteLayout, PageHeader } from "@/components/layout/SiteLayout";
 import { PackageCard } from "@/components/shared/PackageCard";
+import { SectionReveal } from "@/components/shared/SectionReveal";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -272,7 +273,7 @@ function PackagesPage() {
         description="Immerse yourself in world-class travel itineraries designed end-to-end by local specialists. Filter by destination, pace, duration, or budget."
       />
 
-      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <SectionReveal as="section" className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Filter Controls Card */}
         <div className="rounded-2xl border border-border/70 bg-card p-4 sm:p-6 shadow-sm">
           {/* Row 1: Search & Destination & Sort */}
@@ -646,7 +647,7 @@ function PackagesPage() {
             </div>
           </div>
         ) : null}
-      </section>
+      </SectionReveal>
     </SiteLayout>
   );
 }

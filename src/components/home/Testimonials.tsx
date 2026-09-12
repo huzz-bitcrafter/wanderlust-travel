@@ -1,4 +1,5 @@
 import { Rating } from "@/components/shared/Rating";
+import { SectionReveal } from "@/components/shared/SectionReveal";
 
 const TESTIMONIALS = [
   {
@@ -27,7 +28,7 @@ const TESTIMONIALS = [
 export function Testimonials() {
   return (
     <section className="bg-muted/60 py-16 sm:py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <SectionReveal className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl">
           <p className="eyebrow text-secondary">Traveller stories</p>
           <h2 className="mt-2 text-3xl sm:text-4xl">Trips people came back raving about</h2>
@@ -46,7 +47,7 @@ export function Testimonials() {
             </figure>
           ))}
         </div>
-      </div>
+      </SectionReveal>
     </section>
   );
 }
