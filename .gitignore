@@ -1,0 +1,9 @@
+
+# --- secrets & backups ---
+.env
+.env.*
+!.env.example
+
+# --- sibling projects ---
+Project 2-Personal Portfolio/
+assets.img/
