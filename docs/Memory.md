@@ -100,6 +100,7 @@
   - Removed `"use client"` directive for seamless TanStack Start SSR compatibility.
   - Migrated animation primitives from `framer-motion` to React 19 native `motion/react` (motion.dev v13).
   - Aligned styling with Wanderlust OKLCH tokens (`bg-card`, `border-border/80`, `shadow-card-hover`, `ring-secondary`).
+  - Implemented fanned horizontal flex layout (`-space-x-16`) ensuring all featured photographs are simultaneously spread out and visible across the stage rather than stacked at a single point.
   - Added tactile "Editorial view (Organized)" ↔ "Collage view (Scattered)" layout toggle in `src/routes/gallery.tsx` using 9 featured photographs from the active destination filter.
   - Wired accessible keyboard (`role="button"`, `tabIndex={0}`, Enter/Space) and pointer click handlers on every collage photo to trigger the existing accessible fullscreen Lightbox modal at that image's index.
   - Mobile (≤768px): static responsive masonry grid displayed; collage spotlight hidden (`hidden md:block`).
