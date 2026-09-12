@@ -273,6 +273,92 @@
   animation: content-reveal 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+@keyframes ken-burns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}
+
+@utility ken-burns {
+  animation: ken-burns 20s ease-in-out alternate infinite;
+}
+
+@utility glass-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 0 24px 12px rgba(255, 255, 255, 1.2);
+  overflow: hidden;
+}
+
+@utility glass-search {
+  position: relative;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 0 24px 12px rgba(255, 255, 255, 1.2);
+  overflow: hidden;
+}
+
+.glass-card::before,
+.glass-search::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.8),
+    transparent
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.glass-card::after,
+.glass-search::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.8),
+    transparent,
+    rgba(255, 255, 255, 0.3)
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Ensure autocomplete popup is not clipped when open */
+.glass-card:has([role="listbox"]),
+.glass-search:has([role="listbox"]) {
+  overflow: visible;
+}
+
+
 @keyframes content-reveal {
   from {
     opacity: 0;
@@ -295,8 +381,10 @@
 
   .animate-pulse,
   .animate-spin,
-  .animate-bounce {
+  .animate-bounce,
+  .ken-burns {
     animation: none !important;
+    transform: none !important;
   }
 
   button:active,
@@ -311,6 +399,8 @@
   .glass-navbar,
   .glass-drawer,
   .glass-chrome,
+  .glass-search,
+  .glass-card,
   .admin-sidebar,
   .modal-scrim,
   header,
@@ -334,6 +424,8 @@
   }
 
   .glass-chrome,
+  .glass-search,
+  .glass-card,
   .admin-sidebar {
     background-color: var(--color-card) !important;
   }
