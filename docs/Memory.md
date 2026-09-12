@@ -1,8 +1,17 @@
 # Memory — Wanderlust
 
-**Last updated:** 2026-09-13 | **Current phase:** Project Complete — All Baseline & UI Polish Phases Sign-Off | **Session #:** 8
+**Last updated:** 2026-09-13 | **Current phase:** Theme System — Phase A Complete (Token Foundation & Dark Material Architecture) | **Session #:** 9
 
 ## Completed
+
+- [x] Theme System Phase A — Token Foundation & Dark Material Architecture:
+  - Updated `@custom-variant dark (&:is(.dark, .dark *));` in `src/styles.css` ensuring utility styling applies to `.dark` root or any child.
+  - Defined full `.dark` OKLCH token dictionary in `src/styles.css` (`--background`, `--foreground`, `--card`, `--primary`, `--secondary`, `--accent`, `--accent-text`, `--muted`, `--border`, gradients, and black-based shadow tokens).
+  - Selected Option A for dark primary: `--primary: oklch(0.92 0.015 85)` (luminous moonlight ivory) with `--primary-foreground: oklch(0.14 0.035 256)` (deep midnight navy text, 15.72:1 AAA contrast).
+  - Preserved deep midnight surfaces for structural sections via `.dark footer.bg-primary, .dark section.bg-primary { background-color: var(--color-card); border-color: var(--color-border); }`.
+  - Added dark glass material utilities (`.dark .glass-navbar`, `.dark .glass-drawer`, `.dark .glass-chrome`, `.dark .admin-sidebar`, `.dark .glass-card`, `.dark .glass-search`).
+  - Updated `docs/Design.md` with full dual-theme token table, shadow architecture, and WCAG AA/AAA compliance proofs.
+  - Reversal: Replaced the legacy "light theme only" rule with a first-class dual-theme architecture.
 
 - [x] Backend foundation — Database migration to user project, RLS policies, tables, and seed data.
 - [x] Phase 1 — Design system (tokens, Playfair Display + Inter, card/button/focus styling).
@@ -109,8 +118,7 @@
 - Phase 4 authentication provides a client-side `AuthProvider` mounted at root with dual-client architecture (`src/integrations/supabase/client.ts` for browser auth/profile hydration and `user_roles` permission checking). Navbar dynamically reacts to login/logout events and presents avatar dropdown and admin link without page refreshes.
 - Phase 8 Itinerary Builder is entirely client-side rendered using `supabase` client with `requireAuthGuard`. Implements account shell with responsive tabbed nav, user itinerary listing with destination and activity counters, and full interactive day-by-day activity editor with optimistic reordering and print view.
 - Phase 12 Admin Portal provides complete backend administration with dedicated sub-routes for Overview KPIs, Bookings Management, User Roles, Destinations CRUD, Packages CRUD, Hotels CRUD, Flights Inventory, Review Moderation, and Customer Inbox.
-- Phase 13 delivers a full-screen interactive lightbox gallery with URL destination filters and a live concierge contact portal with automated inquiry ticket generation and FAQs.
-- Flights/hotels seeded in the database; no external APIs. Payments simulated. Light theme only.
+- Flights/hotels seeded in the database; no external APIs. Payments simulated. Dual theme supported (Light & Dark) via pure CSS OKLCH tokens and View Transitions API; zero flash-of-wrong-theme via `<head>` SSR script. No external theme libraries.
 
 ## Schema Changes (keep in sync with Architecture.md §5)
 

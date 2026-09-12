@@ -2,12 +2,12 @@
 @source "../src";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:is(.dark, .dark *));
 
 /*
  * Wanderlust design system.
  * Warm, cinematic, aspirational: navy-teal base with coral accents.
- * All colors are oklch. Light theme only (v1).
+ * Dual-theme (light and dark) design system. All colors are oklch.
  */
 
 @theme inline {
@@ -122,6 +122,57 @@
     oklch(0.68 0.168 38 / 0.32) 0%,
     oklch(0.62 0.096 186 / 0.28) 100%
   );
+}
+
+.dark {
+  --background: oklch(0.14 0.035 256);
+  --foreground: oklch(0.96 0.008 85);
+  --card: oklch(0.19 0.040 256);
+  --card-foreground: oklch(0.96 0.008 85);
+  --popover: oklch(0.21 0.042 256);
+  --popover-foreground: oklch(0.96 0.008 85);
+  --primary: oklch(0.92 0.015 85);
+  --primary-foreground: oklch(0.14 0.035 256);
+  --secondary: oklch(0.68 0.110 186);
+  --secondary-foreground: oklch(0.14 0.035 256);
+  --muted: oklch(0.22 0.030 256);
+  --muted-foreground: oklch(0.70 0.025 220);
+  --accent: oklch(0.70 0.165 38);
+  --accent-foreground: oklch(0.14 0.035 256);
+  --accent-text: oklch(0.74 0.160 42);
+  --destructive: oklch(0.65 0.190 25);
+  --destructive-foreground: oklch(1 0 0);
+  --success: oklch(0.68 0.140 158);
+  --success-foreground: oklch(0.14 0.035 256);
+  --warning: oklch(0.78 0.135 72);
+  --warning-foreground: oklch(0.14 0.035 256);
+  --border: oklch(0.28 0.035 256);
+  --input: oklch(0.28 0.035 256);
+  --ring: oklch(0.68 0.110 186);
+  --chart-1: oklch(0.92 0.015 85);
+  --chart-2: oklch(0.68 0.110 186);
+  --chart-3: oklch(0.70 0.165 38);
+  --chart-4: oklch(0.78 0.135 72);
+  --chart-5: oklch(0.68 0.140 158);
+  --sidebar: oklch(0.16 0.038 256);
+  --sidebar-foreground: oklch(0.96 0.008 85);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: oklch(0.22 0.030 256);
+  --sidebar-accent-foreground: oklch(0.96 0.008 85);
+  --sidebar-border: oklch(0.28 0.035 256);
+  --sidebar-ring: oklch(0.68 0.110 186);
+  --gradient-primary: linear-gradient(135deg, oklch(0.18 0.045 256) 0%, oklch(0.24 0.055 200) 100%);
+  --gradient-accent: linear-gradient(135deg, oklch(0.70 0.165 38) 0%, oklch(0.74 0.155 62) 100%);
+  --gradient-card-edge: linear-gradient(
+    135deg,
+    oklch(0.70 0.165 38 / 0.40) 0%,
+    oklch(0.68 0.110 186 / 0.35) 100%
+  );
+  --shadow-card: 0 1px 3px oklch(0 0 0 / 0.25), 0 4px 12px -2px oklch(0 0 0 / 0.30);
+  --shadow-card-hover: 0 16px 36px -10px oklch(0 0 0 / 0.50), 0 4px 12px -2px oklch(0 0 0 / 0.35);
+  --shadow-elegant: 0 28px 64px -20px oklch(0 0 0 / 0.65), 0 8px 24px -6px oklch(0 0 0 / 0.40);
+  --shadow-modal: 0 32px 64px -16px oklch(0 0 0 / 0.75), 0 0 0 1px oklch(1 0 0 / 0.10);
 }
 
 @layer base {
@@ -433,6 +484,62 @@
 .glass-card:has([role="listbox"]),
 .glass-search:has([role="listbox"]) {
   overflow: visible;
+}
+
+/* Dark Material Overrides */
+.dark .glass-navbar {
+  background-color: oklch(0.14 0.035 256 / 0.82);
+  border-bottom: 1px solid oklch(1 0 0 / 0.08);
+  box-shadow: 0 4px 24px -4px oklch(0 0 0 / 0.4);
+}
+
+.dark .glass-drawer {
+  background-color: oklch(0.14 0.035 256 / 0.94);
+  border-top: 1px solid oklch(1 0 0 / 0.08);
+}
+
+.dark .glass-chrome {
+  background-color: oklch(0.19 0.040 256 / 0.85);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: 0 2px 14px -2px oklch(0 0 0 / 0.3);
+}
+
+.dark .admin-sidebar {
+  background-color: oklch(0.16 0.038 256 / 0.92);
+  border-right: 1px solid var(--color-border);
+  box-shadow: 1px 0 20px -4px oklch(0 0 0 / 0.3);
+}
+
+.dark .glass-card,
+.dark .glass-search {
+  background: oklch(0.18 0.040 256 / 0.55);
+  border: 1px solid oklch(1 0 0 / 0.15);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 oklch(1 0 0 / 0.2),
+    inset 0 -1px 0 oklch(0 0 0 / 0.3);
+}
+
+.dark .glass-card::before,
+.dark .glass-search::before {
+  background: linear-gradient(90deg, transparent, oklch(1 0 0 / 0.3), transparent);
+}
+
+.dark .glass-card::after,
+.dark .glass-search::after {
+  background: linear-gradient(
+    180deg,
+    oklch(1 0 0 / 0.3),
+    transparent,
+    oklch(1 0 0 / 0.1)
+  );
+}
+
+/* Preserved Deep Surfaces for Structural Navy Sections in Dark Mode */
+.dark footer.bg-primary,
+.dark section.bg-primary {
+  background-color: var(--color-card);
+  border-color: var(--color-border);
 }
 
 @keyframes content-reveal {
