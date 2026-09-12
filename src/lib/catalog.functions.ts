@@ -107,6 +107,22 @@ export const listFeaturedPackages = createServerFn({ method: "GET" }).handler(as
   return ((data ?? []) as unknown as RawPackage[]).map(mapPackage);
 });
 
+export const listIndianDestinations = createServerFn({ method: "GET" }).handler(async () => {
+  const { getPublicSupabase } = await import("./supabase-public.server");
+  const { data, error } = await getPublicSupabase()
+    .from("destinations")
+    .select(DESTINATION_FIELDS)
+    .eq("country", "India")
+    .order("name")
+    .limit(6);
+
+  if (error) {
+    console.error("listIndianDestinations", error);
+    throw new Error("Could not load Indian destinations");
+  }
+  return ((data ?? []) as DestinationCardData[]).map(resolveDestinationHero);
+});
+
 export type DestinationDetailData = {
   id: string;
   slug: string;

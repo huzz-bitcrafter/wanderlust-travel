@@ -56,9 +56,15 @@
   - Updated prefers-reduced-motion to explicitly disable `.ken-burns` zoom on poster.
   - Verified with `npm run lint` and `npm run build` passing with 0 errors.
 
+- [x] Home Page v2 Restoration & Root Cause Resolution:
+  - **Root Cause**: During commit `53da8e3` ("Hero fix: full-bleed video, neutral cinematic scrim (no colored tint)"), files were staged selectively (`Hero.tsx`, `Design.md`, `Memory.md`, `styles.css`). Consequently, `SearchWidget.tsx` and `ExploreIndia.tsx` remained untracked, while changes to `index.tsx` (5-query prefetch + widget/ExploreIndia rendering) and `catalog.functions.ts` (`listIndianDestinations`) were unstaged. When an abandoned spotlight task was later reverted with `git reset --hard` and `git checkout HEAD -- .`, the unstaged and untracked files were lost from the working tree.
+  - **Restoration**: Recreated `SearchWidget.tsx` (4-tab flights/hotels/packages/destinations search with airport swapping, destination combobox autocomplete, and parameter navigation) and `ExploreIndia.tsx` (6 Indian destination cards with skeleton loaders). Restored `listIndianDestinations` server function and 5 concurrent query prefetches in `src/routes/index.tsx`.
+  - **Verification**: Cleared build caches (`node_modules/.vite`, `.output`, `.nitro`), verified `GET /` returns 200 with complete SSR payload (tabs, Explore India, hero video), verified all 4 search target routes with query parameters return 200, and verified `npm run lint` and `npm run build` pass cleanly.
+  - **Safeguard**: All related files staged together in a single comprehensive commit to ensure zero orphaned state.
+
 ## In Progress
 
-- Complete. Verified with 0 lint/type errors and clean production builds.
+- Step 1 complete and verified. Awaiting user review before proceeding to Step 2 (liquid glass restyle).
 
 ## Key Decisions
 
