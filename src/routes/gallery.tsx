@@ -93,9 +93,9 @@ function GalleryPage() {
     return Array.from(destMap.values());
   }, [destinations]);
 
-  // Map into 3D Cylinder Carousel items
+  // Curate 6 premier showcase images for the 3D cylinder to ensure a balanced, visually satisfying 3D geometry
   const cylinderItems: CylinderImageItem[] = useMemo(() => {
-    return allGalleryImages.map((img) => ({
+    return allGalleryImages.slice(0, 6).map((img) => ({
       id: img.id,
       src: img.url,
       alt: img.caption || img.destination?.name || "Travel photography capture",
@@ -169,7 +169,7 @@ function GalleryPage() {
     <SiteLayout>
       <PageHeader eyebrow="Visual Odyssey" title="Destination Gallery" description={description} />
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-12">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10">
         {/* Category / Destination Filter Pills */}
         <div className="flex flex-wrap items-center justify-center gap-2 max-w-5xl mx-auto">
           <button
@@ -220,26 +220,26 @@ function GalleryPage() {
           </div>
         ) : (
           <>
-            {/* Expressive Feature: Infinite CSS 3D Cylinder Interactive Carousel */}
-            {cylinderItems.length > 2 && (
-              <div className="space-y-4">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 px-1">
+            {/* Expressive Feature: Infinite CSS 3D Cylinder Auto-Spinning Carousel */}
+            {cylinderItems.length >= 3 && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between px-1">
                   <div className="flex items-center gap-2">
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent/15 text-accent-text text-xs font-semibold border border-accent/20">
                       <Sparkles className="h-3.5 w-3.5 text-accent-text" />
-                      Interactive 3D Cylinder Showcase
+                      Curated 3D Cylinder Spotlight
                     </span>
                     <span className="text-xs text-muted-foreground hidden sm:inline">
-                      Infinite 360° perspective view of all destinations
+                      Continuous 360° perspective • Hover to pause
                     </span>
                   </div>
                 </div>
 
-                <div className="rounded-3xl border border-border/80 bg-gradient-to-b from-card/80 via-card/50 to-card/20 backdrop-blur-md p-3 sm:p-6 shadow-xl relative overflow-hidden">
+                <div className="rounded-3xl border border-border/80 bg-gradient-to-b from-card/80 via-card/40 to-transparent backdrop-blur-md p-2 sm:p-4 shadow-lg relative overflow-hidden">
                   <CylinderCarousel
                     images={cylinderItems}
-                    cardWidth={230}
-                    animationDuration={42}
+                    cardWidth={195}
+                    animationDuration={24}
                     onImageClick={(idx) => openLightbox(idx)}
                   />
                 </div>
