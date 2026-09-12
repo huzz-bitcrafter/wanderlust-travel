@@ -144,7 +144,7 @@ Immediate physical response on pointer-down (touch-down, not release).
 - **Buttons (`<Button>`, `<button>`, `[role="button"]`)**: `:active { transform: scale(0.97); transition: transform 100ms ease-out; }`
 - **Primary CTA Hover Shine (`.cta-shine`)**:
   - Rest: coral or midnight navy base unchanged, `position: relative; overflow: hidden;`
-  - Hover: single subtle light sweep via `::after` (`linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.3) 50%, transparent 80%)`, `translateX(-100%)` → `translateX(100%)` in 180ms cubic-bezier(0.16, 1, 0.3, 1)) + 1.5px elevation (`translateY(-1.5px)`) + soft shadow lift.
+  - Hover: single subtle light sweep via `::after` (`linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.3) 50%, transparent 80%)`, `translateX(-100%)` → `translateX(100%)` in 180ms cubic-bezier(0.16, 1, 0.3, 1)) + 1.5px elevation (`translateY(-1.5px)`) + soft shadow lift (Light: `0 4px 14px -2px oklch(0.24 0.066 256 / 0.16)`; Dark: `0 4px 14px -2px oklch(0 0 0 / 0.5), 0 0 12px -2px oklch(0.92 0.015 85 / 0.2)`).
   - Leave: transitions only on `:hover::after`, instantly resetting to `-100%` without reverse animation.
   - Active: press feedback (`scale(0.97)`) untouched.
   - Reduced-motion: sweep disabled (`display: none !important`), hover color and elevation preserved.
@@ -154,7 +154,7 @@ Immediate physical response on pointer-down (touch-down, not release).
   - Active / Pointer-down: `transform: scale(0.97); transition: transform 100ms ease-out, box-shadow 100ms ease-out;`
 - **Card Hover Edge Light (`.card-edge-light`, DestinationCard, PackageCard, HotelCard)**:
   - Rest: plain card border (`border-border/50` or `/60`), no glow, photography dominates.
-  - Hover (`@media (hover: hover) and (pointer: fine)`): existing lift + very subtle 1px coral→teal gradient border highlight via `::before` (`linear-gradient(135deg, oklch(0.68 0.168 38 / 0.32) 0%, oklch(0.62 0.096 186 / 0.28) 100%)` with `mask-composite: exclude`) + gentle image micro-zoom 1.01 (`scale-[1.01]`).
+  - Hover (`@media (hover: hover) and (pointer: fine)`): existing lift + very subtle 1px coral→teal gradient border highlight via `::before` (Light: `linear-gradient(135deg, oklch(0.68 0.168 38 / 0.32) 0%, oklch(0.62 0.096 186 / 0.28) 100%)`; Dark: `linear-gradient(135deg, oklch(0.70 0.165 38 / 0.40) 0%, oklch(0.68 0.110 186 / 0.35) 100%)` with `mask-composite: exclude`) + gentle image micro-zoom 1.01 (`scale-[1.01]`). Crisp 1px boundary; never reads as glow-mush.
   - Leave: 250ms `cubic-bezier(0.16, 1, 0.3, 1)` smooth fade back to resting border.
   - Touch / Mobile (`@media (hover: none)`): plain border, zero edge light on tap.
   - Reduced-motion: edge light disabled (`display: none !important`), image transform disabled (`transform: none !important`).

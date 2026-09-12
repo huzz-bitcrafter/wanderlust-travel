@@ -550,6 +550,10 @@
   border-color: var(--color-border);
 }
 
+.dark .cta-shine:hover {
+  box-shadow: 0 4px 14px -2px oklch(0 0 0 / 0.5), 0 0 12px -2px oklch(0.92 0.015 85 / 0.2);
+}
+
 /* View Transitions for AnimatedThemeToggler Circular Reveal */
 ::view-transition-old(root),
 ::view-transition-new(root) {

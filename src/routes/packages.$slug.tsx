@@ -172,11 +172,11 @@ function PackageDetailPage() {
               className="h-full w-full object-cover"
             />
           ) : (
-            <div className="h-full w-full bg-primary/90" />
+            <div className="h-full w-full bg-card" />
           )}
 
-          {/* Deep gradient overlay for text legibility */}
-          <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/75 to-primary/25" />
+          {/* Deep neutral gradient overlay for text legibility */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/20" />
 
           {/* Hero Content Container */}
           <div className="absolute inset-0 flex flex-col justify-end">

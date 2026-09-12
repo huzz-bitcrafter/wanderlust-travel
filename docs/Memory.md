@@ -1,9 +1,14 @@
 # Memory — Wanderlust
 
-**Last updated:** 2026-09-13 | **Current phase:** Theme System — Phase C Complete (Dot Pattern Component) | **Session #:** 9
+**Last updated:** 2026-09-13 | **Current phase:** Dual-Theme System Complete — Signed Off | **Session #:** 9
 
 ## Completed
 
+- [x] Theme System Phase D — Contrast, Polish Effects & Dark Flow QA:
+  - Verified `.cta-shine` and `.card-edge-light` in dark mode: added `.dark .cta-shine:hover` with black elevation (`oklch(0 0 0 / 0.5)`) and subtle luminous ivory rim reflection (`oklch(0.92 0.015 85 / 0.2)`).
+  - Hardened photographic hero overlays across `destinations.$slug.tsx`, `packages.$slug.tsx`, and `hotels.$id.tsx` to use neutral `from-black/90 via-black/60 to-black/20` scrims and `bg-card` image fallbacks, preventing ivory overlay regressions and guaranteeing pristine AAA contrast on text/badges.
+  - Verified full SSR health across root (`/`), `/contact`, `/destinations`, `/packages`, `/hotels`, and `/flights`.
+  - Audited `prefers-reduced-motion` instantaneous toggle behavior and confirmed zero linter and zero build regressions.
 - [x] Theme System Phase C — Dot Pattern Component & Ambient Background:
   - Vendored 21st.dev pure SVG `DotPattern` component into `src/components/vendored/DotPattern.tsx` with dynamic `useId()`, semantic `fill-foreground/15` styling, and zero third-party dependencies.
   - Mounted `DotPattern` exclusively on the Contact page backdrop in `src/routes/contact.tsx` with radial gradient transparency mask (`[mask-image:radial-gradient(ellipse_at_center,white,transparent_75%)]`).
