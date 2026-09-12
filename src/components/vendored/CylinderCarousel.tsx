@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback, useMemo } from "react";
+import React, { useRef, useState, useCallback, useMemo } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -24,9 +24,9 @@ export interface CylinderCarouselProps extends React.HTMLAttributes<HTMLDivEleme
   images: CylinderImageItem[];
   containerClassName?: string;
   cardClassName?: string;
-  animationDuration?: number; // Duration in seconds for full 360 rotation (default 48)
-  cardWidth?: number; // Width of cards in px (default 155)
-  stageHeight?: string; // Viewport height class (default "h-[270px] sm:h-[310px]")
+  animationDuration?: number; // Duration in seconds for full 360 rotation (default 45)
+  cardWidth?: number; // Width of cards in px (default 140)
+  stageHeight?: string; // Viewport height class (default "h-[250px] sm:h-[285px]")
   onImageClick?: (index: number) => void;
   autoPlay?: boolean;
 }
@@ -38,9 +38,9 @@ export const CylinderCarousel = React.forwardRef<HTMLDivElement, CylinderCarouse
       className,
       containerClassName,
       cardClassName,
-      animationDuration = 48,
-      cardWidth = 155,
-      stageHeight = "h-[270px] sm:h-[310px]",
+      animationDuration = 45,
+      cardWidth = 140,
+      stageHeight = "h-[250px] sm:h-[285px]",
       onImageClick,
       autoPlay = true,
       ...props
@@ -48,36 +48,29 @@ export const CylinderCarousel = React.forwardRef<HTMLDivElement, CylinderCarouse
     forwardedRef,
   ) => {
     const internalRef = useRef<HTMLDivElement>(null);
-    const cylinderRef = useRef<HTMLDivElement>(null);
 
     const N = images.length;
 
     // Interactive State
     const [isPlaying, setIsPlaying] = useState<boolean>(autoPlay);
-    const [isHoveringCard, setIsHoveringCard] = useState<boolean>(false);
     const [isDragging, setIsDragging] = useState<boolean>(false);
-    const [activeCardIndex, setActiveCardIndex] = useState<number>(0);
+    const [dragAngle, setDragAngle] = useState<number>(0);
 
-    // Physics / Motion Refs for 60/120fps GPU smooth rendering without re-renders
-    const angleRef = useRef<number>(0); // Current displayed angle
-    const targetAngleRef = useRef<number>(0); // Target angle for lerping
-    const velocityRef = useRef<number>(0); // Drag momentum velocity
+    // Pointer Tracking Refs
     const isPointerDownRef = useRef<boolean>(false);
     const startXRef = useRef<number>(0);
     const lastXRef = useRef<number>(0);
     const hasDraggedRef = useRef<boolean>(false);
-    const lastTimeRef = useRef<number>(0);
-    const rafIdRef = useRef<number | null>(null);
 
     // Base angle per card in degrees
     const baseAngleDeg = useMemo(() => (N > 0 ? 360 / N : 360), [N]);
 
-    // Apothem / Radius calculation: R = (W/2 + 6) / tan(pi / N)
+    // Apothem / Radius calculation: R = (W/2 + 5) / tan(pi / N)
     const radiusPx = useMemo(() => {
-      if (N <= 1) return 180;
+      if (N <= 1) return 160;
       const rad = Math.PI / N;
       const w = cardWidth;
-      return Math.max(200, Math.round((w / 2 + 6) / Math.tan(rad)));
+      return Math.max(180, Math.round((w / 2 + 5) / Math.tan(rad)));
     }, [N, cardWidth]);
 
     // CSS Variables for cylinder geometry
@@ -93,78 +86,14 @@ export const CylinderCarousel = React.forwardRef<HTMLDivElement, CylinderCarouse
       [N, cardWidth, baseAngleDeg, radiusPx, animationDuration],
     );
 
-    // Check prefers-reduced-motion
-    const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean>(false);
-    useEffect(() => {
-      if (typeof window === "undefined") return;
-      const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-      setPrefersReducedMotion(mediaQuery.matches);
-      const listener = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
-      mediaQuery.addEventListener("change", listener);
-      return () => mediaQuery.removeEventListener("change", listener);
-    }, []);
-
-    // Main 60fps physics & rotation loop — ALWAYS auto-spins when isPlaying is true
-    useEffect(() => {
-      let isRunning = true;
-
-      const animate = (timestamp: number) => {
-        if (!lastTimeRef.current) lastTimeRef.current = timestamp;
-        const dt = Math.min((timestamp - lastTimeRef.current) / 1000, 0.1);
-        lastTimeRef.current = timestamp;
-
-        if (cylinderRef.current && N > 0) {
-          // Auto-spin: runs continuously unless user is actively dragging or prefers reduced motion
-          if (isPlaying && !isPointerDownRef.current && !prefersReducedMotion) {
-            // Speed in degrees per second: 360 / duration
-            // Slightly ease to 40% speed when hovering directly on an individual card for easy clicking
-            const speedMultiplier = isHoveringCard ? 0.35 : 1.0;
-            const autoSpeed = (360 / animationDuration) * speedMultiplier;
-            targetAngleRef.current -= autoSpeed * dt;
-          }
-
-          // Apply velocity friction decay when released from drag
-          if (!isPointerDownRef.current && Math.abs(velocityRef.current) > 0.05) {
-            targetAngleRef.current += velocityRef.current;
-            velocityRef.current *= 0.92; // Inertia damping
-          }
-
-          // Smooth lerp towards target angle
-          const lerpFactor = isPointerDownRef.current ? 0.35 : 0.15;
-          angleRef.current += (targetAngleRef.current - angleRef.current) * lerpFactor;
-
-          // Apply 3D rotation transform directly to DOM for optimal GPU performance
-          cylinderRef.current.style.transform = `rotateY(${angleRef.current}deg)`;
-
-          // Track which card is facing front for accessibility / indicator
-          const normalized = ((-angleRef.current % 360) + 360) % 360;
-          const frontIndex = Math.round(normalized / baseAngleDeg) % N;
-          setActiveCardIndex((prev) => (prev !== frontIndex ? frontIndex : prev));
-        }
-
-        if (isRunning) {
-          rafIdRef.current = requestAnimationFrame(animate);
-        }
-      };
-
-      rafIdRef.current = requestAnimationFrame(animate);
-
-      return () => {
-        isRunning = false;
-        if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
-      };
-    }, [isPlaying, isHoveringCard, prefersReducedMotion, animationDuration, baseAngleDeg, N]);
-
     // Interactive Drag / Swipe Handlers
     const handlePointerDown = (e: React.PointerEvent) => {
       isPointerDownRef.current = true;
       startXRef.current = e.clientX;
       lastXRef.current = e.clientX;
       hasDraggedRef.current = false;
-      velocityRef.current = 0;
       setIsDragging(true);
 
-      // Capture pointer on container so drag continues outside bounds
       if (e.currentTarget instanceof HTMLElement) {
         try {
           e.currentTarget.setPointerCapture(e.pointerId);
@@ -180,17 +109,13 @@ export const CylinderCarousel = React.forwardRef<HTMLDivElement, CylinderCarouse
       const deltaX = e.clientX - lastXRef.current;
       lastXRef.current = e.clientX;
 
-      // Distance from start to distinguish click from swipe
-      if (Math.abs(e.clientX - startXRef.current) > 6) {
+      if (Math.abs(e.clientX - startXRef.current) > 5) {
         hasDraggedRef.current = true;
       }
 
       // Drag sensitivity factor (degrees per pixel)
       const dragFactor = 0.28;
-      const angleDelta = deltaX * dragFactor;
-
-      targetAngleRef.current += angleDelta;
-      velocityRef.current = angleDelta * 0.8; // Store recent velocity
+      setDragAngle((prev) => prev + deltaX * dragFactor);
     };
 
     const handlePointerUp = (e: React.PointerEvent) => {
@@ -206,32 +131,27 @@ export const CylinderCarousel = React.forwardRef<HTMLDivElement, CylinderCarouse
       }
     };
 
-    // Card click handler (only triggers if not dragging)
+    // Card click handler (only triggers if not dragged)
     const handleCardClick = (index: number, e: React.MouseEvent | React.KeyboardEvent) => {
       e.stopPropagation();
       if (hasDraggedRef.current) return;
       onImageClick?.(index);
     };
 
-    // Step navigation (Previous / Next card buttons)
+    // Step navigation buttons
     const rotateStep = useCallback(
       (direction: "prev" | "next") => {
-        velocityRef.current = 0;
         const step = direction === "prev" ? baseAngleDeg : -baseAngleDeg;
-        // Snap target to nearest clean card angle
-        const snappedTarget =
-          Math.round((targetAngleRef.current + step) / baseAngleDeg) * baseAngleDeg;
-        targetAngleRef.current = snappedTarget;
+        setDragAngle((prev) => prev + step);
       },
       [baseAngleDeg],
     );
 
     const resetRotation = useCallback(() => {
-      velocityRef.current = 0;
-      targetAngleRef.current = 0;
+      setDragAngle(0);
     }, []);
 
-    // Keyboard navigation (ArrowLeft / ArrowRight)
+    // Keyboard navigation
     const handleKeyDown = (e: React.KeyboardEvent) => {
       if (e.key === "ArrowLeft") {
         e.preventDefault();
@@ -239,9 +159,6 @@ export const CylinderCarousel = React.forwardRef<HTMLDivElement, CylinderCarouse
       } else if (e.key === "ArrowRight") {
         e.preventDefault();
         rotateStep("next");
-      } else if (e.key === " " || e.key === "Enter") {
-        e.preventDefault();
-        onImageClick?.(activeCardIndex);
       }
     };
 
@@ -257,7 +174,7 @@ export const CylinderCarousel = React.forwardRef<HTMLDivElement, CylinderCarouse
       >
         {/* Interactive Controls & Status Bar */}
         <div className="w-full flex flex-wrap items-center justify-between gap-2 px-2 py-1 mb-1 max-w-5xl">
-          {/* Status badge & drag hint */}
+          {/* Status badge & hint */}
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-primary/10 border border-primary/20 text-foreground text-xs font-semibold">
               <MoveHorizontal className="h-3 w-3 text-primary animate-pulse" />
@@ -266,7 +183,7 @@ export const CylinderCarousel = React.forwardRef<HTMLDivElement, CylinderCarouse
               <span className="text-primary">{N} Captures</span>
             </span>
             <span className="hidden sm:inline text-xs text-muted-foreground">
-              Auto-spinning • Drag to rotate • Click photograph to expand
+              Auto-spinning • Drag to spin • Click photograph to expand
             </span>
           </div>
 
@@ -329,7 +246,7 @@ export const CylinderCarousel = React.forwardRef<HTMLDivElement, CylinderCarouse
           </div>
         </div>
 
-        {/* Compact 3D Cylinder Stage Viewport with Vignette Gradient Masks */}
+        {/* Compact 3D Cylinder Stage Viewport with Edge Vignette Gradient Masks */}
         <div
           className={cn(
             "relative w-full grid place-items-center overflow-hidden touch-none",
@@ -337,7 +254,7 @@ export const CylinderCarousel = React.forwardRef<HTMLDivElement, CylinderCarouse
             isDragging ? "cursor-grabbing" : "cursor-grab",
           )}
           style={{
-            perspective: "32em",
+            perspective: "30em",
             maskImage:
               "linear-gradient(90deg, transparent 0%, #000 15%, #000 85%, transparent 100%)",
             WebkitMaskImage:
@@ -348,28 +265,47 @@ export const CylinderCarousel = React.forwardRef<HTMLDivElement, CylinderCarouse
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
         >
-          {/* Cylinder Ring Container */}
+          {/* Layer 1: Drag & Step Rotation Controller */}
           <div
-            ref={cylinderRef}
-            className={cn(
-              "grid place-items-center [transform-style:preserve-3d] will-change-transform",
-              containerClassName,
-            )}
+            className="grid place-items-center [transform-style:preserve-3d] will-change-transform"
             style={{
-              ...customStyle,
+              transform: `rotateY(${dragAngle}deg)`,
+              transformStyle: "preserve-3d",
+              transition: isDragging ? "none" : "transform 0.3s ease-out",
             }}
           >
-            {images.map((img, i) => {
-              const isCurrentFront = i === activeCardIndex;
+            {/* Layer 2: Pure CSS Infinite 3D Auto-Spin Cylinder (Vengeance UI Engine) */}
+            <div
+              className={cn(
+                "grid place-items-center [transform-style:preserve-3d] will-change-transform",
+                containerClassName,
+              )}
+              style={{
+                ...customStyle,
+                animationName: "ry",
+                animationDuration: "var(--anim-dur)",
+                animationTimingFunction: "linear",
+                animationIterationCount: "infinite",
+                animationPlayState: isPlaying && !isDragging ? "running" : "paused",
+                transformStyle: "preserve-3d",
+              }}
+            >
+              {/* Inline keyframes backup to guarantee infinite rotation in all environments */}
+              <style>
+                {`
+                  @keyframes ry {
+                    from { transform: rotateY(0deg); }
+                    to { transform: rotateY(360deg); }
+                  }
+                `}
+              </style>
 
-              return (
+              {images.map((img, i) => (
                 <div
                   key={img.id || i}
                   role="button"
                   tabIndex={0}
                   onClick={(e) => handleCardClick(i, e)}
-                  onMouseEnter={() => setIsHoveringCard(true)}
-                  onMouseLeave={() => setIsHoveringCard(false)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       handleCardClick(i, e);
@@ -379,10 +315,8 @@ export const CylinderCarousel = React.forwardRef<HTMLDivElement, CylinderCarouse
                     "group [grid-area:1/1] relative overflow-hidden rounded-xl cursor-pointer select-none",
                     "[backface-visibility:hidden] will-change-transform",
                     "border border-white/20 shadow-xl shadow-black/60",
-                    "transition-all duration-300 transform-gpu",
-                    isCurrentFront
-                      ? "ring-2 ring-primary/80 ring-offset-2 ring-offset-background/40"
-                      : "opacity-95 hover:opacity-100 hover:ring-1 hover:ring-white/60",
+                    "transition-transform duration-300 transform-gpu",
+                    "hover:scale-105 hover:ring-2 hover:ring-white/80",
                     cardClassName,
                   )}
                   style={
@@ -411,8 +345,8 @@ export const CylinderCarousel = React.forwardRef<HTMLDivElement, CylinderCarouse
 
                   {/* Top Bar with Expand Badge on Hover */}
                   <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <div className="h-6 w-6 rounded-full bg-black/60 backdrop-blur-md border border-white/20 flex items-center justify-center text-white/90 shadow-xs transform group-hover:scale-110 transition-transform">
-                      <Maximize2 className="h-3 w-3" />
+                    <div className="h-5 w-5 rounded-full bg-black/60 backdrop-blur-md border border-white/20 flex items-center justify-center text-white/90 shadow-xs">
+                      <Maximize2 className="h-2.5 w-2.5" />
                     </div>
                   </div>
 
@@ -432,15 +366,15 @@ export const CylinderCarousel = React.forwardRef<HTMLDivElement, CylinderCarouse
                     )}
                   </div>
                 </div>
-              );
-            })}
+              ))}
+            </div>
           </div>
         </div>
 
         {/* Bottom subtle indicator */}
         <div className="mt-1 text-center">
           <span className="text-[10px] text-muted-foreground/70 font-mono">
-            {activeCardIndex + 1} of {N} captures • Focus and use Arrow keys to rotate
+            {N} captures • Continuous 3D auto-spin with interactive drag
           </span>
         </div>
       </div>

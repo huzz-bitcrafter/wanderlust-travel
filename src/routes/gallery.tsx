@@ -235,12 +235,12 @@ function GalleryPage() {
                   </div>
                 </div>
 
-                <div className="rounded-3xl border border-border/80 bg-gradient-to-b from-card/80 via-card/50 to-card/20 backdrop-blur-md p-2 sm:p-4 shadow-xl relative overflow-hidden">
+                <div className="rounded-2xl border border-border/70 bg-gradient-to-b from-card/80 via-card/50 to-card/20 backdrop-blur-md p-1.5 sm:p-3 shadow-lg relative overflow-hidden">
                   <CylinderCarousel
                     images={cylinderItems}
-                    cardWidth={155}
-                    stageHeight="h-[270px] sm:h-[310px]"
-                    animationDuration={48}
+                    cardWidth={140}
+                    stageHeight="h-[250px] sm:h-[285px]"
+                    animationDuration={45}
                     autoPlay={true}
                     onImageClick={(idx) => openLightbox(idx)}
                   />
