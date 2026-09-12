@@ -7,9 +7,9 @@ import { Maximize2, MapPin } from "lucide-react";
 export interface CollageImage {
   id?: string;
   src: string;
-  x: number;
-  y: number;
-  rotate: number;
+  x?: number;
+  y?: number;
+  rotate?: number;
   alt?: string;
   caption?: string | null;
   destinationName?: string | null;
@@ -25,12 +25,26 @@ export interface ImageCollageProps extends React.HTMLAttributes<HTMLDivElement> 
   onImageClick?: (index: number) => void;
 }
 
+// Organic scatter offsets for collage view (simulates travel photos tossed across a table)
+const SCATTER_VARIANTS = [
+  { y: -24, rotate: -7, scale: 1.02 },
+  { y: 22, rotate: 6, scale: 0.98 },
+  { y: -18, rotate: -4, scale: 1.01 },
+  { y: 26, rotate: 7, scale: 0.99 },
+  { y: -22, rotate: -3, scale: 1.03 },
+  { y: 20, rotate: 5, scale: 0.98 },
+  { y: -26, rotate: -6, scale: 1.02 },
+  { y: 24, rotate: 8, scale: 0.97 },
+  { y: -20, rotate: -5, scale: 1.01 },
+];
+
 /**
  * ImageCollage — Ported from Vengeance UI (https://www.vengenceui.com/components/image-collage)
  *
  * Adaptations for Wanderlust v2:
  * - Removed Next.js "use client" directive (TanStack Start SSR compatible)
  * - Switched `framer-motion` to `motion/react` (motion.dev v13)
+ * - Flex-based fanned deck with negative spacing so ALL images are visible across the stage
  * - Full prefers-reduced-motion override via useReducedMotion()
  * - Wired interactive photo click callback to trigger accessible fullscreen Lightbox
  * - Stylized with Wanderlust OKLCH tokens (bg-card, border-border, shadow-card-hover)
@@ -67,30 +81,36 @@ export const ImageCollage = React.forwardRef<HTMLDivElement, ImageCollageProps>(
       <div
         ref={ref}
         className={cn(
-          "relative flex flex-col items-center justify-center w-full min-h-[460px] md:min-h-[520px] select-none py-8 overflow-hidden rounded-3xl bg-muted/30 border border-border/60",
+          "relative flex flex-col items-center justify-center w-full min-h-[440px] md:min-h-[480px] select-none py-10 px-4 overflow-hidden rounded-3xl bg-muted/30 border border-border/60",
           className,
         )}
         {...props}
       >
-        {/* Ambient subtle glow behind collage */}
+        {/* Ambient subtle warm glow behind collage */}
         <div
           className="absolute inset-0 pointer-events-none opacity-40 dark:opacity-20"
           style={{
             background:
-              "radial-gradient(ellipse 60% 50% at 50% 50%, oklch(0.68 0.168 38 / 0.12) 0%, transparent 80%)",
+              "radial-gradient(ellipse 65% 55% at 50% 50%, oklch(0.68 0.168 38 / 0.14) 0%, transparent 80%)",
           }}
           aria-hidden="true"
         />
 
-        {/* Central Collage Stage */}
-        <motion.div
+        {/* Central Collage Stage: Fanned Flex Row */}
+        <div
           className={cn(
-            "relative flex items-center justify-center w-full max-w-5xl h-72 sm:h-80 md:h-96 my-auto",
+            "relative flex items-center justify-center w-full max-w-6xl py-8 px-6 -space-x-10 sm:-space-x-14 md:-space-x-16 lg:-space-x-18",
             containerClassName,
           )}
         >
           {images.map((img, i) => {
             const hasLocation = Boolean(img.destinationName);
+            const scatter = SCATTER_VARIANTS[i % SCATTER_VARIANTS.length];
+
+            const currentY = isOrganized ? 0 : (img.y ?? scatter.y);
+            const currentRotate = isOrganized ? 0 : (img.rotate ?? scatter.rotate);
+            const currentScale = isOrganized ? 1 : scatter.scale;
+            const currentZIndex = i + 1;
 
             return (
               <motion.div
@@ -122,40 +142,36 @@ export const ImageCollage = React.forwardRef<HTMLDivElement, ImageCollageProps>(
                   }
                 }}
                 className={cn(
-                  "group/item absolute w-36 sm:w-44 md:w-52 aspect-[4/5] rounded-2xl overflow-hidden cursor-pointer bg-card border border-border/80 shadow-md transition-shadow duration-300 hover:shadow-2xl focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-secondary",
+                  "group/item relative shrink-0 w-36 sm:w-44 md:w-50 lg:w-54 aspect-[4/5] rounded-2xl overflow-hidden cursor-pointer bg-card border border-border/80 shadow-md transition-shadow duration-300 hover:shadow-2xl focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-secondary",
                   imageClassName,
                 )}
-                initial={
-                  shouldReduceMotion
-                    ? { opacity: 1, scale: 1, x: 0, y: 0, rotate: 0 }
-                    : { opacity: 0, scale: 0.8 }
-                }
+                initial={false}
                 animate={
                   shouldReduceMotion
                     ? {
                         opacity: 1,
                         scale: 1,
-                        x: isOrganized ? (i - (images.length - 1) / 2) * 44 : 0,
                         y: 0,
                         rotate: 0,
-                        zIndex: i,
+                        zIndex: currentZIndex,
                       }
                     : {
                         opacity: 1,
-                        scale: 1,
-                        x: isOrganized ? (i - (images.length - 1) / 2) * 52 : img.x,
-                        y: isOrganized ? 0 : img.y,
-                        rotate: isOrganized ? 0 : img.rotate,
-                        zIndex: isOrganized ? i + 1 : i,
+                        scale: currentScale,
+                        y: currentY,
+                        rotate: currentRotate,
+                        zIndex: currentZIndex,
                       }
                 }
                 whileHover={
                   shouldReduceMotion
                     ? undefined
                     : {
-                        scale: 1.08,
-                        zIndex: 50,
-                        transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] },
+                        scale: 1.12,
+                        y: currentY - 24,
+                        rotate: 0,
+                        zIndex: 70,
+                        transition: { duration: 0.22, ease: [0.16, 1, 0.3, 1] },
                       }
                 }
                 transition={
@@ -163,9 +179,9 @@ export const ImageCollage = React.forwardRef<HTMLDivElement, ImageCollageProps>(
                     ? { duration: 0 }
                     : {
                         type: "spring",
-                        stiffness: 180,
-                        damping: 22,
-                        mass: 0.9,
+                        stiffness: 220,
+                        damping: 24,
+                        mass: 0.8,
                       }
                 }
               >
@@ -205,7 +221,7 @@ export const ImageCollage = React.forwardRef<HTMLDivElement, ImageCollageProps>(
               </motion.div>
             );
           })}
-        </motion.div>
+        </div>
       </div>
     );
   },
