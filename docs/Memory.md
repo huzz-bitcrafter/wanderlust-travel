@@ -1,9 +1,13 @@
 # Memory — Wanderlust
 
-**Last updated:** 2026-09-13 | **Current phase:** Theme System — Phase B Complete (Pre-paint Script & Toggler Port) | **Session #:** 9
+**Last updated:** 2026-09-13 | **Current phase:** Theme System — Phase C Complete (Dot Pattern Component) | **Session #:** 9
 
 ## Completed
 
+- [x] Theme System Phase C — Dot Pattern Component & Ambient Background:
+  - Vendored 21st.dev pure SVG `DotPattern` component into `src/components/vendored/DotPattern.tsx` with dynamic `useId()`, semantic `fill-foreground/15` styling, and zero third-party dependencies.
+  - Mounted `DotPattern` exclusively on the Contact page backdrop in `src/routes/contact.tsx` with radial gradient transparency mask (`[mask-image:radial-gradient(ellipse_at_center,white,transparent_75%)]`).
+  - Confirmed strict containment: DotPattern is strictly bounded to `/contact` and not scattered across other pages.
 - [x] Theme System Phase B — Pre-paint SSR Theme Script & AnimatedThemeToggler:
   - Injected zero-flash synchronous pre-paint script into `<head>` of `src/routes/__root.tsx` evaluating `localStorage` theme preference with `prefers-color-scheme: dark` fallback.
   - Added `suppressHydrationWarning` to `<html>` to eliminate SSR/hydration class mismatch warnings.
