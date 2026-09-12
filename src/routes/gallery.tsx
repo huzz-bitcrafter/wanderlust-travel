@@ -238,9 +238,9 @@ function GalleryPage() {
                 <div className="rounded-3xl border border-border/80 bg-gradient-to-b from-card/80 via-card/50 to-card/20 backdrop-blur-md p-3 sm:p-5 shadow-xl relative overflow-hidden">
                   <CylinderCarousel
                     images={cylinderItems}
-                    cardWidth={200}
+                    cardWidth={210}
                     stageHeight="h-[420px] sm:h-[480px]"
-                    animationDuration={40}
+                    animationDuration={45}
                     autoPlay={true}
                     onImageClick={(idx) => openLightbox(idx)}
                   />

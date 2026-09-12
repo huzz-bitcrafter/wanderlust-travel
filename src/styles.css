@@ -538,8 +538,8 @@
   }
 }
 
-/* Vengeance UI 3D Cylinder Carousel Infinite Rotation Keyframes */
-@keyframes ry {
+/* Vengeance UI 3D Cylinder Carousel Infinite Auto-Spin Engine */
+@keyframes cylinder-spin {
   0% {
     transform: rotateY(0deg);
   }
@@ -548,8 +548,12 @@
   }
 }
 
-.animate-cylinder {
-  animation: ry var(--anim-dur, 40s) linear infinite;
-  transform-style: preserve-3d;
-  will-change: transform;
+.cylinder-spin-infinite {
+  animation: cylinder-spin var(--anim-dur, 45s) linear infinite !important;
+  transform-style: preserve-3d !important;
+  will-change: transform !important;
+}
+
+.cylinder-spin-paused {
+  animation-play-state: paused !important;
 }
