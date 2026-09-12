@@ -42,3 +42,5 @@ date-fns · sonner
 - One page per route file; shared widgets in components/shared/; files < ~250 lines
 - "Fix only this" = touch nothing else. Never rebuild completed phases.
 - Update docs/Memory.md after every phase.
+- Commits: stage ALL files related to the change (`git add -A`, or the complete file list) and verify `git status` is clean afterward — never selective adds that leave new files or modified wiring uncommitted.
+- Before starting any new task: verify `git status` is clean; if not, commit pending work as a checkpoint first.
