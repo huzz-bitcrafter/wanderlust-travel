@@ -1,5 +1,14 @@
-import React, { useMemo, useState } from "react";
-import { Play, Pause, Maximize2, MapPin } from "lucide-react";
+import React, { useRef, useState, useEffect, useCallback, useMemo } from "react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Play,
+  Pause,
+  RotateCcw,
+  Maximize2,
+  MapPin,
+  MoveHorizontal,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface CylinderImageItem {
@@ -15,8 +24,9 @@ export interface CylinderCarouselProps extends React.HTMLAttributes<HTMLDivEleme
   images: CylinderImageItem[];
   containerClassName?: string;
   cardClassName?: string;
-  animationDuration?: number; // Duration in seconds for full 360 rotation (default 24)
-  cardWidth?: number; // Width of cards in px (default 195)
+  animationDuration?: number; // Duration in seconds for full 360 rotation (default 48)
+  cardWidth?: number; // Width of cards in px (default 155)
+  stageHeight?: string; // Viewport height class (default "h-[270px] sm:h-[310px]")
   onImageClick?: (index: number) => void;
   autoPlay?: boolean;
 }
@@ -28,29 +38,49 @@ export const CylinderCarousel = React.forwardRef<HTMLDivElement, CylinderCarouse
       className,
       containerClassName,
       cardClassName,
-      animationDuration = 24,
-      cardWidth = 195,
+      animationDuration = 48,
+      cardWidth = 155,
+      stageHeight = "h-[270px] sm:h-[310px]",
       onImageClick,
       autoPlay = true,
       ...props
     },
-    ref,
+    forwardedRef,
   ) => {
-    const [isPlaying, setIsPlaying] = useState<boolean>(autoPlay);
+    const internalRef = useRef<HTMLDivElement>(null);
+    const cylinderRef = useRef<HTMLDivElement>(null);
+
     const N = images.length;
 
-    // Base angle per card in degrees (360 / N)
+    // Interactive State
+    const [isPlaying, setIsPlaying] = useState<boolean>(autoPlay);
+    const [isHoveringCard, setIsHoveringCard] = useState<boolean>(false);
+    const [isDragging, setIsDragging] = useState<boolean>(false);
+    const [activeCardIndex, setActiveCardIndex] = useState<number>(0);
+
+    // Physics / Motion Refs for 60/120fps GPU smooth rendering without re-renders
+    const angleRef = useRef<number>(0); // Current displayed angle
+    const targetAngleRef = useRef<number>(0); // Target angle for lerping
+    const velocityRef = useRef<number>(0); // Drag momentum velocity
+    const isPointerDownRef = useRef<boolean>(false);
+    const startXRef = useRef<number>(0);
+    const lastXRef = useRef<number>(0);
+    const hasDraggedRef = useRef<boolean>(false);
+    const lastTimeRef = useRef<number>(0);
+    const rafIdRef = useRef<number | null>(null);
+
+    // Base angle per card in degrees
     const baseAngleDeg = useMemo(() => (N > 0 ? 360 / N : 360), [N]);
 
-    // Apothem / Radius calculation: R = (W/2 + 8) / tan(pi / N)
+    // Apothem / Radius calculation: R = (W/2 + 6) / tan(pi / N)
     const radiusPx = useMemo(() => {
       if (N <= 1) return 180;
       const rad = Math.PI / N;
       const w = cardWidth;
-      return Math.max(160, Math.round((w / 2 + 8) / Math.tan(rad)));
+      return Math.max(200, Math.round((w / 2 + 6) / Math.tan(rad)));
     }, [N, cardWidth]);
 
-    // CSS variables for cylinder 3D geometry
+    // CSS Variables for cylinder geometry
     const customStyle = useMemo(
       () =>
         ({
@@ -63,138 +93,355 @@ export const CylinderCarousel = React.forwardRef<HTMLDivElement, CylinderCarouse
       [N, cardWidth, baseAngleDeg, radiusPx, animationDuration],
     );
 
+    // Check prefers-reduced-motion
+    const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean>(false);
+    useEffect(() => {
+      if (typeof window === "undefined") return;
+      const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+      setPrefersReducedMotion(mediaQuery.matches);
+      const listener = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
+      mediaQuery.addEventListener("change", listener);
+      return () => mediaQuery.removeEventListener("change", listener);
+    }, []);
+
+    // Main 60fps physics & rotation loop — ALWAYS auto-spins when isPlaying is true
+    useEffect(() => {
+      let isRunning = true;
+
+      const animate = (timestamp: number) => {
+        if (!lastTimeRef.current) lastTimeRef.current = timestamp;
+        const dt = Math.min((timestamp - lastTimeRef.current) / 1000, 0.1);
+        lastTimeRef.current = timestamp;
+
+        if (cylinderRef.current && N > 0) {
+          // Auto-spin: runs continuously unless user is actively dragging or prefers reduced motion
+          if (isPlaying && !isPointerDownRef.current && !prefersReducedMotion) {
+            // Speed in degrees per second: 360 / duration
+            // Slightly ease to 40% speed when hovering directly on an individual card for easy clicking
+            const speedMultiplier = isHoveringCard ? 0.35 : 1.0;
+            const autoSpeed = (360 / animationDuration) * speedMultiplier;
+            targetAngleRef.current -= autoSpeed * dt;
+          }
+
+          // Apply velocity friction decay when released from drag
+          if (!isPointerDownRef.current && Math.abs(velocityRef.current) > 0.05) {
+            targetAngleRef.current += velocityRef.current;
+            velocityRef.current *= 0.92; // Inertia damping
+          }
+
+          // Smooth lerp towards target angle
+          const lerpFactor = isPointerDownRef.current ? 0.35 : 0.15;
+          angleRef.current += (targetAngleRef.current - angleRef.current) * lerpFactor;
+
+          // Apply 3D rotation transform directly to DOM for optimal GPU performance
+          cylinderRef.current.style.transform = `rotateY(${angleRef.current}deg)`;
+
+          // Track which card is facing front for accessibility / indicator
+          const normalized = ((-angleRef.current % 360) + 360) % 360;
+          const frontIndex = Math.round(normalized / baseAngleDeg) % N;
+          setActiveCardIndex((prev) => (prev !== frontIndex ? frontIndex : prev));
+        }
+
+        if (isRunning) {
+          rafIdRef.current = requestAnimationFrame(animate);
+        }
+      };
+
+      rafIdRef.current = requestAnimationFrame(animate);
+
+      return () => {
+        isRunning = false;
+        if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+      };
+    }, [isPlaying, isHoveringCard, prefersReducedMotion, animationDuration, baseAngleDeg, N]);
+
+    // Interactive Drag / Swipe Handlers
+    const handlePointerDown = (e: React.PointerEvent) => {
+      isPointerDownRef.current = true;
+      startXRef.current = e.clientX;
+      lastXRef.current = e.clientX;
+      hasDraggedRef.current = false;
+      velocityRef.current = 0;
+      setIsDragging(true);
+
+      // Capture pointer on container so drag continues outside bounds
+      if (e.currentTarget instanceof HTMLElement) {
+        try {
+          e.currentTarget.setPointerCapture(e.pointerId);
+        } catch {
+          // ignore if not supported
+        }
+      }
+    };
+
+    const handlePointerMove = (e: React.PointerEvent) => {
+      if (!isPointerDownRef.current) return;
+
+      const deltaX = e.clientX - lastXRef.current;
+      lastXRef.current = e.clientX;
+
+      // Distance from start to distinguish click from swipe
+      if (Math.abs(e.clientX - startXRef.current) > 6) {
+        hasDraggedRef.current = true;
+      }
+
+      // Drag sensitivity factor (degrees per pixel)
+      const dragFactor = 0.28;
+      const angleDelta = deltaX * dragFactor;
+
+      targetAngleRef.current += angleDelta;
+      velocityRef.current = angleDelta * 0.8; // Store recent velocity
+    };
+
+    const handlePointerUp = (e: React.PointerEvent) => {
+      isPointerDownRef.current = false;
+      setIsDragging(false);
+
+      if (e.currentTarget instanceof HTMLElement) {
+        try {
+          e.currentTarget.releasePointerCapture(e.pointerId);
+        } catch {
+          // ignore
+        }
+      }
+    };
+
+    // Card click handler (only triggers if not dragging)
+    const handleCardClick = (index: number, e: React.MouseEvent | React.KeyboardEvent) => {
+      e.stopPropagation();
+      if (hasDraggedRef.current) return;
+      onImageClick?.(index);
+    };
+
+    // Step navigation (Previous / Next card buttons)
+    const rotateStep = useCallback(
+      (direction: "prev" | "next") => {
+        velocityRef.current = 0;
+        const step = direction === "prev" ? baseAngleDeg : -baseAngleDeg;
+        // Snap target to nearest clean card angle
+        const snappedTarget =
+          Math.round((targetAngleRef.current + step) / baseAngleDeg) * baseAngleDeg;
+        targetAngleRef.current = snappedTarget;
+      },
+      [baseAngleDeg],
+    );
+
+    const resetRotation = useCallback(() => {
+      velocityRef.current = 0;
+      targetAngleRef.current = 0;
+    }, []);
+
+    // Keyboard navigation (ArrowLeft / ArrowRight)
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        rotateStep("prev");
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        rotateStep("next");
+      } else if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        onImageClick?.(activeCardIndex);
+      }
+    };
+
     return (
       <div
-        ref={ref}
-        className={cn(
-          "relative w-full h-[320px] sm:h-[350px] grid place-items-center overflow-hidden select-none",
-          className,
-        )}
-        style={{
-          perspective: "32em",
-          maskImage: "linear-gradient(90deg, transparent 0%, #000 12% 88%, transparent 100%)",
-          WebkitMaskImage: "linear-gradient(90deg, transparent 0%, #000 12% 88%, transparent 100%)",
-        }}
+        ref={forwardedRef || internalRef}
+        className={cn("w-full flex flex-col items-center select-none", className)}
+        onKeyDown={handleKeyDown}
+        tabIndex={0}
+        role="region"
+        aria-label="3D Cylinder Interactive Carousel"
         {...props}
       >
-        {/* Floating Auto-Spin Toggle Button */}
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsPlaying((prev) => !prev);
-          }}
-          className="absolute top-2 right-3 z-30 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-background/85 hover:bg-background border border-border/80 text-[11px] font-medium text-foreground backdrop-blur-md shadow-xs transition-all"
-          title={isPlaying ? "Pause auto-spinning" : "Resume auto-spinning"}
-          aria-label={isPlaying ? "Pause auto-spinning" : "Resume auto-spinning"}
-        >
-          {isPlaying ? (
-            <>
-              <Pause className="h-3 w-3 text-primary" />
-              <span className="hidden sm:inline">Pause</span>
-            </>
-          ) : (
-            <>
-              <Play className="h-3 w-3 text-primary" />
-              <span className="hidden sm:inline">Auto-Spin</span>
-            </>
-          )}
-        </button>
+        {/* Interactive Controls & Status Bar */}
+        <div className="w-full flex flex-wrap items-center justify-between gap-2 px-2 py-1 mb-1 max-w-5xl">
+          {/* Status badge & drag hint */}
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-primary/10 border border-primary/20 text-foreground text-xs font-semibold">
+              <MoveHorizontal className="h-3 w-3 text-primary animate-pulse" />
+              <span>3D Cylinder Sphere</span>
+              <span className="text-muted-foreground">•</span>
+              <span className="text-primary">{N} Captures</span>
+            </span>
+            <span className="hidden sm:inline text-xs text-muted-foreground">
+              Auto-spinning • Drag to rotate • Click photograph to expand
+            </span>
+          </div>
 
-        {/* 3D Cylinder Ring with pure CSS animation */}
+          {/* Interactive Navigation Controls */}
+          <div className="flex items-center gap-1 p-0.5 rounded-full bg-card/80 border border-border/80 backdrop-blur-md shadow-xs">
+            <button
+              type="button"
+              onClick={() => rotateStep("prev")}
+              className="h-6 w-6 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors"
+              title="Rotate Left (ArrowLeft)"
+              aria-label="Rotate Left"
+            >
+              <ChevronLeft className="h-3.5 w-3.5" />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setIsPlaying((prev) => !prev)}
+              className={cn(
+                "h-6 px-2 rounded-full flex items-center gap-1 text-[11px] font-medium transition-colors",
+                isPlaying
+                  ? "text-primary bg-primary/10 hover:bg-primary/20"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/80",
+              )}
+              title={isPlaying ? "Pause Auto-Spin" : "Resume Auto-Spin"}
+              aria-label={isPlaying ? "Pause Auto-Spin" : "Resume Auto-Spin"}
+            >
+              {isPlaying ? (
+                <>
+                  <Pause className="h-2.5 w-2.5" />
+                  <span>Pause</span>
+                </>
+              ) : (
+                <>
+                  <Play className="h-2.5 w-2.5" />
+                  <span>Spin</span>
+                </>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => rotateStep("next")}
+              className="h-6 w-6 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors"
+              title="Rotate Right (ArrowRight)"
+              aria-label="Rotate Right"
+            >
+              <ChevronRight className="h-3.5 w-3.5" />
+            </button>
+
+            <button
+              type="button"
+              onClick={resetRotation}
+              className="h-6 w-6 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors"
+              title="Reset Alignment"
+              aria-label="Reset Rotation"
+            >
+              <RotateCcw className="h-3 w-3" />
+            </button>
+          </div>
+        </div>
+
+        {/* Compact 3D Cylinder Stage Viewport with Vignette Gradient Masks */}
         <div
           className={cn(
-            "grid place-items-center [transform-style:preserve-3d]",
-            "hover:[animation-play-state:paused]",
-            "motion-reduce:!animate-[ry_90s_linear_infinite]",
-            containerClassName,
+            "relative w-full grid place-items-center overflow-hidden touch-none",
+            stageHeight,
+            isDragging ? "cursor-grabbing" : "cursor-grab",
           )}
           style={{
-            ...customStyle,
-            animation: "ry var(--anim-dur) linear infinite",
-            animationPlayState: isPlaying ? "running" : "paused",
+            perspective: "32em",
+            maskImage:
+              "linear-gradient(90deg, transparent 0%, #000 15%, #000 85%, transparent 100%)",
+            WebkitMaskImage:
+              "linear-gradient(90deg, transparent 0%, #000 15%, #000 85%, transparent 100%)",
           }}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
         >
-          <style>
-            {`
-              @keyframes ry {
-                to {
-                  transform: rotateY(1turn);
-                }
-              }
-            `}
-          </style>
+          {/* Cylinder Ring Container */}
+          <div
+            ref={cylinderRef}
+            className={cn(
+              "grid place-items-center [transform-style:preserve-3d] will-change-transform",
+              containerClassName,
+            )}
+            style={{
+              ...customStyle,
+            }}
+          >
+            {images.map((img, i) => {
+              const isCurrentFront = i === activeCardIndex;
 
-          {images.map((img, i) => (
-            <div
-              key={img.id || i}
-              role="button"
-              tabIndex={0}
-              onClick={() => onImageClick?.(i)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  onImageClick?.(i);
-                }
-              }}
-              className={cn(
-                "group [grid-area:1/1] relative overflow-hidden rounded-2xl cursor-pointer select-none",
-                "[backface-visibility:hidden]",
-                "border border-white/20 shadow-xl shadow-black/50",
-                "transition-all duration-300 transform-gpu",
-                "hover:ring-2 hover:ring-primary/80 hover:scale-[1.03]",
-                cardClassName,
-              )}
-              style={
-                {
-                  width: "var(--w)",
-                  aspectRatio: "3/4",
-                  "--i": i,
-                  transform:
-                    "rotateY(calc(var(--i) * var(--ba))) translateZ(calc(-1 * var(--r, calc((0.5 * var(--w) + 0.5em) / tan(0.5 * var(--ba))))))",
-                } as React.CSSProperties
-              }
-              title={img.caption || img.destinationName || `Photo ${i + 1}`}
-            >
-              {/* Image */}
-              <img
-                src={img.src}
-                alt={img.alt || img.caption || `Cylinder image ${i + 1}`}
-                loading={i < 4 ? "eager" : "lazy"}
-                draggable={false}
-                className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-              />
+              return (
+                <div
+                  key={img.id || i}
+                  role="button"
+                  tabIndex={0}
+                  onClick={(e) => handleCardClick(i, e)}
+                  onMouseEnter={() => setIsHoveringCard(true)}
+                  onMouseLeave={() => setIsHoveringCard(false)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      handleCardClick(i, e);
+                    }
+                  }}
+                  className={cn(
+                    "group [grid-area:1/1] relative overflow-hidden rounded-xl cursor-pointer select-none",
+                    "[backface-visibility:hidden] will-change-transform",
+                    "border border-white/20 shadow-xl shadow-black/60",
+                    "transition-all duration-300 transform-gpu",
+                    isCurrentFront
+                      ? "ring-2 ring-primary/80 ring-offset-2 ring-offset-background/40"
+                      : "opacity-95 hover:opacity-100 hover:ring-1 hover:ring-white/60",
+                    cardClassName,
+                  )}
+                  style={
+                    {
+                      width: "var(--w)",
+                      aspectRatio: "3/4",
+                      "--i": i,
+                      // Modern CSS tan() transform with precomputed --r fallback for universal browser compatibility
+                      transform:
+                        "rotateY(calc(var(--i) * var(--ba))) translateZ(calc(-1 * var(--r, calc((0.5 * var(--w) + 0.5em) / tan(0.5 * var(--ba))))))",
+                    } as React.CSSProperties
+                  }
+                  title={img.caption || img.destinationName || `Capture ${i + 1}`}
+                >
+                  {/* Image */}
+                  <img
+                    src={img.src}
+                    alt={img.alt || img.caption || `Cylinder capture ${i + 1}`}
+                    loading={i < 10 ? "eager" : "lazy"}
+                    draggable={false}
+                    className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-108"
+                  />
 
-              {/* Gradient Vignette Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-95 transition-opacity duration-300" />
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent opacity-80 group-hover:opacity-95 transition-opacity duration-300" />
 
-              {/* Expand Icon Badge */}
-              <div className="absolute top-2.5 right-2.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                <div className="h-7 w-7 rounded-full bg-black/60 backdrop-blur-md border border-white/20 flex items-center justify-center text-white/90 shadow-xs">
-                  <Maximize2 className="h-3 w-3" />
-                </div>
-              </div>
-
-              {/* Destination & Caption Info */}
-              <div className="absolute bottom-0 inset-x-0 p-3 text-white flex flex-col justify-end gap-1">
-                {img.destinationName && (
-                  <div className="flex items-center gap-1 text-[10px] font-semibold text-primary-foreground/95 bg-white/20 backdrop-blur-md border border-white/10 px-2 py-0.5 rounded-full w-fit max-w-[95%] truncate">
-                    <MapPin className="h-2.5 w-2.5 shrink-0 text-white" />
-                    <span className="truncate">
-                      {img.destinationName}
-                      {img.destinationCountry ? `, ${img.destinationCountry}` : ""}
-                    </span>
+                  {/* Top Bar with Expand Badge on Hover */}
+                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <div className="h-6 w-6 rounded-full bg-black/60 backdrop-blur-md border border-white/20 flex items-center justify-center text-white/90 shadow-xs transform group-hover:scale-110 transition-transform">
+                      <Maximize2 className="h-3 w-3" />
+                    </div>
                   </div>
-                )}
 
-                {img.caption && (
-                  <p className="text-[11px] font-medium text-white/90 line-clamp-1 leading-snug drop-shadow-sm">
-                    {img.caption}
-                  </p>
-                )}
-              </div>
-            </div>
-          ))}
+                  {/* Bottom Caption & Destination Info */}
+                  <div className="absolute bottom-0 inset-x-0 p-2 text-white flex flex-col justify-end gap-0.5">
+                    {img.destinationName && (
+                      <div className="flex items-center gap-1 text-[10px] font-semibold text-primary-foreground/95 bg-white/20 backdrop-blur-md border border-white/10 px-1.5 py-0.5 rounded-full w-fit max-w-[95%] truncate">
+                        <MapPin className="h-2.5 w-2.5 shrink-0 text-white" />
+                        <span className="truncate">{img.destinationName}</span>
+                      </div>
+                    )}
+
+                    {img.caption && (
+                      <p className="text-[10px] font-medium text-white/90 line-clamp-1 leading-tight drop-shadow-xs">
+                        {img.caption}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Bottom subtle indicator */}
+        <div className="mt-1 text-center">
+          <span className="text-[10px] text-muted-foreground/70 font-mono">
+            {activeCardIndex + 1} of {N} captures • Focus and use Arrow keys to rotate
+          </span>
         </div>
       </div>
     );
