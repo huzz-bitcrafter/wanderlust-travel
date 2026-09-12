@@ -34,6 +34,27 @@
   - Softer, deeper material shadows (`--shadow-card`, `--shadow-card-hover`, `--shadow-elegant`, `--shadow-modal`) and refined glass utilities (`.glass-navbar`, `.glass-drawer`, `.glass-chrome`, `.admin-sidebar`).
   - Zero component files modified; 100% CSS token and documentation refinement.
   - WCAG AA/AAA verified across all 7 mandatory contrast pairs.
+- [x] Home Page v2 Rebuild (Cinematic Hero + MakeMyTrip-Style Tabbed Search Widget):
+  - Cinematic video background in `Hero.tsx` using local `/hero-loop.mp4` with Ken Burns slow-zoom fallback on `/hero-poster.jpg` and midnight-navy gradient overlay.
+  - Floating 4-tab glassmorphic `SearchWidget.tsx` (Flights, Hotels, Packages, Destinations) straddling the hero and page content with `.glass-search` material depth.
+  - Flights tab features origin/destination Select pickers (populated via `fetchFlightCities`), airport swapping button, date picker, cabin class picker, and interactive traveller counter.
+  - Hotels & Packages tabs feature destination combobox autocomplete with keyboard navigation and name/keyword search.
+  - Destinations tab features instant keyword search with region quick pills (All, India, International).
+  - All tabs navigate cleanly to existing catalog search routes with exact URL query params.
+  - Added `ExploreIndia.tsx` home section powered by new `listIndianDestinations` server function in `src/lib/catalog.functions.ts`.
+  - Added SSR query prefetching for Indian destinations, filter destinations, and flight cities in `src/routes/index.tsx`.
+  - Production build verified with zero errors and clean bundle output.
+  - Refined tabbed search card styling to match custom `.glass-card` liquid-glass aesthetic: `rgba(255, 255, 255, 0.15)` backdrop blur (20px), 20px border-radius, `rgba(255, 255, 255, 0.3)` border, 4-tier ambient + specular inset box-shadows, top/left 1px gradient highlights, and `:has([role="listbox"])` overflow protection.
+- [x] Hero Fix (Full-Bleed Video & Neutral Cinematic Scrims):
+  - Made hero video and poster full-bleed edge-to-edge at all aspect ratios (`absolute inset-0 w-full h-full object-cover object-center`), eliminating letterboxing and pillarboxing.
+  - Set responsive viewport heights: `h-[100svh] min-h-[600px]` on desktop, `h-[85svh] min-h-[520px]` on mobile (maintaining headline and widget visibility under mobile browser chrome).
+  - Deleted colored navy-to-teal gradient overlay; replaced with neutral, black-based overlays:
+    - Bottom-anchored separation gradient: `linear-gradient(to top, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0) 40%)` for cinematic contrast against the floating search widget.
+    - Subtle uniform neutral scrim: `bg-black/[0.08]` for ambient legibility without dimming the natural video coloring.
+  - Added soft text-shadow (`text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45)`) on headline and subline for contrast over bright frames.
+  - Verified no box-shadow on hero container.
+  - Updated prefers-reduced-motion to explicitly disable `.ken-burns` zoom on poster.
+  - Verified with `npm run lint` and `npm run build` passing with 0 errors.
 
 ## In Progress
 

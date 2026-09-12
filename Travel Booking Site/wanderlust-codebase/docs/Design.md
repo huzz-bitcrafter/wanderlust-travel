@@ -69,8 +69,7 @@ Status colors: confirmed = success green (`oklch(0.615 0.126 158)`), pending = a
 - Badges/pills: rounded-full, teal-tinted
 - Forms: rounded-lg inputs, 1px border, teal focus ring, zod errors in red below field
 - Navbar: transparent over hero → solid navy on scroll; mobile drawer
-- Footer: navy, 4 columns, white/60 text
-- Hero: 21:9 image, navy gradient overlay, serif headline + search
+- Hero: Full-bleed cinematic video/poster (100svh desktop, 85svh mobile), neutral black scrims (no colored tint), Playfair serif headline with soft text-shadow + floating glass search widget
 - Ratings: coral stars + numeric average + review count
 
 ## Imagery & Accessibility
@@ -130,4 +129,19 @@ Translucency acts as a functional structural layer rather than an opaque block.
   - `backdrop-filter` is dropped (`none !important`).
   - Translucent surfaces fallback to solid backgrounds (`var(--color-primary)` for navbar/drawer, `var(--color-card)` for sidebar/chrome, `oklch(0 0 0 / 0.85)` for dialog scrims).
 - **Contrast**: Contrast on translucent navbar exceeds 7:1 against light page content, satisfying WCAG AAA and AA requirements.
+
+### 5. Hero Cinematic Footage & Neutral Scrim Specification
+- **Full-Bleed Viewport Dimensions**:
+  - Desktop: `h-[100svh] min-h-[600px]`
+  - Mobile: `h-[85svh] min-h-[520px]` (ensures headline and tabbed widget stay visible under mobile browser chrome).
+- **Edge-to-Edge Asset Scaling**:
+  - Both `<video>` and poster `<img>` use `absolute inset-0 w-full h-full object-cover object-center`. Never letterboxed, no pillarboxing or horizontal/vertical gaps at any aspect ratio.
+  - Smooth fade-in transition (`opacity-0` → `opacity-100 duration-700`) upon `canplay`.
+- **Neutral Cinematic Scrims (Zero Colored Tint)**:
+  - No chromatic tint (no navy/teal wash over footage). Video renders in natural authentic color grading.
+  - **Bottom-Anchored Separation Gradient**: `linear-gradient(to top, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0) 40%)` provides physical separation and cinematic contrast for the floating `.glass-search` widget.
+  - **Uniform Ambient Scrim**: `bg-black/[0.08]` (subtle 8% neutral black) ensures crisp legibility without darkening or muddying the video.
+  - **Text Legibility**: Headline and subline styled with `text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45)`, maintaining WCAG legibility over high-exposure frames without requiring aggressive full-frame video darkening.
+- **Reduced Motion**: Under `prefers-reduced-motion: reduce`, `.ken-burns` keyframe animation and transform scale are explicitly disabled, displaying a crisp static high-res poster with identical neutral scrims.
+
 
