@@ -27,6 +27,13 @@
   - Added URL-synced `All | India | International` quick pills to `/destinations` filter bar with SSR preservation.
   - Resolved image 404s for Hampi and Rishikesh: added local high-res assets to `public/images/destinations/hampi.jpg` (user-supplied stone chariot photo) and `public/images/destinations/rishikesh.jpg` (Lakshman Jhula suspension bridge over the emerald Ganges with the Himalayas).
   - Updated `006_domestic_seed.sql` and wired automatic server/client fallbacks in `src/lib/catalog.functions.ts`, `DestinationCard.tsx`, and `PackageCard.tsx`.
+- [x] Palette Refinement (Direction A: Premium Travel Editorial + Restrained Liquid-Glass Material Depth):
+  - Evolved `primary` to midnight navy `oklch(0.24 0.066 256)` (#071f3e) for deeper, cooler, more cinematic editorial branding.
+  - Evolved `accent` to luminous coral `oklch(0.680 0.168 38)` (#ec6c44) for warmer, more energetic booking action without neon oversaturation.
+  - Added centralized gradient tokens `--gradient-primary` (midnight navy → restrained maritime teal) and `--gradient-accent` (luminous coral → warm restrained amber).
+  - Softer, deeper material shadows (`--shadow-card`, `--shadow-card-hover`, `--shadow-elegant`, `--shadow-modal`) and refined glass utilities (`.glass-navbar`, `.glass-drawer`, `.glass-chrome`, `.admin-sidebar`).
+  - Zero component files modified; 100% CSS token and documentation refinement.
+  - WCAG AA/AAA verified across all 7 mandatory contrast pairs.
 
 ## In Progress
 

@@ -57,10 +57,12 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --shadow-card: 0 1px 2px oklch(0.3 0.06 250 / 0.06), 0 1px 3px oklch(0.3 0.06 250 / 0.08);
-  --shadow-card-hover: 0 12px 28px -12px oklch(0.3 0.06 250 / 0.28);
-  --shadow-elegant: 0 24px 60px -24px oklch(0.3 0.06 250 / 0.35);
-  --shadow-modal: 0 25px 50px -12px oklch(0.3 0.06 250 / 0.32), 0 0 0 1px oklch(0.3 0.06 250 / 0.06);
+  --image-gradient-primary: var(--gradient-primary);
+  --image-gradient-accent: var(--gradient-accent);
+  --shadow-card: 0 1px 3px oklch(0.24 0.066 256 / 0.04), 0 4px 12px -2px oklch(0.24 0.066 256 / 0.05);
+  --shadow-card-hover: 0 16px 36px -10px oklch(0.24 0.066 256 / 0.16), 0 4px 12px -2px oklch(0.24 0.066 256 / 0.06);
+  --shadow-elegant: 0 28px 64px -20px oklch(0.24 0.066 256 / 0.22), 0 8px 24px -6px oklch(0.24 0.066 256 / 0.08);
+  --shadow-modal: 0 32px 64px -16px oklch(0.24 0.066 256 / 0.25), 0 0 0 1px oklch(0.24 0.066 256 / 0.05);
   --tracking-tighter: -0.03em;
   --tracking-tight: -0.02em;
   --tracking-normal: 0em;
@@ -77,13 +79,13 @@
   --card-foreground: oklch(0.27 0.019 230);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.27 0.019 230);
-  --primary: oklch(0.3 0.062 250);
+  --primary: oklch(0.24 0.066 256);
   --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.62 0.096 186);
   --secondary-foreground: oklch(1 0 0);
   --muted: oklch(0.938 0.012 80);
   --muted-foreground: oklch(0.51 0.019 225);
-  --accent: oklch(0.676 0.146 40);
+  --accent: oklch(0.680 0.168 38);
   --accent-foreground: oklch(1 0 0);
   --destructive: oklch(0.575 0.178 25);
   --destructive-foreground: oklch(1 0 0);
@@ -94,19 +96,21 @@
   --border: oklch(0.898 0.014 85);
   --input: oklch(0.898 0.014 85);
   --ring: oklch(0.62 0.096 186);
-  --chart-1: oklch(0.3 0.062 250);
+  --chart-1: oklch(0.24 0.066 256);
   --chart-2: oklch(0.62 0.096 186);
-  --chart-3: oklch(0.676 0.146 40);
+  --chart-3: oklch(0.680 0.168 38);
   --chart-4: oklch(0.765 0.135 72);
   --chart-5: oklch(0.615 0.126 158);
   --sidebar: oklch(1 0 0);
   --sidebar-foreground: oklch(0.27 0.019 230);
-  --sidebar-primary: oklch(0.3 0.062 250);
+  --sidebar-primary: oklch(0.24 0.066 256);
   --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.938 0.012 80);
-  --sidebar-accent-foreground: oklch(0.3 0.062 250);
+  --sidebar-accent-foreground: oklch(0.24 0.066 256);
   --sidebar-border: oklch(0.898 0.014 85);
   --sidebar-ring: oklch(0.62 0.096 186);
+  --gradient-primary: linear-gradient(135deg, oklch(0.24 0.066 256) 0%, oklch(0.32 0.070 200) 100%);
+  --gradient-accent: linear-gradient(135deg, oklch(0.680 0.168 38) 0%, oklch(0.720 0.150 62) 100%);
 }
 
 @layer base {
@@ -216,18 +220,18 @@
 
 /* Translucent Materials & Depth (Apple Design §12) */
 @utility glass-navbar {
-  background-color: oklch(0.3 0.062 250 / 0.82);
+  background-color: oklch(0.24 0.066 256 / 0.82);
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border-bottom: 1px solid oklch(1 0 0 / 0.10);
-  box-shadow: 0 4px 20px -4px oklch(0.3 0.06 250 / 0.25);
+  border-bottom: 1px solid oklch(1 0 0 / 0.12);
+  box-shadow: 0 4px 24px -4px oklch(0.24 0.066 256 / 0.20);
 }
 
 @utility glass-drawer {
-  background-color: oklch(0.3 0.062 250 / 0.94);
+  background-color: oklch(0.24 0.066 256 / 0.94);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-top: 1px solid oklch(1 0 0 / 0.10);
+  border-top: 1px solid oklch(1 0 0 / 0.12);
 }
 
 @utility glass-chrome {
@@ -235,7 +239,7 @@
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
   border-bottom: 1px solid var(--color-border);
-  box-shadow: 0 2px 12px -2px oklch(0.3 0.06 250 / 0.08);
+  box-shadow: 0 2px 14px -2px oklch(0.24 0.066 256 / 0.05);
 }
 
 @utility admin-sidebar {
@@ -243,7 +247,15 @@
   backdrop-filter: blur(20px) saturate(160%);
   -webkit-backdrop-filter: blur(20px) saturate(160%);
   border-right: 1px solid var(--color-border);
-  box-shadow: 1px 0 16px -4px oklch(0.3 0.06 250 / 0.06);
+  box-shadow: 1px 0 20px -4px oklch(0.24 0.066 256 / 0.04);
+}
+
+@utility bg-gradient-primary {
+  background-image: var(--gradient-primary);
+}
+
+@utility bg-gradient-accent {
+  background-image: var(--gradient-accent);
 }
 
 @utility modal-scrim {

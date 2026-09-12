@@ -222,9 +222,9 @@ function DestinationsPage() {
 
   const hasActiveFilters = Boolean(
     currentSearch ||
-      currentContinent !== "All" ||
-      currentRegion !== "All" ||
-      (currentCountry && currentCountry !== "All"),
+    currentContinent !== "All" ||
+    currentRegion !== "All" ||
+    (currentCountry && currentCountry !== "All"),
   );
 
   return (
