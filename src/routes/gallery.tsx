@@ -10,8 +10,6 @@ import {
   MapPin,
   Maximize2,
   Sparkles,
-  Columns3,
-  Layers,
 } from "lucide-react";
 import { SiteLayout, PageHeader } from "@/components/layout/SiteLayout";
 import {
@@ -21,7 +19,8 @@ import {
 } from "@/lib/catalog.functions";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ImageCollage, CollageImage } from "@/components/vendored/ImageCollage";
+import { CylinderCarousel, CylinderImageItem } from "@/components/vendored/CylinderCarousel";
+import { ALL_LOCAL_PLACEHOLDERS } from "@/data/placeholder-gallery";
 
 const title = "Photo Gallery — Wanderlust";
 const description =
@@ -54,19 +53,6 @@ export const Route = createFileRoute("/gallery")({
   component: GalleryPage,
 });
 
-// Balanced spatial coordinates for up to 9 featured collage cards
-const COLLAGE_OFFSETS = [
-  { x: -320, y: -30, rotate: -8 },
-  { x: -240, y: 35, rotate: 6 },
-  { x: -160, y: -42, rotate: -5 },
-  { x: -80, y: 28, rotate: 4 },
-  { x: 0, y: -32, rotate: -2 },
-  { x: 80, y: 32, rotate: 5 },
-  { x: 160, y: -38, rotate: -6 },
-  { x: 240, y: 36, rotate: 4 },
-  { x: 320, y: -26, rotate: -7 },
-];
-
 function GalleryPage() {
   const { images, destinations, activeDestination } = Route.useLoaderData();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -74,11 +60,55 @@ function GalleryPage() {
   // Lightbox State
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
-  // Vengeance UI Image Collage Mode: true = Editorial (organized deck), false = Collage (scattered spread)
-  const [isOrganized, setIsOrganized] = useState<boolean>(false);
+  // Combine database images with ALL local placeholder photography from the asset folders
+  const allGalleryImages: GalleryImageData[] = useMemo(() => {
+    if (!activeDestination || activeDestination === "all") {
+      const existingUrls = new Set(ALL_LOCAL_PLACEHOLDERS.map((p) => p.url));
+      const uniqueDbImages = images.filter((img) => !existingUrls.has(img.url));
+      return [...ALL_LOCAL_PLACEHOLDERS, ...uniqueDbImages];
+    }
+
+    // Filter by destination slug
+    const matchingLocal = ALL_LOCAL_PLACEHOLDERS.filter(
+      (p) => p.destination?.slug === activeDestination,
+    );
+    const existingUrls = new Set(matchingLocal.map((p) => p.url));
+    const uniqueDbImages = images.filter((img) => !existingUrls.has(img.url));
+    const combined = [...matchingLocal, ...uniqueDbImages];
+
+    return combined.length > 0 ? combined : ALL_LOCAL_PLACEHOLDERS;
+  }, [images, activeDestination]);
+
+  // Aggregate filter pill destinations (combining remote DB and all local placeholder destinations)
+  const filterDestinations = useMemo(() => {
+    const destMap = new Map<string, { id: string; name: string; country: string; slug: string }>();
+
+    destinations.forEach((d) => destMap.set(d.slug, d));
+    ALL_LOCAL_PLACEHOLDERS.forEach((p) => {
+      if (p.destination && !destMap.has(p.destination.slug)) {
+        destMap.set(p.destination.slug, p.destination);
+      }
+    });
+
+    return Array.from(destMap.values());
+  }, [destinations]);
+
+  // Map into 3D Cylinder Carousel items
+  const cylinderItems: CylinderImageItem[] = useMemo(() => {
+    return allGalleryImages.map((img) => ({
+      id: img.id,
+      src: img.url,
+      alt: img.caption || img.destination?.name || "Travel photography capture",
+      caption: img.caption,
+      destinationName: img.destination?.name,
+      destinationCountry: img.destination?.country,
+    }));
+  }, [allGalleryImages]);
 
   const activeImage: GalleryImageData | null =
-    lightboxIndex !== null && images[lightboxIndex] ? images[lightboxIndex] : null;
+    lightboxIndex !== null && allGalleryImages[lightboxIndex]
+      ? allGalleryImages[lightboxIndex]
+      : null;
 
   const handleDestinationChange = (slug: string) => {
     navigate({
@@ -98,14 +128,16 @@ function GalleryPage() {
   }, []);
 
   const showNext = useCallback(() => {
-    if (lightboxIndex === null || images.length === 0) return;
-    setLightboxIndex((prev) => ((prev ?? 0) + 1) % images.length);
-  }, [lightboxIndex, images.length]);
+    if (lightboxIndex === null || allGalleryImages.length === 0) return;
+    setLightboxIndex((prev) => ((prev ?? 0) + 1) % allGalleryImages.length);
+  }, [lightboxIndex, allGalleryImages.length]);
 
   const showPrev = useCallback(() => {
-    if (lightboxIndex === null || images.length === 0) return;
-    setLightboxIndex((prev) => ((prev ?? 0) - 1 + images.length) % images.length);
-  }, [lightboxIndex, images.length]);
+    if (lightboxIndex === null || allGalleryImages.length === 0) return;
+    setLightboxIndex(
+      (prev) => ((prev ?? 0) - 1 + allGalleryImages.length) % allGalleryImages.length,
+    );
+  }, [lightboxIndex, allGalleryImages.length]);
 
   // Keyboard navigation for lightbox
   useEffect(() => {
@@ -133,32 +165,11 @@ function GalleryPage() {
     };
   }, [lightboxIndex]);
 
-  // Map first 8-9 images into collage data format
-  const collageItems: CollageImage[] = useMemo(() => {
-    const featuredCount = Math.min(images.length, 9);
-    const subset = images.slice(0, featuredCount);
-
-    return subset.map((img, i) => {
-      const offset = COLLAGE_OFFSETS[i % COLLAGE_OFFSETS.length];
-      return {
-        id: img.id,
-        src: img.url,
-        x: offset.x,
-        y: offset.y,
-        rotate: offset.rotate,
-        alt: img.caption || "Travel photography",
-        caption: img.caption,
-        destinationName: img.destination?.name,
-        destinationCountry: img.destination?.country,
-      };
-    });
-  }, [images]);
-
   return (
     <SiteLayout>
       <PageHeader eyebrow="Visual Odyssey" title="Destination Gallery" description={description} />
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-12">
         {/* Category / Destination Filter Pills */}
         <div className="flex flex-wrap items-center justify-center gap-2 max-w-5xl mx-auto">
           <button
@@ -169,10 +180,10 @@ function GalleryPage() {
                 : "bg-card border border-border text-muted-foreground hover:border-primary/50 hover:text-foreground"
             }`}
           >
-            All Destinations ({images.length})
+            All Destinations ({allGalleryImages.length})
           </button>
 
-          {destinations.map((d) => {
+          {filterDestinations.map((d) => {
             const isActive = activeDestination === d.slug;
             return (
               <button
@@ -191,7 +202,7 @@ function GalleryPage() {
         </div>
 
         {/* Empty State */}
-        {images.length === 0 ? (
+        {allGalleryImages.length === 0 ? (
           <div className="rounded-3xl border border-dashed border-border bg-card/60 p-16 text-center max-w-md mx-auto my-12">
             <ImageIcon className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
             <h3 className="font-display text-lg font-bold text-foreground">No photos found</h3>
@@ -209,67 +220,37 @@ function GalleryPage() {
           </div>
         ) : (
           <>
-            {/* Desktop Expressive Interactive Feature: Vengeance UI Image Collage */}
-            {collageItems.length > 2 && (
-              <div className="hidden md:block space-y-3">
-                <div className="flex items-center justify-between px-2">
+            {/* Expressive Feature: Infinite CSS 3D Cylinder Interactive Carousel */}
+            {cylinderItems.length > 2 && (
+              <div className="space-y-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 px-1">
                   <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-accent/10 text-accent-text text-xs font-semibold">
-                      <Sparkles className="h-3.5 w-3.5" />
-                      Curated Collage Spotlight
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent/15 text-accent-text text-xs font-semibold border border-accent/20">
+                      <Sparkles className="h-3.5 w-3.5 text-accent-text" />
+                      Interactive 3D Cylinder Showcase
                     </span>
-                    <span className="text-xs text-muted-foreground">
-                      Click any photograph to view fullscreen
+                    <span className="text-xs text-muted-foreground hidden sm:inline">
+                      Infinite 360° perspective view of all destinations
                     </span>
-                  </div>
-
-                  {/* Organized ↔ Scattered View Toggle */}
-                  <div className="inline-flex items-center p-1 rounded-full bg-muted/80 border border-border/80 shadow-xs">
-                    <button
-                      type="button"
-                      onClick={() => setIsOrganized(false)}
-                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-all ${
-                        !isOrganized
-                          ? "bg-card text-foreground shadow-xs font-semibold"
-                          : "text-muted-foreground hover:text-foreground"
-                      }`}
-                      aria-pressed={!isOrganized}
-                    >
-                      <Layers className="h-3.5 w-3.5" />
-                      Collage view
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setIsOrganized(true)}
-                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-all ${
-                        isOrganized
-                          ? "bg-card text-foreground shadow-xs font-semibold"
-                          : "text-muted-foreground hover:text-foreground"
-                      }`}
-                      aria-pressed={isOrganized}
-                    >
-                      <Columns3 className="h-3.5 w-3.5" />
-                      Editorial view
-                    </button>
                   </div>
                 </div>
 
-                <ImageCollage
-                  images={collageItems}
-                  isOrganized={isOrganized}
-                  onToggleLayout={() => setIsOrganized((prev) => !prev)}
-                  onImageClick={(collageIdx) => openLightbox(collageIdx)}
-                />
+                <div className="rounded-3xl border border-border/80 bg-gradient-to-b from-card/80 via-card/50 to-card/20 backdrop-blur-md p-3 sm:p-6 shadow-xl relative overflow-hidden">
+                  <CylinderCarousel
+                    images={cylinderItems}
+                    cardWidth={230}
+                    animationDuration={42}
+                    onImageClick={(idx) => openLightbox(idx)}
+                  />
+                </div>
               </div>
             )}
 
             {/* Complete Gallery Grid */}
-            <div className="space-y-4">
+            <div className="space-y-4 pt-4">
               <div className="flex items-center justify-between px-1">
                 <h2 className="text-base font-semibold text-foreground tracking-tight">
-                  {collageItems.length > 2
-                    ? `Complete Archive (${images.length})`
-                    : `Photographs (${images.length})`}
+                  Complete Archive ({allGalleryImages.length})
                 </h2>
                 <span className="text-xs text-muted-foreground">
                   High-resolution editorial captures
@@ -277,7 +258,7 @@ function GalleryPage() {
               </div>
 
               <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-5 space-y-5">
-                {images.map((img, idx) => (
+                {allGalleryImages.map((img, idx) => (
                   <div
                     key={img.id}
                     onClick={() => openLightbox(idx)}
@@ -339,7 +320,7 @@ function GalleryPage() {
           >
             <div className="flex items-center gap-3">
               <span className="font-mono text-xs text-white/60 tracking-wider">
-                {lightboxIndex + 1} / {images.length}
+                {lightboxIndex + 1} / {allGalleryImages.length}
               </span>
               {activeImage.destination && (
                 <Badge variant="outline" className="text-white border-white/20 bg-white/10 text-xs">

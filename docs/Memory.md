@@ -151,6 +151,7 @@
 ## Known Bugs / TODO
 
 - None. All functional bugs and assets resolved.
+- Gallery updated with Infinite CSS 3D Cylinder Interactive Carousel ported from Vengeance UI, replacing the Collage/Editorial view. All 16 local placeholder photography assets are curated in `src/data/placeholder-gallery.ts` and copied to `public/images/assets/`, fully integrated with fullscreen Lightbox and drag/swipe/keyboard navigation.
 
 ## Next Steps
 
