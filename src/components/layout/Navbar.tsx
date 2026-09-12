@@ -81,7 +81,7 @@ export function Navbar({ transparentOverHero = false }: { transparentOverHero?: 
       <nav
         className={cn(
           "mx-auto flex h-14 sm:h-16 max-w-7xl items-center justify-between px-4 sm:px-6 transition-all duration-300 pointer-events-auto rounded-full glass-navbar text-white",
-          solid ? "shadow-2xl" : "bg-opacity-80 shadow-lg",
+          solid ? "shadow-2xl" : "shadow-lg",
         )}
       >
         <Link
