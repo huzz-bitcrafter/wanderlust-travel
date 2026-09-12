@@ -700,7 +700,7 @@ function FlightsPage() {
 
                 <div className="flex justify-between border-t border-border/60 pt-2 font-semibold text-foreground text-sm">
                   <span>Total Amount</span>
-                  <span className="text-accent font-display text-lg font-bold">
+                  <span className="text-accent-text font-display text-lg font-bold">
                     ${totalSummaryPrice.toLocaleString()}
                   </span>
                 </div>

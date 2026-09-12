@@ -135,7 +135,7 @@ export function FlightCard({
               Sold Out
             </span>
           ) : isLowSeats ? (
-            <span className="inline-flex items-center gap-1 text-xs font-medium text-accent">
+            <span className="inline-flex items-center gap-1 text-xs font-medium text-accent-text">
               <Users className="h-3.5 w-3.5" />
               Only {flight.seats_available} seats left!
             </span>

@@ -13,8 +13,9 @@ base with energetic coral accents. Light theme only (v1).
 |---|---|---|---|---|---|---|
 | `primary` | `oklch(0.3 0.062 250)` | `oklch(0.24 0.066 256)` | #071f3e | Midnight Navy — cinematic depth, anchor | Navbar, footer, primary buttons, major headings | **16.50:1** vs white (AAA), **15.35:1** vs bg (AAA) |
 | `primary-foreground` | `oklch(1 0 0)` | `oklch(1 0 0)` | #ffffff | Crisp Pure White | Text on primary/midnight surfaces | **16.50:1** vs primary (AAA) |
-| `accent` | `oklch(0.676 0.146 40)` | `oklch(0.680 0.168 38)` | #ec6c44 | Luminous Coral — emotional warmth & action | Primary CTAs, booking actions, prices, star ratings | **3.08:1** vs white/card (AA Large/UI) |
+| `accent` | `oklch(0.676 0.146 40)` | `oklch(0.680 0.168 38)` | #ec6c44 | Luminous Coral — emotional warmth & action | Primary CTAs, booking actions, large prices, star ratings | **3.08:1** vs white/card (AA Large/UI) |
 | `accent-foreground` | `oklch(1 0 0)` | `oklch(1 0 0)` | #ffffff | Crisp Pure White | Button text on accent CTAs | **3.08:1** vs accent (AA Large/UI) |
+| `accent-text` | — | `oklch(0.565 0.168 38)` | #c4471c | Deep Coral Text — WCAG AA compliant small text | Small/normal accent text, metadata warnings, links on light surfaces | **4.92:1** vs white/card (AA Normal), **4.57:1** vs bg (AA Normal) |
 | `secondary` | `oklch(0.62 0.096 186)` | `oklch(0.62 0.096 186)` | #2d998f | Restrained Travel Teal | Links, subtle badges, secondary tags, focus rings | **3.67:1** vs card (AA UI) |
 | `secondary-foreground` | `oklch(1 0 0)` | `oklch(1 0 0)` | #ffffff | Crisp Pure White | Text on solid secondary surfaces | **3.67:1** vs secondary |
 | `background` | `oklch(0.975 0.008 85)` | `oklch(0.975 0.008 85)` | #f9f6f1 | Warm Ivory / Off-White | Editorial page canvas, comfortable luxury | **13.96:1** vs foreground (AAA) |
@@ -52,7 +53,7 @@ Status colors: confirmed = success green (`oklch(0.615 0.126 158)`), pending = a
 - `--shadow-modal`: `0 32px 64px -16px oklch(0.24 0.066 256 / 0.25), 0 0 0 1px oklch(0.24 0.066 256 / 0.05)` (Definitive elevation for dialogs & sheets).
 
 ### Accessibility & Contrast Compliance
-- **Normal Text**: All body copy, inputs, and muted metadata exceed 4.5:1 against their backgrounds (foreground on bg: 13.96:1; muted-foreground on bg: 5.31:1; muted-foreground on card: 5.71:1).
+- **Normal Text**: All body copy, inputs, muted metadata, and small accent text exceed 4.5:1 against their backgrounds (foreground on bg: 13.96:1; muted-foreground on bg: 5.31:1; muted-foreground on card: 5.71:1; accent-text on card: 4.92:1; accent-text on bg: 4.57:1).
 - **Large Text & UI Components**: Buttons, badges, and heading elements exceed 3.0:1 (primary on bg: 15.35:1; primary-foreground on primary: 16.50:1; accent on card: 3.08:1; accent-foreground on accent: 3.08:1).
 - **Reduced Motion & Reduced Transparency**: Full fallbacks in `src/styles.css` ensuring zero vestibulary discomfort and solid surfaces when user preferences dictate.
 

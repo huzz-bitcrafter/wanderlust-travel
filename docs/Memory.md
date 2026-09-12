@@ -1,6 +1,6 @@
 # Memory — Wanderlust
 
-**Last updated:** 2026-09-12 | **Current phase:** Domestic (India) Content Expansion | **Session #:** 7
+**Last updated:** 2026-09-12 | **Current phase:** UI Polish (Phase 1 Complete, awaiting Phase 2) | **Session #:** 8
 
 ## Completed
 
@@ -62,9 +62,16 @@
   - **Verification**: Cleared build caches (`node_modules/.vite`, `.output`, `.nitro`), verified `GET /` returns 200 with complete SSR payload (tabs, Explore India, hero video), verified all 4 search target routes with query parameters return 200, and verified `npm run lint` and `npm run build` pass cleanly.
   - **Safeguard**: All related files staged together in a single comprehensive commit to ensure zero orphaned state.
 
+- [x] UI Polish Phase 1 — Contrast Fix (WCAG AA):
+  - Added `--accent-text` OKLCH token (`oklch(0.565 0.168 38)`, ~#c4471c) delivering **4.92:1** on card and **4.57:1** on background for small/normal accent text (<18.66px bold / <24px normal).
+  - Audited all coral text usages across public, account, and admin surfaces.
+  - Replaced `text-accent` with `text-accent-text` on small/normal text instances: `FlightCard.tsx` (seat availability warning), `Navbar.tsx` (desktop user menu Admin badge and Admin Portal link), `login.tsx` (Forgot password & Create account links), `register.tsx` (Sign in link), `flights.tsx` (Total Amount in booking confirmation dialog), `hotels.$id.tsx` (Total live estimate in sticky booking card), and `checkout.tsx` (Included in your booking guarantee header).
+  - Preserved `--accent` for large/bold prices (24px/30px bold: 3.09:1 passes WCAG AA Large), primary CTA fills (`bg-accent`), badges, and star rating icons.
+  - Updated `docs/Design.md` palette table and contrast compliance documentation.
+
 ## In Progress
 
-- Step 1 complete and verified. Awaiting user review before proceeding to Step 2 (liquid glass restyle).
+- UI Polish Phase 1 complete and verified. Awaiting user review and explicit "continue" before Phase 2 (CTA hover shine).
 
 ## Key Decisions
 

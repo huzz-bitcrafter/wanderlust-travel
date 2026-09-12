@@ -142,7 +142,7 @@ function LoginPage() {
                 </Label>
                 <Link
                   to="/forgot-password"
-                  className="text-xs font-medium text-accent underline-offset-4 hover:underline"
+                  className="text-xs font-medium text-accent-text underline-offset-4 hover:underline"
                 >
                   Forgot password?
                 </Link>
@@ -202,7 +202,7 @@ function LoginPage() {
             Don't have an account?{" "}
             <Link
               to="/register"
-              className="font-medium text-accent underline-offset-4 hover:underline"
+              className="font-medium text-accent-text underline-offset-4 hover:underline"
             >
               Create account
             </Link>

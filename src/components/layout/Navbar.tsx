@@ -141,7 +141,7 @@ export function Navbar({ transparentOverHero = false }: { transparentOverHero?: 
                         {displayName}
                       </p>
                       {isAdmin ? (
-                        <span className="rounded-full bg-accent/20 px-1.5 py-0.5 text-[10px] font-medium text-accent">
+                        <span className="rounded-full bg-accent/20 px-1.5 py-0.5 text-[10px] font-medium text-accent-text">
                           Admin
                         </span>
                       ) : null}
@@ -162,7 +162,7 @@ export function Navbar({ transparentOverHero = false }: { transparentOverHero?: 
                   <DropdownMenuItem asChild>
                     <Link
                       to="/admin"
-                      className="flex cursor-pointer items-center gap-2 text-sm font-medium text-accent"
+                      className="flex cursor-pointer items-center gap-2 text-sm font-medium text-accent-text"
                     >
                       <Shield className="h-4 w-4" aria-hidden="true" />
                       <span>Admin Portal</span>

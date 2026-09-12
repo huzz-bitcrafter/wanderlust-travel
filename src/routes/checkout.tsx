@@ -859,8 +859,8 @@ function CheckoutPage() {
 
                     {/* Inclusions Guarantee */}
                     <div className="rounded-xl bg-accent/10 border border-accent/20 p-4 text-xs text-foreground space-y-1">
-                      <div className="flex items-center gap-1.5 font-semibold text-accent-foreground">
-                        <Sparkles className="h-4 w-4 text-accent" />
+                      <div className="flex items-center gap-1.5 font-semibold text-accent-text">
+                        <Sparkles className="h-4 w-4 text-accent-text" />
                         <span>Included in your booking</span>
                       </div>
                       <p className="text-muted-foreground">
