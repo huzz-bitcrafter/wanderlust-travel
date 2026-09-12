@@ -22,7 +22,7 @@ export function PackageCard({
     <Link
       to="/packages/$slug"
       params={{ slug: pkg.slug }}
-      className="card-lift group flex h-full flex-col overflow-hidden rounded-xl border border-border/60 bg-card transition-all"
+      className="card-lift card-edge-light group flex h-full flex-col overflow-hidden rounded-xl border border-border/60 bg-card transition-all"
       aria-label={`${pkg.title} — ${destinationText}`}
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-muted">
@@ -38,7 +38,7 @@ export function PackageCard({
                 e.currentTarget.src = "/images/destinations/rishikesh.jpg";
               }
             }}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.01]"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-muted text-muted-foreground">

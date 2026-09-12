@@ -1,6 +1,6 @@
 # Memory — Wanderlust
 
-**Last updated:** 2026-09-12 | **Current phase:** UI Polish (Phase 3 Complete, awaiting Phase 4) | **Session #:** 8
+**Last updated:** 2026-09-12 | **Current phase:** UI Polish (Phase 4 Complete, at HARD GATE before Phase 5) | **Session #:** 8
 
 ## Completed
 
@@ -85,9 +85,18 @@
   - SSR non-negotiable compliance verified: curl/Ctrl+U tests show 100% of headings, content, text, and links present in initial server-rendered HTML payload.
   - Reduced-motion support: `useReducedMotion()` and CSS `[data-reveal]` rule in `src/styles.css` render elements immediately with zero translation under `prefers-reduced-motion: reduce`.
 
+- [x] UI Polish Phase 4 — Card Hover Edge Light (Native):
+  - Added `--gradient-card-edge` token (`linear-gradient(135deg, oklch(0.68 0.168 38 / 0.32) 0%, oklch(0.62 0.096 186 / 0.28) 100%)`) and `@utility card-edge-light` in `src/styles.css`.
+  - Native 1px perimeter border highlight via `::before` using `mask-composite: exclude` with 250ms smooth transition, keeping resting state completely plain (`border-border/50` or `/60`).
+  - Applied strictly to `DestinationCard`, `PackageCard`, and `HotelCard` only (leaving `FlightCard` and other card components untouched).
+  - Fine-tuned image hover scale from 1.05 down to elegant 1.01 (`scale-[1.01]`), ensuring photography dominates without aggressive expansion.
+  - Zero glow/edge light on touch devices (`@media (hover: hover) and (pointer: fine)`).
+  - Full reduced-motion override disables edge light (`display: none !important`) and image transform (`transform: none !important`).
+  - Zero external/registry components installed; native CSS only.
+
 ## In Progress
 
-- UI Polish Phase 3 complete and verified. Awaiting user review and explicit "continue" before Phase 4 (Card Hover Edge Light).
+- UI Polish Phase 4 complete and verified. Reached ⛔ HARD GATE: Awaiting user action to push repository to GitHub as backup before Phase 5 (Gallery: Vengeance UI Image Collage).
 
 ## Key Decisions
 

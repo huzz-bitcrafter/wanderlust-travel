@@ -17,7 +17,7 @@ export function DestinationCard({
     <Link
       to="/destinations/$slug"
       params={{ slug: destination.slug }}
-      className="card-lift group block overflow-hidden rounded-xl bg-card border border-border/50"
+      className="card-lift card-edge-light group block overflow-hidden rounded-xl bg-card border border-border/50"
       aria-label={`${destination.name}, ${destination.country}`}
     >
       <div className="aspect-[16/10] overflow-hidden bg-muted">
@@ -33,7 +33,7 @@ export function DestinationCard({
                 e.currentTarget.src = "/images/destinations/rishikesh.jpg";
               }
             }}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.01]"
           />
         ) : null}
       </div>

@@ -107,6 +107,12 @@ Immediate physical response on pointer-down (touch-down, not release).
   - Rest: `box-shadow: var(--shadow-card);`
   - Hover: `transform: translateY(-2px); box-shadow: var(--shadow-card-hover);` with `200ms cubic-bezier(0.16, 1, 0.3, 1)`
   - Active / Pointer-down: `transform: scale(0.97); transition: transform 100ms ease-out, box-shadow 100ms ease-out;`
+- **Card Hover Edge Light (`.card-edge-light`, DestinationCard, PackageCard, HotelCard)**:
+  - Rest: plain card border (`border-border/50` or `/60`), no glow, photography dominates.
+  - Hover (`@media (hover: hover) and (pointer: fine)`): existing lift + very subtle 1px coral→teal gradient border highlight via `::before` (`linear-gradient(135deg, oklch(0.68 0.168 38 / 0.32) 0%, oklch(0.62 0.096 186 / 0.28) 100%)` with `mask-composite: exclude`) + gentle image micro-zoom 1.01 (`scale-[1.01]`).
+  - Leave: 250ms `cubic-bezier(0.16, 1, 0.3, 1)` smooth fade back to resting border.
+  - Touch / Mobile (`@media (hover: none)`): plain border, zero edge light on tap.
+  - Reduced-motion: edge light disabled (`display: none !important`), image transform disabled (`transform: none !important`).
 - **Focus Rings**: Standardized secondary teal (`outline: 2px solid var(--color-secondary); outline-offset: 2px;`).
 - **Skeletons**: Smooth `transition-opacity duration-300 ease-out` cross-fading into live loaded content (`content-crossfade`).
 
