@@ -1,9 +1,16 @@
 # Memory — Wanderlust
 
-**Last updated:** 2026-09-13 | **Current phase:** Theme System — Phase A Complete (Token Foundation & Dark Material Architecture) | **Session #:** 9
+**Last updated:** 2026-09-13 | **Current phase:** Theme System — Phase B Complete (Pre-paint Script & Toggler Port) | **Session #:** 9
 
 ## Completed
 
+- [x] Theme System Phase B — Pre-paint SSR Theme Script & AnimatedThemeToggler:
+  - Injected zero-flash synchronous pre-paint script into `<head>` of `src/routes/__root.tsx` evaluating `localStorage` theme preference with `prefers-color-scheme: dark` fallback.
+  - Added `suppressHydrationWarning` to `<html>` to eliminate SSR/hydration class mismatch warnings.
+  - Ported MagicUI `AnimatedThemeToggler` into `src/components/vendored/AnimatedThemeToggler.tsx` utilizing pure React 19 + native DOM APIs (`document.startViewTransition`, `document.documentElement.animate`, and `MutationObserver`).
+  - Implemented graceful fallback for `prefers-reduced-motion` and legacy browsers (instant theme swap without circular clip-path transition).
+  - Configured View Transitions CSS in `src/styles.css` ensuring seamless circular wipe expansion across viewport.
+  - Mounted `AnimatedThemeToggler` in `src/components/layout/Navbar.tsx` across both desktop actions and mobile top header.
 - [x] Theme System Phase A — Token Foundation & Dark Material Architecture:
   - Updated `@custom-variant dark (&:is(.dark, .dark *));` in `src/styles.css` ensuring utility styling applies to `.dark` root or any child.
   - Defined full `.dark` OKLCH token dictionary in `src/styles.css` (`--background`, `--foreground`, `--card`, `--primary`, `--secondary`, `--accent`, `--accent-text`, `--muted`, `--border`, gradients, and black-based shadow tokens).

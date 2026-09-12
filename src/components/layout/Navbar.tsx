@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/use-auth";
+import { AnimatedThemeToggler } from "@/components/vendored/AnimatedThemeToggler";
 
 const NAV_LINKS = [
   { to: "/", label: "Home" },
@@ -113,6 +114,7 @@ export function Navbar({ transparentOverHero = false }: { transparentOverHero?: 
 
         {/* Desktop Auth Section */}
         <div className="hidden items-center gap-2 lg:flex">
+          <AnimatedThemeToggler className="text-primary-foreground/80 hover:bg-primary-foreground/10 hover:text-primary-foreground" />
           {!loading && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -198,16 +200,19 @@ export function Navbar({ transparentOverHero = false }: { transparentOverHero?: 
           )}
         </div>
 
-        {/* Mobile menu hamburger */}
-        <button
-          type="button"
-          className="inline-flex h-11 w-11 items-center justify-center rounded-full text-primary-foreground lg:hidden"
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-        >
-          {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
+        {/* Mobile controls */}
+        <div className="flex items-center gap-1 lg:hidden">
+          <AnimatedThemeToggler className="text-primary-foreground/80 hover:bg-primary-foreground/10 hover:text-primary-foreground" />
+          <button
+            type="button"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full text-primary-foreground"
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+          >
+            {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
       </nav>
 
       {/* Mobile Drawer */}

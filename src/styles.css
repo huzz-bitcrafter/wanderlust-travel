@@ -535,11 +535,39 @@
   );
 }
 
-/* Preserved Deep Surfaces for Structural Navy Sections in Dark Mode */
+/* Preserved Deep Surfaces for Structural Navy Sections & Headers in Dark Mode */
+.dark .glass-navbar,
+.dark .glass-drawer,
+.dark footer.bg-primary,
+.dark section.bg-primary {
+  --primary-foreground: oklch(0.96 0.008 85);
+  color: oklch(0.96 0.008 85);
+}
+
 .dark footer.bg-primary,
 .dark section.bg-primary {
   background-color: var(--color-card);
   border-color: var(--color-border);
+}
+
+/* View Transitions for AnimatedThemeToggler Circular Reveal */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 9999;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
 }
 
 @keyframes content-reveal {
