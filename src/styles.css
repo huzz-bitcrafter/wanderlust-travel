@@ -224,6 +224,45 @@
   }
 }
 
+/* Subtle CTA Hover Shine Sweep + Elevation (Phase 2) */
+@utility cta-shine {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 150ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 150ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 150ms ease-out;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      105deg,
+      transparent 20%,
+      rgba(255, 255, 255, 0.3) 50%,
+      transparent 80%
+    );
+    transform: translateX(-100%);
+  }
+
+  &:hover {
+    transform: translateY(-1.5px);
+    box-shadow: 0 4px 14px -2px oklch(0.24 0.066 256 / 0.16);
+  }
+
+  &:hover::after {
+    transform: translateX(100%);
+    transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  &:active {
+    transform: scale(0.97);
+    transition: transform 100ms ease-out;
+  }
+}
+
 /* Translucent Materials & Depth (Apple Design §12) */
 @utility glass-navbar {
   background-color: oklch(0.24 0.066 256 / 0.82);
@@ -392,6 +431,13 @@
   .card-lift:active,
   .card-lift:hover {
     transform: none !important;
+  }
+
+  .cta-shine::after,
+  .cta-shine:hover::after {
+    display: none !important;
+    transform: none !important;
+    transition: none !important;
   }
 }
 

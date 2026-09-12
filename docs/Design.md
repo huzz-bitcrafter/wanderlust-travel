@@ -97,6 +97,12 @@ Tracking (letter-spacing) is size-specific and inversely proportional to font si
 ### 2. Press Response & Interactive Feedback (skill §1)
 Immediate physical response on pointer-down (touch-down, not release).
 - **Buttons (`<Button>`, `<button>`, `[role="button"]`)**: `:active { transform: scale(0.97); transition: transform 100ms ease-out; }`
+- **Primary CTA Hover Shine (`.cta-shine`)**:
+  - Rest: coral or midnight navy base unchanged, `position: relative; overflow: hidden;`
+  - Hover: single subtle light sweep via `::after` (`linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.3) 50%, transparent 80%)`, `translateX(-100%)` → `translateX(100%)` in 180ms cubic-bezier(0.16, 1, 0.3, 1)) + 1.5px elevation (`translateY(-1.5px)`) + soft shadow lift.
+  - Leave: transitions only on `:hover::after`, instantly resetting to `-100%` without reverse animation.
+  - Active: press feedback (`scale(0.97)`) untouched.
+  - Reduced-motion: sweep disabled (`display: none !important`), hover color and elevation preserved.
 - **Cards (`.card-lift`)**:
   - Rest: `box-shadow: var(--shadow-card);`
   - Hover: `transform: translateY(-2px); box-shadow: var(--shadow-card-hover);` with `200ms cubic-bezier(0.16, 1, 0.3, 1)`

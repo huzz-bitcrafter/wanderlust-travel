@@ -1,6 +1,6 @@
 # Memory — Wanderlust
 
-**Last updated:** 2026-09-12 | **Current phase:** UI Polish (Phase 1 Complete, awaiting Phase 2) | **Session #:** 8
+**Last updated:** 2026-09-12 | **Current phase:** UI Polish (Phase 2 Complete, awaiting Phase 3) | **Session #:** 8
 
 ## Completed
 
@@ -68,10 +68,17 @@
   - Replaced `text-accent` with `text-accent-text` on small/normal text instances: `FlightCard.tsx` (seat availability warning), `Navbar.tsx` (desktop user menu Admin badge and Admin Portal link), `login.tsx` (Forgot password & Create account links), `register.tsx` (Sign in link), `flights.tsx` (Total Amount in booking confirmation dialog), `hotels.$id.tsx` (Total live estimate in sticky booking card), and `checkout.tsx` (Included in your booking guarantee header).
   - Preserved `--accent` for large/bold prices (24px/30px bold: 3.09:1 passes WCAG AA Large), primary CTA fills (`bg-accent`), badges, and star rating icons.
   - Updated `docs/Design.md` palette table and contrast compliance documentation.
+- [x] UI Polish Phase 2 — CTA Hover Shine:
+  - Implemented subtle, elegant pure-CSS shine sweep + 1.5px elevation on primary CTA buttons via the shared `Button` component's `default` and `primary` variants using `@utility cta-shine`.
+  - Sweeps light across buttons on `:hover::after` using an angled gradient (`linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.3) 50%, transparent 80%)`, `translateX(-100%)` → `translateX(100%)` in 180ms cubic-bezier(0.16, 1, 0.3, 1)).
+  - Transitions only on hover, instantly resetting off-canvas on mouse-out without reverse sweep.
+  - Existing press state (`scale(0.97)` on pointer-down) preserved.
+  - Reduced motion respects user preferences: sweep disabled (`display: none !important`), hover color and elevation preserved.
+  - Zero classes added to individual buttons; secondary/ghost/outline variants completely unchanged.
 
 ## In Progress
 
-- UI Polish Phase 1 complete and verified. Awaiting user review and explicit "continue" before Phase 2 (CTA hover shine).
+- UI Polish Phase 2 complete and verified. Awaiting user review and explicit "continue" before Phase 3 (Section Entrance Reveals).
 
 ## Key Decisions
 
