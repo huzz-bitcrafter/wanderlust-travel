@@ -1,9 +1,6 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
-
-// Isomorphic layout effect to prevent SSR warnings
-const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 interface TypingAnimationProps {
   children?: string;
@@ -38,89 +35,92 @@ export function TypingAnimation({
   const [displayedText, setDisplayedText] = useState<string>(text);
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [isComplete, setIsComplete] = useState<boolean>(false);
-  const hasStartedRef = useRef<boolean>(false);
 
-  // Isomorphic layout effect: prepare client typing state before first paint
-  useIsomorphicLayoutEffect(() => {
-    if (prefersReducedMotion) {
-      setDisplayedText(text);
-      setIsComplete(true);
-      return;
-    }
-
-    if (!hasStartedRef.current) {
-      // Clear displayed text on client mount to begin typing
-      setDisplayedText("");
-      setIsTyping(true);
-      setIsComplete(false);
-    }
-  }, [prefersReducedMotion, text]);
+  // References to keep animation state stable across re-renders
+  const animStateRef = useRef<{
+    hasStarted: boolean;
+    timer: ReturnType<typeof setTimeout> | null;
+    isUnmounted: boolean;
+  }>({
+    hasStarted: false,
+    timer: null,
+    isUnmounted: false,
+  });
 
   useEffect(() => {
+    const state = animStateRef.current;
+    state.isUnmounted = false;
+
     if (prefersReducedMotion) {
+      if (state.timer) clearTimeout(state.timer);
       setDisplayedText(text);
+      setIsTyping(false);
       setIsComplete(true);
       return;
     }
 
-    if (!text || hasStartedRef.current) return;
-    hasStartedRef.current = true;
+    if (!text || state.hasStarted) return;
+    state.hasStarted = true;
 
-    let isCancelled = false;
-    let typeTimer: ReturnType<typeof setTimeout> | null = null;
+    // Reset displayed text on client mount to start typing cleanly
+    setDisplayedText("");
+    setIsTyping(true);
+    setIsComplete(false);
+
     let charIndex = 0;
+    const charDelay = Math.max(16, Math.round(duration / text.length));
 
-    const startTyping = () => {
-      if (isCancelled) return;
+    const step = () => {
+      if (state.isUnmounted) return;
 
-      // Calculate per-character interval to match target total duration
-      // For ~128 chars over 2800ms, each char is ~22ms
-      const charDelay = Math.max(16, Math.round(duration / text.length));
-
-      const typeNextChar = () => {
-        if (isCancelled) return;
-        if (charIndex <= text.length) {
-          setDisplayedText(text.slice(0, charIndex));
-          charIndex++;
-          if (charIndex <= text.length) {
-            typeTimer = setTimeout(typeNextChar, charDelay);
-          } else {
-            setIsComplete(true);
-            setIsTyping(false);
-          }
+      charIndex++;
+      if (charIndex <= text.length) {
+        setDisplayedText(text.slice(0, charIndex));
+        if (charIndex === text.length) {
+          setIsComplete(true);
+          setIsTyping(false);
+        } else {
+          state.timer = setTimeout(step, charDelay);
         }
-      };
-
-      typeTimer = setTimeout(typeNextChar, charDelay);
+      }
     };
 
-    // Font safety: wait until fonts are ready (specifically Alga)
-    const waitForFontAndDelay = async () => {
+    const runAnimation = async () => {
       try {
         if (typeof document !== "undefined" && document.fonts) {
-          await document.fonts.ready;
-          // Check if specific font is ready, or proceed after ready
+          // Race document.fonts.ready with 2000ms safety timeout so a stalled font load can't kill animation
+          await Promise.race([
+            document.fonts.ready,
+            new Promise((resolve) => setTimeout(resolve, 2000)),
+          ]);
+
           if (fontFamily && !document.fonts.check(`italic 16px "${fontFamily}"`)) {
             // Small extra buffer for font face readiness
-            await new Promise((r) => setTimeout(r, 60));
+            await new Promise((resolve) => setTimeout(resolve, 60));
           }
         }
       } catch {
-        // Fallback gracefully if document.fonts is not supported
+        // Fallback gracefully
       }
 
-      if (!isCancelled) {
-        typeTimer = setTimeout(startTyping, delay);
+      if (!state.isUnmounted) {
+        state.timer = setTimeout(step, delay);
       }
     };
 
-    waitForFontAndDelay();
-
-    return () => {
-      isCancelled = true;
-      if (typeTimer) clearTimeout(typeTimer);
-    };
+    runAnimation();
   }, [text, duration, delay, prefersReducedMotion, fontFamily]);
+
+  useEffect(() => {
+    const state = animStateRef.current;
+    return () => {
+      // Component unmount cleanup
+      state.isUnmounted = true;
+      if (state.timer) {
+        clearTimeout(state.timer);
+      }
+    };
+  }, []);
 
   return (
     <Component className={cn("inline-block", className)} style={style} suppressHydrationWarning>

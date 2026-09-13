@@ -1,5 +1,5 @@
 import * as React from "react";
-import { motion, useReducedMotion } from "motion/react";
+import { useReducedMotion } from "motion/react";
 import { Rating } from "@/components/shared/Rating";
 import { cn } from "@/lib/utils";
 import type { HomeTestimonial } from "@/lib/home-content";
@@ -16,22 +16,53 @@ export function TestimonialsColumn({
   className,
 }: TestimonialsColumnProps) {
   const shouldReduceMotion = useReducedMotion();
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const innerRef = React.useRef<HTMLDivElement>(null);
+  const animRef = React.useRef<Animation | null>(null);
 
-  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.currentTarget.getAnimations?.({ subtree: true }).forEach((anim) => anim.pause());
-  };
+  React.useEffect(() => {
+    if (shouldReduceMotion || !innerRef.current) return;
 
-  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.currentTarget.getAnimations?.({ subtree: true }).forEach((anim) => anim.play());
-  };
+    // WAAPI hardware-accelerated continuous translateY marquee
+    const anim = innerRef.current.animate(
+      [{ transform: "translateY(0%)" }, { transform: "translateY(-50%)" }],
+      {
+        duration: (duration || 10) * 1000,
+        iterations: Infinity,
+        easing: "linear",
+      },
+    );
+    animRef.current = anim;
 
-  const handleFocus = (e: React.FocusEvent<HTMLDivElement>) => {
-    e.currentTarget.getAnimations?.({ subtree: true }).forEach((anim) => anim.pause());
-  };
+    const container = containerRef.current;
+    if (container) {
+      const onEnter = () => {
+        if (anim.playState === "running") anim.pause();
+      };
+      const onLeave = () => {
+        if (anim.playState === "paused") anim.play();
+      };
 
-  const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
-    e.currentTarget.getAnimations?.({ subtree: true }).forEach((anim) => anim.play());
-  };
+      container.addEventListener("mouseenter", onEnter);
+      container.addEventListener("mouseleave", onLeave);
+      container.addEventListener("focusin", onEnter);
+      container.addEventListener("focusout", onLeave);
+
+      return () => {
+        container.removeEventListener("mouseenter", onEnter);
+        container.removeEventListener("mouseleave", onLeave);
+        container.removeEventListener("focusin", onEnter);
+        container.removeEventListener("focusout", onLeave);
+        anim.cancel();
+        animRef.current = null;
+      };
+    }
+
+    return () => {
+      anim.cancel();
+      animRef.current = null;
+    };
+  }, [duration, shouldReduceMotion]);
 
   if (shouldReduceMotion) {
     return (
@@ -44,28 +75,8 @@ export function TestimonialsColumn({
   }
 
   return (
-    <div
-      className={cn("overflow-hidden", className)}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onFocusCapture={handleFocus}
-      onBlurCapture={handleBlur}
-    >
-      <motion.div
-        animate={{
-          translateY: "-50%",
-        }}
-        transition={{
-          duration: duration || 10,
-          repeat: Infinity,
-          ease: "linear",
-          repeatType: "loop",
-        }}
-        style={{
-          willChange: "transform",
-        }}
-        className="flex flex-col gap-6 pb-6"
-      >
+    <div ref={containerRef} className={cn("overflow-hidden", className)}>
+      <div ref={innerRef} style={{ willChange: "transform" }} className="flex flex-col gap-6 pb-6">
         {[...new Array(2)].fill(0).map((_, index) => (
           <React.Fragment key={index}>
             {testimonials.map((testimonial, i) => (
@@ -73,7 +84,7 @@ export function TestimonialsColumn({
             ))}
           </React.Fragment>
         ))}
-      </motion.div>
+      </div>
     </div>
   );
 }

@@ -12,6 +12,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { SiteLayout, PageHeader } from "@/components/layout/SiteLayout";
+import { SectionReveal } from "@/components/shared/SectionReveal";
 import {
   fetchGalleryImages,
   fetchGalleryDestinations,
@@ -171,7 +172,7 @@ function GalleryPage() {
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-12">
         {/* Category / Destination Filter Pills */}
-        <div className="flex flex-wrap items-center justify-center gap-2 max-w-5xl mx-auto">
+        <SectionReveal className="flex flex-wrap items-center justify-center gap-2 max-w-5xl mx-auto">
           <button
             onClick={() => handleDestinationChange("all")}
             className={`px-4 py-2 rounded-full text-xs font-semibold transition-all shadow-xs ${
@@ -199,7 +200,7 @@ function GalleryPage() {
               </button>
             );
           })}
-        </div>
+        </SectionReveal>
 
         {/* Empty State */}
         {allGalleryImages.length === 0 ? (
@@ -222,7 +223,7 @@ function GalleryPage() {
           <>
             {/* Expressive Feature: Infinite CSS 3D Cylinder Interactive Carousel */}
             {cylinderItems.length > 2 && (
-              <div className="space-y-4">
+              <SectionReveal className="space-y-4">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 px-1">
                   <div className="flex items-center gap-2">
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent/15 text-accent-text text-xs font-semibold border border-accent/20">
@@ -245,11 +246,11 @@ function GalleryPage() {
                     onImageClick={(idx) => openLightbox(idx)}
                   />
                 </div>
-              </div>
+              </SectionReveal>
             )}
 
             {/* Complete Gallery Grid */}
-            <div className="space-y-4 pt-4">
+            <SectionReveal className="space-y-4 pt-4">
               <div className="flex items-center justify-between px-1">
                 <h2 className="text-base font-semibold text-foreground tracking-tight">
                   Complete Archive ({allGalleryImages.length})
@@ -301,7 +302,7 @@ function GalleryPage() {
                   </div>
                 ))}
               </div>
-            </div>
+            </SectionReveal>
           </>
         )}
       </div>

@@ -1,8 +1,18 @@
 # Memory — Wanderlust
 
-**Last updated:** 2026-09-14 | **Current phase:** Hero Type Lockup + Testimonials Marquee & Section Motion — Complete | **Session #:** 13
+**Last updated:** 2026-09-14 | **Current phase:** Motion Root-Cause Debugging + Consistency Sweep & Eyebrow Sizing — Complete | **Session #:** 14
 
 ## Completed
+
+- [x] Motion Root-Cause Debugging, Site-Wide Reveal Sweep & Eyebrow Size Doubling:
+  - **Environment Audit (Step 1)**: Checked `matchMedia('(prefers-reduced-motion: reduce)').matches` in dev-server browser context (Chromium/Chrome/Edge) = `false`. Evaluated Windows registry `HKCU:\Control Panel\Desktop\UserPreferencesMask` (`9E 1E 03 80 12 00 00 00`): Bit 2 (`SPI_GETCLIENTAREAANIMATION` / Windows Animation Effects) is `0` (`Off` in OS visual settings). When desktop browsers inherit this, reduced-motion fallbacks activate as designed.
+  - **Root Cause 1 (`TypingAnimation.tsx`)**: Re-render cancellation race condition during hydration and hero video readiness (`videoReady` state) triggered the effect cleanup, cancelling the typing interval while `hasStartedRef.current` remained `true`. The component was permanently frozen displaying `""` with only the cursor `|`. Fixed by adding `Promise.race([document.fonts.ready, 2000ms timeout])` font safety and stabilizing typing lifecycle state in an `animStateRef` so normal re-renders do not interrupt character typing. Verified ~2.8s smooth typing with cursor self-removal upon completion.
+  - **Root Cause 2 (`TestimonialsColumn.tsx`)**: `motion/react` percentage `translateY` transform does not create DOM WAAPI animations; `getAnimations()` returned `[]`, breaking hover/focus pause. Upgraded to hardware-accelerated WAAPI marquee directly on `innerRef.current.animate(...)` with native DOM `mouseenter`/`mouseleave`/`focusin`/`focusout` listeners. Verified 3 columns running at 15s/19s/17s with instant pause on hover/focus and continuous resume.
+  - **Root Cause 3 (`SectionReveal.tsx`)**: Viewport root margin (`-20px`) and `amount: 0.15` delayed near-fold sections. Optimized to `viewport={{ once: true, amount: "some", margin: "0px 0px -40px 0px" }}` so above-the-fold content triggers immediately and scroll-ins reveal with critically damped `duration: 0.45, ease: [0.16, 1, 0.3, 1]`.
+  - **Site-Wide Reveal Sweep**: Added `SectionReveal` to unmounted sections in `/gallery` (filter pills, 3D cylinder carousel, and archive grid), `/contact` (concierge form/office info grid and FAQ accordion), and `/flights` (flight search console and schedule cards). Verified active reveal triggers across all routes.
+  - **Hero Eyebrow Sizing (Part 2)**: Doubled eyebrow size from `text-sm` (14px) to `text-xl sm:text-2xl` (20px mobile / 24px desktop) with tightened proportional tracking (`tracking-[0.04em]` / `0.96px`) for optical lockup beside the Tropikal H1 headline.
+  - **Reduced Motion Degradation**: Tested under `prefers-reduced-motion: reduce` emulation in Chrome CDP: verified typing subheadline displays full text immediately with zero delay, marquee displays static cards without loop, and section reveals initialize with instant full opacity.
+  - **Quality Gates**: `npm run lint` (0 errors, 10 expected warnings) and `npm run build` cleanly passed. Git status verified clean.
 
 - [x] Typography: Hero Lockup Fonts + Typing Animation & Testimonials Scrolling Marquee:
   - Added `TheCrowInlineGrunge.otf` (734.9 KB) and `Alga-RegularItalic.otf` (28.7 KB) to `public/fonts/`.

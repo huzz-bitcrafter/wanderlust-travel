@@ -66,7 +66,7 @@ export function Hero() {
       {/* Content */}
       <div className="mx-auto w-full max-w-4xl px-4 py-16 text-center text-primary-foreground sm:px-6">
         <p
-          className="eyebrow text-sm text-accent font-semibold tracking-wider font-crow"
+          className="text-xl sm:text-2xl text-accent font-semibold tracking-[0.04em] uppercase font-crow"
           style={{
             textShadow: "0 2px 16px rgba(0, 0, 0, 0.45)",
             fontFamily: "'Crow Inline Grunge', 'Halenoir Compact', sans-serif",

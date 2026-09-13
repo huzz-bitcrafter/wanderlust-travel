@@ -17,6 +17,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { SiteLayout, PageHeader } from "@/components/layout/SiteLayout";
+import { SectionReveal } from "@/components/shared/SectionReveal";
 import {
   FlightCard,
   formatFlightDuration,
@@ -247,7 +248,7 @@ function FlightsPage() {
         description="Explore direct flights and seamless airline connections to iconic worldwide destinations with verified schedules and transparent fares."
       />
 
-      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <SectionReveal as="section" className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Flight Search Console Card */}
         <div className="rounded-3xl border border-border/70 bg-card p-5 sm:p-7 shadow-sm">
           <div className="grid gap-4 md:grid-cols-12 md:items-end">
@@ -598,7 +599,7 @@ function FlightsPage() {
             ))}
           </div>
         )}
-      </section>
+      </SectionReveal>
 
       {/* Step 3: Flight Booking Summary Dialog */}
       <Dialog

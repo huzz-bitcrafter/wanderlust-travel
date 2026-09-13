@@ -17,6 +17,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { SiteLayout, PageHeader } from "@/components/layout/SiteLayout";
+import { SectionReveal } from "@/components/shared/SectionReveal";
 import { DotPattern } from "@/components/vendored/DotPattern";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
@@ -167,7 +168,7 @@ function ContactPage() {
         />
         <div className="container relative mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-16">
           {/* Main Grid: Form + Info Sidebar */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start max-w-6xl mx-auto">
+          <SectionReveal className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start max-w-6xl mx-auto">
             {/* Left / Form Column (7 cols) */}
             <div className="lg:col-span-7 space-y-6">
               <div className="rounded-3xl border border-border bg-card p-6 sm:p-10 shadow-sm">
@@ -435,10 +436,10 @@ function ContactPage() {
                 </div>
               </div>
             </div>
-          </div>
+          </SectionReveal>
 
           {/* FAQs Section */}
-          <div className="max-w-4xl mx-auto space-y-6 pt-6 border-t border-border">
+          <SectionReveal className="max-w-4xl mx-auto space-y-6 pt-6 border-t border-border">
             <div className="text-center space-y-2">
               <Badge variant="outline" className="text-xs font-semibold">
                 <HelpCircle className="h-3 w-3 mr-1 text-primary" /> FAQ
@@ -467,7 +468,7 @@ function ContactPage() {
                 </AccordionItem>
               ))}
             </Accordion>
-          </div>
+          </SectionReveal>
         </div>
       </div>
     </SiteLayout>
