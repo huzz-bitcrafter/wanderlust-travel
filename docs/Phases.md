@@ -20,10 +20,10 @@
 - [x] **Phase 14 — QA & Polish:** Responsive verification (320px to 4K), branded 404 & error boundaries, SEO meta per route, zero lint errors, and verified production bundle.
 
 ## UI Polish & Enhancements (Post-Baseline Milestone) — COMPLETE
+
 - [x] **UI Polish Phase 1 — Contrast Fix (WCAG AA):** Added `--accent-text` token (4.92:1 / 4.57:1) across all small/normal coral text.
 - [x] **UI Polish Phase 2 — CTA Hover Shine:** Pure-CSS shine sweep on primary CTA buttons with reduced-motion support.
 - [x] **UI Polish Phase 3 — Section Entrance Reveals:** Critically damped subtle motion reveals on section groups via `SectionReveal.tsx`.
 - [x] **UI Polish Phase 4 — Card Hover Edge Light:** Native 1px perimeter border gradient highlight on `DestinationCard`, `PackageCard`, and `HotelCard`.
 - [x] **UI Polish Phase 5 — Gallery 3D Cylinder Carousel:** Infinite CSS 3D Cylinder Carousel ported from Vengeance UI with continuous auto-spin, local placeholder asset aggregation (16 photographs), fullscreen Lightbox integration, and responsive stage sizing.
 - [x] **UI Polish Phase 6 — Final Audit & Regression:** 100% SSR route health verification, clean linting (0 errors), 0-error production bundle build, and zero-defect regression sign-off.
-

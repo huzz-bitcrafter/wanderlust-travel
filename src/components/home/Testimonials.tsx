@@ -1,53 +1,50 @@
-import { Rating } from "@/components/shared/Rating";
+import * as React from "react";
+import { useReducedMotion } from "motion/react";
 import { SectionReveal } from "@/components/shared/SectionReveal";
-
-const TESTIMONIALS = [
-  {
-    quote:
-      "Booked the Kyoto tour, a hotel and both flights in about twenty minutes. The day-by-day itinerary saved our trip when it rained for two days.",
-    name: "Amelia Rhodes",
-    trip: "Kyoto Temples & Tea",
-    rating: 5,
-  },
-  {
-    quote:
-      "We travel with two kids, so price filters and clear inclusions matter. Everything was exactly as listed, no surprise extras.",
-    name: "Daniel Okafor",
-    trip: "Amalfi Slow Coast",
-    rating: 5,
-  },
-  {
-    quote:
-      "The W Trek was hard and brilliant. Guides were local, the group stayed small, and refugio bookings were already sorted.",
-    name: "Priya Nair",
-    trip: "Torres del Paine W Trek",
-    rating: 4.5,
-  },
-];
+import { TestimonialsColumn, TestimonialCard } from "@/components/TestimonialsColumn";
+import { HOME_TESTIMONIALS } from "@/lib/home-content";
 
 export function Testimonials() {
+  const shouldReduceMotion = useReducedMotion();
+
+  const firstColumn = HOME_TESTIMONIALS.slice(0, 3);
+  const secondColumn = HOME_TESTIMONIALS.slice(3, 6);
+  const thirdColumn = HOME_TESTIMONIALS.slice(6, 9);
+
   return (
     <section className="bg-muted/60 py-16 sm:py-24">
-      <SectionReveal className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <SectionReveal className="max-w-2xl">
           <p className="eyebrow text-secondary">Traveller stories</p>
           <h2 className="mt-2 text-3xl sm:text-4xl">Trips people came back raving about</h2>
-        </div>
-        <div className="mt-10 grid gap-6 lg:grid-cols-3">
-          {TESTIMONIALS.map((item) => (
-            <figure key={item.name} className="rounded-xl bg-card p-6 shadow-card">
-              <Rating value={item.rating} />
-              <blockquote className="mt-4 text-sm leading-relaxed text-foreground">
-                “{item.quote}”
-              </blockquote>
-              <figcaption className="mt-5 border-t border-border pt-4">
-                <span className="block text-sm font-semibold">{item.name}</span>
-                <span className="block text-xs text-muted-foreground">{item.trip}</span>
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-      </SectionReveal>
+        </SectionReveal>
+
+        {shouldReduceMotion ? (
+          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {HOME_TESTIMONIALS.map((item) => (
+              <TestimonialCard key={item.id} testimonial={item} />
+            ))}
+          </div>
+        ) : (
+          <div className="mt-10 flex justify-center gap-6 overflow-hidden max-h-[740px] [mask-image:linear-gradient(to_bottom,transparent,black_25%,black_75%,transparent)]">
+            <TestimonialsColumn
+              testimonials={firstColumn}
+              duration={15}
+              className="w-full max-w-sm"
+            />
+            <TestimonialsColumn
+              testimonials={secondColumn}
+              duration={19}
+              className="hidden md:block w-full max-w-sm"
+            />
+            <TestimonialsColumn
+              testimonials={thirdColumn}
+              duration={17}
+              className="hidden lg:block w-full max-w-sm"
+            />
+          </div>
+        )}
+      </div>
     </section>
   );
 }

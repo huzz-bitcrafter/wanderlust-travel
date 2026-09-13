@@ -1,0 +1,115 @@
+import * as React from "react";
+import { motion, useReducedMotion } from "motion/react";
+import { Rating } from "@/components/shared/Rating";
+import { cn } from "@/lib/utils";
+import type { HomeTestimonial } from "@/lib/home-content";
+
+export interface TestimonialsColumnProps {
+  testimonials: HomeTestimonial[];
+  duration?: number;
+  className?: string;
+}
+
+export function TestimonialsColumn({
+  testimonials,
+  duration = 15,
+  className,
+}: TestimonialsColumnProps) {
+  const shouldReduceMotion = useReducedMotion();
+
+  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.currentTarget.getAnimations?.({ subtree: true }).forEach((anim) => anim.pause());
+  };
+
+  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.currentTarget.getAnimations?.({ subtree: true }).forEach((anim) => anim.play());
+  };
+
+  const handleFocus = (e: React.FocusEvent<HTMLDivElement>) => {
+    e.currentTarget.getAnimations?.({ subtree: true }).forEach((anim) => anim.pause());
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
+    e.currentTarget.getAnimations?.({ subtree: true }).forEach((anim) => anim.play());
+  };
+
+  if (shouldReduceMotion) {
+    return (
+      <div className={cn("flex flex-col gap-6", className)}>
+        {testimonials.map((item) => (
+          <TestimonialCard key={item.id} testimonial={item} />
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={cn("overflow-hidden", className)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onFocusCapture={handleFocus}
+      onBlurCapture={handleBlur}
+    >
+      <motion.div
+        animate={{
+          translateY: "-50%",
+        }}
+        transition={{
+          duration: duration || 10,
+          repeat: Infinity,
+          ease: "linear",
+          repeatType: "loop",
+        }}
+        style={{
+          willChange: "transform",
+        }}
+        className="flex flex-col gap-6 pb-6"
+      >
+        {[...new Array(2)].fill(0).map((_, index) => (
+          <React.Fragment key={index}>
+            {testimonials.map((testimonial, i) => (
+              <TestimonialCard key={`${index}-${testimonial.id || i}`} testimonial={testimonial} />
+            ))}
+          </React.Fragment>
+        ))}
+      </motion.div>
+    </div>
+  );
+}
+
+export function TestimonialCard({
+  testimonial,
+  className,
+}: {
+  testimonial: HomeTestimonial;
+  className?: string;
+}) {
+  return (
+    <figure
+      className={cn(
+        "rounded-xl bg-card p-6 shadow-card border border-border/60 card-lift transition-all duration-200 hover:shadow-card-hover hover:border-border",
+        className,
+      )}
+    >
+      <Rating value={testimonial.rating} />
+      <blockquote className="mt-3.5 text-sm leading-relaxed text-foreground">
+        “{testimonial.quote}”
+      </blockquote>
+      <figcaption className="mt-5 flex items-center gap-3 border-t border-border/60 pt-4">
+        <img
+          src={testimonial.avatar}
+          alt={testimonial.name}
+          width={40}
+          height={40}
+          loading="lazy"
+          className="h-10 w-10 rounded-full object-cover border border-border/60"
+        />
+        <div className="flex flex-col min-w-0">
+          <span className="truncate text-sm font-semibold text-foreground">{testimonial.name}</span>
+          <span className="truncate text-xs text-muted-foreground">{testimonial.trip}</span>
+        </div>
+      </figcaption>
+    </figure>
+  );
+}

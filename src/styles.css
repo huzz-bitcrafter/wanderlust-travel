@@ -26,6 +26,30 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Crow Inline Grunge";
+  src: url("/fonts/TheCrowInlineGrunge.otf") format("opentype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Alga";
+  src: url("/fonts/Alga-RegularItalic.otf") format("opentype");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Alga";
+  src: url("/fonts/Alga-RegularItalic.otf") format("opentype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 @custom-variant dark (&:is(.dark, .dark *));
 
 /*
@@ -43,6 +67,8 @@
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
   --font-tropikal: "Tropikal", "Tropikal Bold", ui-serif, Georgia, serif;
+  --font-crow: "Crow Inline Grunge", "Halenoir Compact", sans-serif;
+  --font-alga: "Alga", "Halenoir Compact", serif;
   --font-display: "Playfair Display", ui-serif, Georgia, serif;
   --font-sans: "Halenoir Compact", Inter, ui-sans-serif, system-ui, sans-serif;
   --color-background: var(--background);
@@ -778,4 +804,12 @@
 
 .font-tropikal {
   font-family: "Tropikal", "Tropikal Bold", ui-serif, Georgia, serif !important;
+}
+
+.font-crow {
+  font-family: "Crow Inline Grunge", "Halenoir Compact", sans-serif !important;
+}
+
+.font-alga {
+  font-family: "Alga", "Halenoir Compact", serif !important;
 }

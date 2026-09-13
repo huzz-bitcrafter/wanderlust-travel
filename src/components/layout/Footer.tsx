@@ -42,7 +42,11 @@ export function Footer() {
     <footer className="bg-primary text-primary-foreground">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 lg:grid-cols-4 lg:px-8">
         <div>
-          <Link to="/" className="inline-block transition-opacity hover:opacity-90" aria-label="Wanderlust Home">
+          <Link
+            to="/"
+            className="inline-block transition-opacity hover:opacity-90"
+            aria-label="Wanderlust Home"
+          >
             <img
               src="/Wanderlust_Nasalization_transparent_HD.png"
               alt="Wanderlust"

@@ -12,7 +12,8 @@ import { twMerge } from "tailwind-merge";
 /* -------------------------------------------------------------------------- */
 /* Rendered with the component, in a low cascade layer, so your own
    `:root { --motiq-*: … }` always wins. Move it to globals.css to drop it. */
-const MOTIQ_TOKENS = "@layer motiq{:root{--motiq-accent:#315fea;--motiq-accent-text:#244fd1;--motiq-bg:#f7f9fc;--motiq-border:#dce4ef;--motiq-border-strong:#c5d1e1;--motiq-fg:#101828;--motiq-fg-secondary:#344054;--motiq-muted:#667085;--motiq-secondary-accent:#009fb3;--motiq-signature:#e9564a;--motiq-surface:#ffffff;--motiq-surface-2:#f8fafd}}@layer motiq{.dark,[data-theme=\"dark\"]{--motiq-accent:#4f7cff;--motiq-accent-text:#7f9fff;--motiq-bg:#080c14;--motiq-border:#263449;--motiq-border-strong:#354863;--motiq-fg:#f8fafc;--motiq-fg-secondary:#cbd5e1;--motiq-muted:#9caabd;--motiq-secondary-accent:#22c7d9;--motiq-signature:#ff6b5e;--motiq-surface:#111827;--motiq-surface-2:#192337}}";
+const MOTIQ_TOKENS =
+  '@layer motiq{:root{--motiq-accent:#315fea;--motiq-accent-text:#244fd1;--motiq-bg:#f7f9fc;--motiq-border:#dce4ef;--motiq-border-strong:#c5d1e1;--motiq-fg:#101828;--motiq-fg-secondary:#344054;--motiq-muted:#667085;--motiq-secondary-accent:#009fb3;--motiq-signature:#e9564a;--motiq-surface:#ffffff;--motiq-surface-2:#f8fafd}}@layer motiq{.dark,[data-theme="dark"]{--motiq-accent:#4f7cff;--motiq-accent-text:#7f9fff;--motiq-bg:#080c14;--motiq-border:#263449;--motiq-border-strong:#354863;--motiq-fg:#f8fafc;--motiq-fg-secondary:#cbd5e1;--motiq-muted:#9caabd;--motiq-secondary-accent:#22c7d9;--motiq-signature:#ff6b5e;--motiq-surface:#111827;--motiq-surface-2:#192337}}';
 
 /** Merge Tailwind class names; later/consumer classes win on conflict. */
 function cn(...inputs: ClassValue[]): string {
@@ -28,7 +29,9 @@ function cn(...inputs: ClassValue[]): string {
  */
 function useReducedMotion(): boolean {
   const [reduced, setReduced] = React.useState(
-    () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches,
   );
   React.useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -160,7 +163,10 @@ function ringGradient(beams: 1 | 2, colors: [string, string?] | undefined): stri
   // The single coral moment on this surface — the second comet's head.
   if (beams === 2) {
     const c1 = colors?.[1] ?? "var(--motiq-signature, #ff6b5e)";
-    stops.push("transparent 198deg", comet(c1, c1, `color-mix(in srgb, ${c1} 26%, #ffffff)`, 50, 198));
+    stops.push(
+      "transparent 198deg",
+      comet(c1, c1, `color-mix(in srgb, ${c1} 26%, #ffffff)`, 50, 198),
+    );
   }
   stops.push("transparent 360deg");
   return `conic-gradient(from var(--mk-beam-a, 0deg), ${stops.join(", ")})`;
@@ -210,7 +216,7 @@ function BorderBeamPanelBase({
   const damping = spring?.damping ?? 12;
 
   // Deterministic start angle — a lap phase, never Math.random (SSR-stable).
-  const startAngle = React.useMemo(() => ((seed * 137.508) % 360 + 360) % 360, [seed]);
+  const startAngle = React.useMemo(() => (((seed * 137.508) % 360) + 360) % 360, [seed]);
 
   const speedRef = React.useRef(new Spring(idleSpeed, stiffness, damping));
   const angleRef = React.useRef(startAngle);
@@ -223,7 +229,10 @@ function BorderBeamPanelBase({
   }, [stiffness, damping]);
 
   const paint = React.useCallback((angle: number) => {
-    rootRef.current?.style.setProperty("--mk-beam-a", `${(((angle % 360) + 360) % 360).toFixed(2)}deg`);
+    rootRef.current?.style.setProperty(
+      "--mk-beam-a",
+      `${(((angle % 360) + 360) % 360).toFixed(2)}deg`,
+    );
   }, []);
 
   React.useEffect(() => {
@@ -295,12 +304,14 @@ function BorderBeamPanelBase({
         cls,
         className,
       )}
-      style={{
-        borderRadius: `${radius}px`,
-        isolation: "isolate",
-        ["--mk-beam-a" as any]: `${startAngle.toFixed(2)}deg`,
-        ...style,
-      }}
+      style={
+        {
+          borderRadius: `${radius}px`,
+          isolation: "isolate",
+          ["--mk-beam-a" as unknown as string]: `${startAngle.toFixed(2)}deg`,
+          ...style,
+        } as React.CSSProperties
+      }
       {...props}
     >
       <style dangerouslySetInnerHTML={{ __html: css }} />

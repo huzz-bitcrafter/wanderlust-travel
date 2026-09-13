@@ -33,8 +33,8 @@ docs/Memory.md (current status) → docs/PRD.md → Architecture doc → docs/De
 - All forms: zod. Every data view: loading/empty/error states. No `any` types.
 - Style only with existing tokens. No new dependencies without asking.
 - After each phase: update docs/Memory.md.
-- Commits: stage ALL files related to the change (git add -A, or the complete 
-  file list) and verify `git status` is clean afterward — never selective adds 
+- Commits: stage ALL files related to the change (git add -A, or the complete
+  file list) and verify `git status` is clean afterward — never selective adds
   that leave new files or modified wiring uncommitted.
-- Before starting any new task: verify `git status` is clean; if not, commit 
+- Before starting any new task: verify `git status` is clean; if not, commit
   pending work as a checkpoint first.

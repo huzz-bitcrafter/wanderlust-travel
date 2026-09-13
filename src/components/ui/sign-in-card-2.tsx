@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence, useMotionValue, useTransform, useReducedMotion } from "motion/react";
+import {
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  useTransform,
+  useReducedMotion,
+} from "motion/react";
 import { Compass } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -39,7 +45,10 @@ export function AuthCardWrapper({
   };
 
   return (
-    <div className={cn("w-full max-w-md relative z-10 mx-auto", className)} style={{ perspective: 1500 }}>
+    <div
+      className={cn("w-full max-w-md relative z-10 mx-auto", className)}
+      style={{ perspective: 1500 }}
+    >
       <motion.div
         className="relative"
         style={{ rotateX, rotateY }}
@@ -298,7 +307,7 @@ export function AnimatedSubmitButton({
         "bg-accent text-accent-foreground shadow-md hover:shadow-lg hover:bg-accent/95 disabled:opacity-70 disabled:cursor-not-allowed",
         className,
       )}
-      {...(props as any)}
+      {...(props as React.ComponentProps<typeof motion.button>)}
     >
       {/* Light sweep animation */}
       <motion.div

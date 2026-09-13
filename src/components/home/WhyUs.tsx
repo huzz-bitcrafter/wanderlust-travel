@@ -26,22 +26,24 @@ const REASONS = [
 
 export function WhyUs() {
   return (
-    <SectionReveal as="section" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-      <div className="max-w-2xl">
+    <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+      <SectionReveal className="max-w-2xl">
         <p className="eyebrow text-secondary">Why Wanderlust</p>
         <h2 className="mt-2 text-3xl sm:text-4xl">Planning that stays out of your way</h2>
-      </div>
+      </SectionReveal>
       <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {REASONS.map(({ icon: Icon, title, body }) => (
-          <div key={title} className="rounded-xl bg-card p-6 shadow-card">
-            <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-secondary/10 text-secondary">
-              <Icon className="h-5 w-5" aria-hidden="true" />
-            </span>
-            <h3 className="mt-4 font-display text-lg">{title}</h3>
-            <p className="mt-2 text-sm text-muted-foreground">{body}</p>
-          </div>
+        {REASONS.map(({ icon: Icon, title, body }, index) => (
+          <SectionReveal key={title} delay={index * 0.08} className="h-full">
+            <div className="h-full rounded-xl bg-card p-6 shadow-card border border-border/60 card-lift transition-all duration-200 hover:shadow-card-hover hover:border-border">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-secondary/10 text-secondary">
+                <Icon className="h-5 w-5" aria-hidden="true" />
+              </span>
+              <h3 className="mt-4 font-display text-lg">{title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">{body}</p>
+            </div>
+          </SectionReveal>
         ))}
       </div>
-    </SectionReveal>
+    </section>
   );
 }

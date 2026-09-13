@@ -260,7 +260,9 @@ function RegisterPage() {
                   {errors.password.message}
                 </p>
               ) : (
-                <p className="text-[11px] text-muted-foreground">Must be at least 8 characters long.</p>
+                <p className="text-[11px] text-muted-foreground">
+                  Must be at least 8 characters long.
+                </p>
               )}
             </div>
 

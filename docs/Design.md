@@ -110,27 +110,42 @@ Status colors (dark): confirmed = success green (`oklch(0.68 0.140 158)`), pendi
 
 - **Headlines & Editorial Display**: Playfair Display (600/700) loaded via Google Fonts in `src/routes/__root.tsx`.
 - **Hero Headline (Home)**: Tropikal Bold (`/fonts/tropikal-bold.otf`), 700 weight, loaded via local `@font-face`.
+- **Hero Eyebrow (Home)**: Crow Inline Grunge (`/fonts/TheCrowInlineGrunge.otf`), single-weight display, loaded via local `@font-face`.
+- **Hero Subheadline (Home)**: Alga (`/fonts/Alga-RegularItalic.otf`), Italic 400, loaded via local `@font-face`.
 - **Global Body & UI**: Halenoir Compact (`/fonts/HalenoirCompact-Medium.otf`), Medium (500) weight resolving across all requested weights (100–900), loaded via local `@font-face` and preloaded in `src/routes/__root.tsx`. Inter remains only as fallback.
-- **Scale**: H1 48/64 · H2 36 · H3 20/24 · Body 16 · Small 14 · Eyebrow 12 uppercase wide.
+- **Scale**: H1 48/64 · H2 36 · H3 20/24 · Body 16 · Small 14 · Eyebrow 14 (Crow) / 12 uppercase wide (UI).
 
-### Font Usage Map (Current State)
+### Font Usage Map (Current State — 5-Font System)
 
 > [!NOTE]
 > **License Verification Pending**: Halenoir Compact is currently licensed for internal design evaluation / development testing. Commercial font license verification is pending final production audit.
 
-| Element                   | Font (Previous)  | Font (Today)                | Weight             | Size / Leading   | Tracking       | Weight-Collapse Compensation & Notes                                | Where it appears                                       |
-| :------------------------ | :--------------- | :-------------------------- | :----------------- | :--------------- | :------------- | :------------------------------------------------------------------ | :----------------------------------------------------- |
-| **Hero H1**               | Playfair Display | Tropikal Bold               | 700                | ~48–64px / 1.05  | -0.025em       | Standalone display headline; high contrast, full brand identity     | Home hero headline                                     |
-| **Section headings (H2)** | Playfair Display | Playfair Display            | 600 / 700          | ~36px / 1.15     | -0.02em        | Editorial display serif anchor; untouched                           | "Explore India", "Featured Destinations", page headers |
-| **H3 / card titles**      | Playfair Display | Playfair Display            | 600                | ~20–24px / 1.22  | -0.015em       | Editorial card titles; untouched                                    | Destination / Package / Hotel card titles              |
-| **Body text**             | Inter (400)      | Halenoir Compact            | Medium (500)       | 16px / 1.6       | +0.005em       | +0.005em tracking relief prevents density/fatigue in paragraphs     | Descriptions, detail pages, forms                      |
-| **Card body copy**        | Inter (400)      | Halenoir Compact            | Medium (500)       | 14px / 1.5–1.6   | +0.01em        | +0.01em tracking relief prevents glyph collision in compact cards   | Card descriptions                                      |
-| **Eyebrow labels**        | Inter (600)      | Halenoir Compact            | Medium (500)       | 12px / uppercase | +0.12em (wide) | Uppercase styling + wide letter-spacing maintains hierarchy         | Small labels above section headings                    |
-| **Buttons / CTAs**        | Inter (500–600)  | Halenoir Compact            | Medium (500)       | 14–16px          | 0              | Crisp Medium weight naturally suits pill/button geometries          | Search, Book Now, Sign In                              |
-| **Navbar links**          | Inter (500)      | Halenoir Compact            | Medium (500)       | 14–15px          | 0              | Medium provides optimal legibility over glass navbars               | Nav + footer links                                     |
-| **Prices / numbers**      | Inter (600–700)  | Halenoir Compact / Playfair | Medium (500) / 700 | 24–32px          | 0              | Coral accent color (`text-accent`) + display sizes carry emphasis   | Prices, ratings, stats                                 |
-| **Muted metadata**        | Inter (400)      | Halenoir Compact            | Medium (500)       | 12–14px          | +0.01em        | Subordinated via `text-muted-foreground` color + size differential  | Review counts, captions, dates                         |
-| **Admin UI**              | Inter (400–600)  | Halenoir Compact            | Medium (500)       | 13–16px          | +0.01em        | `tabular-nums` applied site-wide to tables for aligned data columns | Tables, forms, sidebar, KPI cards                      |
+> [!WARNING]
+> **Hero Font Payload & Optimization**: The hero typography lockup utilizes 3 local fonts: Tropikal Bold (29.5 KB), Alga Regular Italic (28.7 KB), and The Crow Inline Grunge (734.9 KB). Total hero font payload is **793.1 KB**, exceeding the recommended 600 KB threshold due to the intricate vector grunge detail in The Crow. For future production optimization, subsetting The Crow to the specific glyphs used in the eyebrow or converting to WOFF2 with Brotli compression is strongly recommended to reduce payload below ~100 KB.
+
+| Element                   | Font (Previous)  | Font (Today)                | Weight             | Size / Leading   | Tracking       | Weight-Collapse Compensation & Notes                                                                                                                                | Where it appears                                       |
+| :------------------------ | :--------------- | :-------------------------- | :----------------- | :--------------- | :------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :----------------------------------------------------- |
+| **Hero Eyebrow**          | Halenoir Compact | Crow Inline Grunge          | Single (400)       | 14px (text-sm)   | +0.12em (wide) | Standalone decorative all-caps display cut; bumped 1 step (text-xs → text-sm) for glyph legibility; fallback `"Crow Inline Grunge", "Halenoir Compact", sans-serif` | Home hero eyebrow ("Handpicked journeys since 2011")   |
+| **Hero H1**               | Playfair Display | Tropikal Bold               | 700                | ~48–64px / 1.05  | -0.025em       | Standalone display headline; high contrast, full brand identity                                                                                                     | Home hero headline                                     |
+| **Hero Subheadline**      | Halenoir Compact | Alga                        | 400 (Italic)       | 18–20px / 1.5    | 0              | Refined editorial italic serif; revealed via typing animation; fallback `"Alga", "Halenoir Compact", serif`                                                         | Home hero subheadline ("Discover destinations...")     |
+| **Section headings (H2)** | Playfair Display | Playfair Display            | 600 / 700          | ~36px / 1.15     | -0.02em        | Editorial display serif anchor; untouched                                                                                                                           | "Explore India", "Featured Destinations", page headers |
+| **H3 / card titles**      | Playfair Display | Playfair Display            | 600                | ~20–24px / 1.22  | -0.015em       | Editorial card titles; untouched                                                                                                                                    | Destination / Package / Hotel card titles              |
+| **Body text**             | Inter (400)      | Halenoir Compact            | Medium (500)       | 16px / 1.6       | +0.005em       | +0.005em tracking relief prevents density/fatigue in paragraphs                                                                                                     | Descriptions, detail pages, forms                      |
+| **Card body copy**        | Inter (400)      | Halenoir Compact            | Medium (500)       | 14px / 1.5–1.6   | +0.01em        | +0.01em tracking relief prevents glyph collision in compact cards                                                                                                   | Card descriptions                                      |
+| **Eyebrow labels (UI)**   | Inter (600)      | Halenoir Compact            | Medium (500)       | 12px / uppercase | +0.12em (wide) | Uppercase styling + wide letter-spacing maintains hierarchy                                                                                                         | Small labels above section headings                    |
+| **Buttons / CTAs**        | Inter (500–600)  | Halenoir Compact            | Medium (500)       | 14–16px          | 0              | Crisp Medium weight naturally suits pill/button geometries                                                                                                          | Search, Book Now, Sign In                              |
+| **Navbar links**          | Inter (500)      | Halenoir Compact            | Medium (500)       | 14–15px          | 0              | Medium provides optimal legibility over glass navbars                                                                                                               | Nav + footer links                                     |
+| **Prices / numbers**      | Inter (600–700)  | Halenoir Compact / Playfair | Medium (500) / 700 | 24–32px          | 0              | Coral accent color (`text-accent`) + display sizes carry emphasis                                                                                                   | Prices, ratings, stats                                 |
+| **Muted metadata**        | Inter (400)      | Halenoir Compact            | Medium (500)       | 12–14px          | +0.01em        | Subordinated via `text-muted-foreground` color + size differential                                                                                                  | Review counts, captions, dates                         |
+| **Admin UI**              | Inter (400–600)  | Halenoir Compact            | Medium (500)       | 13–16px          | +0.01em        | `tabular-nums` applied site-wide to tables for aligned data columns                                                                                                 | Tables, forms, sidebar, KPI cards                      |
+
+### Weight-Collapse & Multi-Font Hierarchy Decisions
+
+With 5 typefaces in active service, typography follows strict token-controlled boundaries:
+
+- **Hero Lockup**: 3 complementary voices (Crow display eyebrow, Tropikal bold display H1, Alga italic subheadline) form an iconic editorial triad unique to the hero entry point.
+- **Content Headings**: Playfair Display continues to anchor all editorial section headings and card titles.
+- **Global UI & Body**: Halenoir Compact powers all controls, inputs, data columns, and paragraphs.
 
 ### Weight-Collapse Mapping Decisions
 

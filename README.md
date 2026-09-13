@@ -4,7 +4,7 @@
 
 ### Full-Stack Travel Booking & Trip Planning Platform
 
-*Cinematic travel discovery — destinations, tours, hotels, flights, itineraries, and a complete admin panel — in one seamless experience.*
+_Cinematic travel discovery — destinations, tours, hotels, flights, itineraries, and a complete admin panel — in one seamless experience._
 
 [![React 19](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://react.dev)
 [![TanStack Start](https://img.shields.io/badge/TanStack_Start-SSR%20%2B%20Nitro-3B82F6?style=for-the-badge&logo=tanstack&logoColor=white)](https://tanstack.com/start)
@@ -33,11 +33,11 @@
 
 Wanderlust is a complete travel booking platform — **24 destinations** (international + India), tour packages, hotels, and flights — with real bookings, trip planning, moderated reviews, and a[...]
 
-| 🗺️ Discovery | 🏨 Booking | 🧳 Planning | ⚙️ Management |
-|---|---|---|---|
-| SSR destination & package catalogs with URL-synced search, filters & pagination | Multi-step checkout for **tours, hotels & flights** — multi-guest, live price math, booking references | Day-b[...] 
-| Photo gallery with keyboard-navigable lightbox | Auth-gated booking flow with deep-link redirects | User dashboard: trips, itineraries, reviews, profile + avatar | Role-based access via `is_admi[...]
-| Reviews with star distribution & moderation workflow | Simulated payment (demo mode, clearly labeled) | Review system with approval gating | Real-time stats & 30-day booking charts |
+| 🗺️ Discovery                                                                    | 🏨 Booking                                                                                             | 🧳 Planning                                                   | ⚙️ Management                           |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------- | --------------------------------------- |
+| SSR destination & package catalogs with URL-synced search, filters & pagination | Multi-step checkout for **tours, hotels & flights** — multi-guest, live price math, booking references | Day-b[...]                                                    |
+| Photo gallery with keyboard-navigable lightbox                                  | Auth-gated booking flow with deep-link redirects                                                       | User dashboard: trips, itineraries, reviews, profile + avatar | Role-based access via `is_admi[...]     |
+| Reviews with star distribution & moderation workflow                            | Simulated payment (demo mode, clearly labeled)                                                         | Review system with approval gating                            | Real-time stats & 30-day booking charts |
 
 ## 🏗️ Architecture
 
@@ -77,17 +77,17 @@ flowchart TB
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology | Why |
-|---|---|---|
-| Framework | **TanStack Start** (React 19 + Vite + Nitro) | SSR, streaming, type-safe RPC |
-| Routing | **TanStack Router** | File-based, fully typed search params (shareable filter URLs) |
-| Data | **TanStack Query v5** | Suspense-ready caching, optimistic mutations |
-| Styling | **Tailwind CSS v4** | OKLCH token system, `@theme` design variables |
-| UI | **shadcn/ui + Radix** | Accessible primitives (40+ components) |
-| Backend | **Supabase** | Postgres, Row Level Security, Auth, Storage |
-| Validation | **Zod** + react-hook-form | Every form, both client & flow gates |
-| Animation | **motion** (motion.dev) | Interruptible, velocity-aware springs |
-| Icons / Toasts | **lucide-react** / **sonner** | — |
+| Layer          | Technology                                   | Why                                                           |
+| -------------- | -------------------------------------------- | ------------------------------------------------------------- |
+| Framework      | **TanStack Start** (React 19 + Vite + Nitro) | SSR, streaming, type-safe RPC                                 |
+| Routing        | **TanStack Router**                          | File-based, fully typed search params (shareable filter URLs) |
+| Data           | **TanStack Query v5**                        | Suspense-ready caching, optimistic mutations                  |
+| Styling        | **Tailwind CSS v4**                          | OKLCH token system, `@theme` design variables                 |
+| UI             | **shadcn/ui + Radix**                        | Accessible primitives (40+ components)                        |
+| Backend        | **Supabase**                                 | Postgres, Row Level Security, Auth, Storage                   |
+| Validation     | **Zod** + react-hook-form                    | Every form, both client & flow gates                          |
+| Animation      | **motion** (motion.dev)                      | Interruptible, velocity-aware springs                         |
+| Icons / Toasts | **lucide-react** / **sonner**                | —                                                             |
 
 ## 🗄️ Database (12 tables, RLS-enforced)
 

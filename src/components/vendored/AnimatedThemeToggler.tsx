@@ -17,7 +17,10 @@ interface AnimatedThemeTogglerProps {
   id?: string;
 }
 
-export function AnimatedThemeToggler({ className, id = "theme-toggle-switch" }: AnimatedThemeTogglerProps) {
+export function AnimatedThemeToggler({
+  className,
+  id = "theme-toggle-switch",
+}: AnimatedThemeTogglerProps) {
   const [isDark, setIsDark] = useState(false);
   const [mounted, setMounted] = useState(false);
   const labelRef = useRef<HTMLLabelElement>(null);

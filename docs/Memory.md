@@ -1,9 +1,20 @@
 # Memory — Wanderlust
 
-**Last updated:** 2026-09-14 | **Current phase:** Halenoir Compact Global Typography — Complete | **Session #:** 12
+**Last updated:** 2026-09-14 | **Current phase:** Hero Type Lockup + Testimonials Marquee & Section Motion — Complete | **Session #:** 13
 
 ## Completed
 
+- [x] Typography: Hero Lockup Fonts + Typing Animation & Testimonials Scrolling Marquee:
+  - Added `TheCrowInlineGrunge.otf` (734.9 KB) and `Alga-RegularItalic.otf` (28.7 KB) to `public/fonts/`.
+  - Registered `@font-face` for `"Crow Inline Grunge"` and `"Alga"` (italic 400), mapped `--font-crow` and `--font-alga` tokens in `src/styles.css`.
+  - Applied Crow Inline Grunge to hero eyebrow (`"Handpicked journeys since 2011"`), stepped up size to `text-sm`, with `"Halenoir Compact", sans-serif` fallback.
+  - Applied Alga italic to hero subheadline with vendored MagicUI-based `TypingAnimation` (`src/components/vendored/TypingAnimation.tsx`) in `motion/react`, calibrated start delay (~400ms), 2.8s total reveal, font readiness guard (`document.fonts.ready`), SSR full-text preservation for SEO, and immediate reveal under `prefers-reduced-motion`.
+  - Preloaded hero fonts in `src/routes/__root.tsx`. Flagged hero payload total (793 KB > 600 KB) in `docs/Design.md` with subsetting recommendations.
+  - Vendored `TestimonialsColumn` in `src/components/TestimonialsColumn.tsx` utilizing `motion/react` infinite loop transform (`translateY: "-50%"`), WAAPI pause on hover and focus-within, and token-adapted cards (`rounded-xl`, `bg-card`, `border-border/60`, `shadow-card`, `card-lift`, star rating above quote).
+  - Expanded `HOME_TESTIMONIALS` in `src/lib/home-content.ts` from 3 to 9 real destination testimonials (Santorini, Bali, Leh-Ladakh, Goa, Maldives, Marrakech, Kyoto, Amalfi, Patagonia) with Unsplash portraits and 4.5–5.0 ratings.
+  - Replaced static testimonial grid in `src/components/home/Testimonials.tsx` with 3-column marquee (durations 15s/19s/17s, responsive 1 col mobile / 2 md / 3 lg, top+bottom fade mask, max-h 740px) and static 9-card responsive grid fallback under `prefers-reduced-motion`.
+  - Upgraded "Why Wanderlust" (`src/components/home/WhyUs.tsx`) with staggered entrance reveals (`SectionReveal` delay `index * 0.08`) and `card-lift` hover elevation on the 4 feature cards.
+  - Verified 100% SSR preservation of subheadline and all 9 testimonial cards, 0 ESLint errors, and clean production build.
 - [x] Typography: Halenoir Compact Global UI Font & Weight-Collapse Compensation:
   - Copied `HalenoirCompact-Medium.otf` (126,216 bytes) to `public/fonts/HalenoirCompact-Medium.otf`.
   - Registered `@font-face` for `"Halenoir Compact"` with static weight range 100–900 resolving to Medium in `src/styles.css`.

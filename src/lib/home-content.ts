@@ -25,8 +25,11 @@ export type FeaturedPackage = {
 export type HomeTestimonial = {
   id: string;
   name: string;
+  trip: string;
   location: string;
   quote: string;
+  avatar: string;
+  rating: number;
   initials: string;
 };
 
@@ -119,25 +122,100 @@ export const HOME_TESTIMONIALS: HomeTestimonial[] = [
   {
     id: "amelia",
     name: "Amelia Rhodes",
+    trip: "Kyoto Temples & Tea",
     location: "Bristol, United Kingdom",
     quote:
       "Booked the Kyoto tour, a hotel and both flights in about twenty minutes. The day-by-day itinerary saved us when it rained for two days straight.",
+    avatar: unsplash("1534528741775-53994a69daeb", 200),
+    rating: 5,
     initials: "AR",
   },
   {
     id: "daniel",
     name: "Daniel Okafor",
+    trip: "Amalfi Slow Coast",
     location: "Toronto, Canada",
     quote:
-      "We travel with two kids, so clear inclusions matter. Everything was exactly as listed and there were no surprise extras at check-in.",
+      "We travel with two kids, so price filters and clear inclusions matter. Everything was exactly as listed and there were no surprise extras at check-in.",
+    avatar: unsplash("1507003211169-0a1dd7228f2d", 200),
+    rating: 5,
     initials: "DO",
   },
   {
     id: "priya",
     name: "Priya Nair",
+    trip: "Torres del Paine W Trek",
     location: "Bengaluru, India",
     quote:
       "The W Trek was hard and brilliant. Our guides were local, the group stayed small, and every refugio booking was already sorted.",
+    avatar: unsplash("1517841905240-472988babdf9", 200),
+    rating: 4.5,
     initials: "PN",
+  },
+  {
+    id: "elena",
+    name: "Elena Rostova",
+    trip: "Santorini Island Hopper",
+    location: "Vienna, Austria",
+    quote:
+      "Watching the sun dip below Oia's caldera from the catamaran was unforgettable. The curated wine tasting in Megalochori made the entire journey effortless.",
+    avatar: unsplash("1544005313-94ddf0286df2", 200),
+    rating: 5,
+    initials: "ER",
+  },
+  {
+    id: "marcus",
+    name: "Marcus Vance",
+    trip: "Bali Cultural Immersion",
+    location: "Melbourne, Australia",
+    quote:
+      "From dawn treks up Mount Batur to quiet afternoons in Ubud's rice terraces, every transfer was punctual. The local host recommendations for warungs were pure gold.",
+    avatar: unsplash("1500648767791-00dcc994a43e", 200),
+    rating: 4.8,
+    initials: "MV",
+  },
+  {
+    id: "tenzing",
+    name: "Tenzing Norbu",
+    trip: "Leh-Ladakh High Passes",
+    location: "New Delhi, India",
+    quote:
+      "Crossing Khardung La and camping by Pangong Lake at 14,000 feet was a lifelong dream. The oxygen kits and acclimatization pacing showed genuine care and safety.",
+    avatar: unsplash("1506794778202-cad84cf45f1d", 200),
+    rating: 5,
+    initials: "TN",
+  },
+  {
+    id: "sofia",
+    name: "Sofia Al-Mansoor",
+    trip: "Marrakech Medina & Atlas",
+    location: "Dubai, UAE",
+    quote:
+      "Our riad in the heart of the Kasbah felt like an oasis of calm. Wanderlust's private Atlas guide introduced us to Berber hospitality we would never have found alone.",
+    avatar: unsplash("1573496359142-b8d87734a5a2", 200),
+    rating: 4.9,
+    initials: "SA",
+  },
+  {
+    id: "liam",
+    name: "Liam Gallagher",
+    trip: "Goa Heritage & Backwaters",
+    location: "Dublin, Ireland",
+    quote:
+      "A completely different side of Goa away from the crowded beaches. Kayaking through the Sal river backwaters at sunrise and the spice plantation lunch were definite highlights.",
+    avatar: unsplash("1492562080023-ab3db95bfbce", 200),
+    rating: 4.7,
+    initials: "LG",
+  },
+  {
+    id: "chloe",
+    name: "Chloe Bennett",
+    trip: "Maldives Overwater Retreat",
+    location: "Seattle, USA",
+    quote:
+      "The seaplane transfer coordination was flawless from the moment we cleared Malé customs. Waking up to manta rays gliding past our villa deck exceeded every expectation.",
+    avatar: unsplash("1580489944761-15a19d654956", 200),
+    rating: 5,
+    initials: "CB",
   },
 ];

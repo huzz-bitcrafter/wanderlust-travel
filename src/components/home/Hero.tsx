@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { TypingAnimation } from "@/components/vendored/TypingAnimation";
 
 export function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -65,8 +66,11 @@ export function Hero() {
       {/* Content */}
       <div className="mx-auto w-full max-w-4xl px-4 py-16 text-center text-primary-foreground sm:px-6">
         <p
-          className="eyebrow text-accent font-semibold tracking-wider"
-          style={{ textShadow: "0 2px 16px rgba(0, 0, 0, 0.45)" }}
+          className="eyebrow text-sm text-accent font-semibold tracking-wider font-crow"
+          style={{
+            textShadow: "0 2px 16px rgba(0, 0, 0, 0.45)",
+            fontFamily: "'Crow Inline Grunge', 'Halenoir Compact', sans-serif",
+          }}
         >
           Handpicked journeys since 2011
         </p>
@@ -79,13 +83,20 @@ export function Hero() {
         >
           Every great trip begins with a single search
         </h1>
-        <p
-          className="mx-auto mt-5 max-w-2xl text-base text-white/90 sm:text-lg"
-          style={{ textShadow: "0 2px 24px rgba(0, 0, 0, 0.45)" }}
+        <TypingAnimation
+          as="p"
+          className="mx-auto mt-5 max-w-2xl text-base text-white/90 sm:text-lg italic font-alga"
+          style={{
+            textShadow: "0 2px 24px rgba(0, 0, 0, 0.45)",
+            fontFamily: "'Alga', 'Halenoir Compact', serif",
+          }}
+          duration={2800}
+          delay={400}
+          fontFamily="Alga"
         >
           Discover destinations, compare tour packages, book hotels and flights, and plan each day
           of your itinerary — all in one place.
-        </p>
+        </TypingAnimation>
       </div>
     </section>
   );
