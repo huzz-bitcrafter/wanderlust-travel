@@ -2,8 +2,6 @@
 
   <img src="public/Wanderlust_Nasalization_transparent_HD.png" alt="Wanderlust Logo" width="240"/>
 
-# 🌍 Wanderlust
-
 ### Full-Stack Travel Booking & Trip Planning Platform
 
 *Cinematic travel discovery — destinations, tours, hotels, flights, itineraries, and a complete admin panel — in one seamless experience.*
