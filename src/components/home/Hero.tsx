@@ -71,8 +71,11 @@ export function Hero() {
           Handpicked journeys since 2011
         </p>
         <h1
-          className="mt-4 text-4xl leading-tight sm:text-5xl lg:text-6xl text-white font-bold"
-          style={{ textShadow: "0 2px 24px rgba(0, 0, 0, 0.45)" }}
+          className="mt-4 text-4xl leading-tight sm:text-5xl lg:text-6xl text-white font-bold font-tropikal"
+          style={{
+            textShadow: "0 2px 24px rgba(0, 0, 0, 0.45)",
+            fontFamily: "'Tropikal', 'Tropikal Bold', serif",
+          }}
         >
           Every great trip begins with a single search
         </h1>
