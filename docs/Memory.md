@@ -1,14 +1,17 @@
 # Memory — Wanderlust
 
-**Last updated:** 2026-09-13 | **Current phase:** Modernized Auth UI Complete — Signed Off | **Session #:** 10
+**Last updated:** 2026-09-13 | **Current phase:** Tabbed Search Border Beam & Modernized Auth UI — Complete | **Session #:** 11
 
 ## Completed
 
-- [x] Phase 15 — Modernized Auth UI (21st.dev sign-in-card-2 Adaptation):
-  - Created reusable `AuthCardWrapper` in `src/components/ui/sign-in-card-2.tsx` with 3D perspective card tilt (`useMotionValue`, `useTransform`), traveling perimeter border light beams, corner light spots, atmospheric radial glows, brand Compass emblem, and accessible `useReducedMotion()` fallbacks.
-  - Redesigned Sign In page (`src/routes/login.tsx`) with the modern 21st.dev glass card aesthetic, retaining 100% of existing auth logic (`useAuth().login`), Zod validation, redirect query param behavior, loading spinner states, and navigation links.
-  - Redesigned Sign Up page (`src/routes/register.tsx`) with matching visual card treatment, preserving all fields (Full Name, Email Address, Password, Confirm Password), Zod validation contract, error states, and registration handlers.
-  - Verified 100% clean production build (`npm run build`) and zero ESLint errors across all modified and newly created files.
+- [x] Tabbed Search Card Border Beam & Velocity Tuning:
+  - Integrated Motiq `BorderBeamPanel` (`src/components/ui/border-beam-panel.tsx`) orbiting twin comets (Cyan `#22c7d9` and Coral `#ff6b5e`) around the tabbed search widget in `src/components/home/SearchWidget.tsx`.
+  - Calibrated rotation speed down by over 60% (`idleSpeed: 22°/s`, `hoverSpeed: 48°/s`) with buttery spring damping (`stiffness: 18`, `damping: 12`) for serene, luxurious ambient orbital motion.
+  - Preserved existing `glass-search` backdrop styling, airport swap interactions, tabs, and form controls intact.
+  - Added micro-sheen animations to active tab triggers.
+- [x] Phase 15 — Modernized Auth UI & Brand Emblem (21st.dev sign-in-card-2 Adaptation):
+  - Created reusable 3D perspective auth card in `src/components/ui/sign-in-card-2.tsx` featuring traveling perimeter light beams, corner glow points, ambient backdrop blur, and the official Wanderlust brand medallion (`/Bookify_W_logo_transparent_2048px.png`).
+  - Redesigned Sign In (`src/routes/login.tsx`) and Sign Up (`src/routes/register.tsx`) pages, maintaining full Supabase authentication, Zod validation, password toggles, and redirect query parameter handling.
 - [x] Brand Identity & Theme Switch Modernization:
   - Upgraded theme toggle to interactive Uiverse `red-dingo-61` by JustCode14 with smooth cubic-bezier transitions, celestial sun/moon morphing, twinkling stars, animated clouds, and circular ripple view-transition.
   - Replaced header and footer brand marks with `Wanderlust_Nasalization_transparent_HD.png` in `src/components/layout/Navbar.tsx` and `src/components/layout/Footer.tsx`.

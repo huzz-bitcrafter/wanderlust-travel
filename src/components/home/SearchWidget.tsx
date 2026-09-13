@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/select";
 import type { FilterDestinationOption, FlightCityOption } from "@/lib/catalog.functions";
 import { SectionReveal } from "@/components/shared/SectionReveal";
+import { BorderBeamPanel } from "@/components/ui/border-beam-panel";
 
 /* ------------------------------------------------------------------ */
 /*  Lightweight Destination Autocomplete                               */
@@ -278,18 +279,33 @@ export function SearchWidget({
 
   return (
     <SectionReveal as="div" className="relative z-20 mx-auto -mt-16 max-w-5xl px-4 sm:px-6 lg:px-8">
-      <div className="glass-search rounded-3xl p-1 sm:p-2">
-        <Tabs defaultValue="flights" className="w-full">
+      <BorderBeamPanel
+        className="p-0 border-0 bg-transparent shadow-none"
+        radius={24}
+        thickness={2.5}
+        beams={2}
+        idleSpeed={22}
+        hoverSpeed={48}
+        spring={{ stiffness: 18, damping: 12 }}
+        glow
+        reducedMotion={false}
+      >
+        <div className="glass-search rounded-3xl p-1 sm:p-2">
+          <Tabs defaultValue="flights" className="w-full">
           {/* Tab triggers */}
-          <TabsList className="flex h-auto w-full justify-start gap-0 rounded-2xl bg-muted/50 p-1 overflow-x-auto scrollbar-none">
+          <TabsList className="flex h-auto w-full justify-start gap-1 rounded-2xl bg-muted/50 dark:bg-white/[0.04] p-1 overflow-x-auto scrollbar-none">
             {TABS.map(({ value, label, icon: Icon }) => (
               <TabsTrigger
                 key={value}
                 value={value}
-                className="flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-semibold whitespace-nowrap transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:text-foreground"
+                className="relative flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-semibold whitespace-nowrap transition-all duration-300 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md data-[state=active]:ring-1 data-[state=active]:ring-white/20 data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:text-foreground data-[state=inactive]:hover:bg-white/10 dark:data-[state=inactive]:hover:bg-white/5 overflow-hidden group/tab active:scale-[0.98]"
               >
-                <Icon className="h-4 w-4" aria-hidden="true" />
-                {label}
+                {/* Active light top beam */}
+                <span className="absolute top-0 inset-x-2 h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent opacity-0 group-data-[state=active]/tab:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                {/* Active light sheen effect */}
+                <span className="absolute inset-0 -translate-x-full group-data-[state=active]/tab:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none" />
+                <Icon className="h-4 w-4 transition-transform duration-200 group-hover/tab:scale-110" aria-hidden="true" />
+                <span>{label}</span>
               </TabsTrigger>
             ))}
           </TabsList>
@@ -325,7 +341,7 @@ export function SearchWidget({
                   variant="outline"
                   size="icon"
                   onClick={handleSwapAirports}
-                  className="h-10 w-10 rounded-full border-border/80 hover:bg-muted text-muted-foreground hover:text-foreground"
+                  className="h-10 w-10 rounded-full border border-border/80 hover:border-accent/40 bg-background/80 hover:bg-accent/10 text-muted-foreground hover:text-accent transition-all duration-300 hover:rotate-180 hover:scale-105 active:scale-95 shadow-xs"
                   aria-label="Swap origin and destination"
                 >
                   <ArrowRightLeft className="h-4 w-4" />
@@ -418,9 +434,13 @@ export function SearchWidget({
 
               <Button
                 onClick={handleFlightSearch}
-                className="h-11 rounded-full bg-accent px-8 text-base font-semibold text-accent-foreground hover:bg-accent/90"
+                className="relative overflow-hidden group/btn h-11 rounded-full bg-accent px-8 text-base font-semibold text-accent-foreground shadow-md hover:shadow-lg hover:shadow-accent/25 hover:bg-accent/95 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
               >
-                <Search className="h-4 w-4 mr-2" aria-hidden="true" />
+                <span
+                  className="absolute inset-0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none"
+                  aria-hidden="true"
+                />
+                <Search className="h-4 w-4 mr-2 transition-transform duration-200 group-hover/btn:scale-110" aria-hidden="true" />
                 Search Flights
               </Button>
             </div>
@@ -459,9 +479,13 @@ export function SearchWidget({
               <div className="md:col-span-2 flex items-end">
                 <Button
                   onClick={handleHotelSearch}
-                  className="h-11 w-full rounded-full bg-accent text-base font-semibold text-accent-foreground hover:bg-accent/90"
+                  className="relative overflow-hidden group/btn h-11 w-full rounded-full bg-accent text-base font-semibold text-accent-foreground shadow-md hover:shadow-lg hover:shadow-accent/25 hover:bg-accent/95 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
                 >
-                  <Search className="h-4 w-4 mr-2" aria-hidden="true" />
+                  <span
+                    className="absolute inset-0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none"
+                    aria-hidden="true"
+                  />
+                  <Search className="h-4 w-4 mr-2 transition-transform duration-200 group-hover/btn:scale-110" aria-hidden="true" />
                   Search
                 </Button>
               </div>
@@ -501,9 +525,13 @@ export function SearchWidget({
               <div className="md:col-span-2 flex items-end">
                 <Button
                   onClick={handlePackageSearch}
-                  className="h-11 w-full rounded-full bg-accent text-base font-semibold text-accent-foreground hover:bg-accent/90"
+                  className="relative overflow-hidden group/btn h-11 w-full rounded-full bg-accent text-base font-semibold text-accent-foreground shadow-md hover:shadow-lg hover:shadow-accent/25 hover:bg-accent/95 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
                 >
-                  <Search className="h-4 w-4 mr-2" aria-hidden="true" />
+                  <span
+                    className="absolute inset-0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none"
+                    aria-hidden="true"
+                  />
+                  <Search className="h-4 w-4 mr-2 transition-transform duration-200 group-hover/btn:scale-110" aria-hidden="true" />
                   Search
                 </Button>
               </div>
@@ -556,9 +584,13 @@ export function SearchWidget({
               <div className="md:col-span-2 flex items-end">
                 <Button
                   onClick={handleDestSearch}
-                  className="h-11 w-full rounded-full bg-accent text-base font-semibold text-accent-foreground hover:bg-accent/90"
+                  className="relative overflow-hidden group/btn h-11 w-full rounded-full bg-accent text-base font-semibold text-accent-foreground shadow-md hover:shadow-lg hover:shadow-accent/25 hover:bg-accent/95 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
                 >
-                  <Search className="h-4 w-4 mr-2" aria-hidden="true" />
+                  <span
+                    className="absolute inset-0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none"
+                    aria-hidden="true"
+                  />
+                  <Search className="h-4 w-4 mr-2 transition-transform duration-200 group-hover/btn:scale-110" aria-hidden="true" />
                   Explore
                 </Button>
               </div>
@@ -566,6 +598,7 @@ export function SearchWidget({
           </TabsContent>
         </Tabs>
       </div>
-    </SectionReveal>
+    </BorderBeamPanel>
+  </SectionReveal>
   );
 }
