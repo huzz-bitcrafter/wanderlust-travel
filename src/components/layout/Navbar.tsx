@@ -81,22 +81,20 @@ export function Navbar({ transparentOverHero = false }: { transparentOverHero?: 
       <nav
         className={cn(
           "mx-auto flex h-14 sm:h-16 max-w-7xl items-center justify-between px-4 sm:px-6 transition-all duration-300 pointer-events-auto rounded-full glass-navbar text-white",
-          solid ? "shadow-2xl" : "shadow-lg",
+          solid ? "shadow-2xl" : "bg-opacity-80 shadow-lg",
         )}
       >
         <Link
           to="/"
-          className="flex items-center gap-2.5 text-white transition-opacity hover:opacity-90"
+          className="flex items-center py-1 transition-opacity hover:opacity-90"
           onClick={() => setOpen(false)}
+          aria-label="Wanderlust Home"
         >
           <img
-            src="/Logo_wanderlust.png"
+            src="/Wanderlust_Nasalization_transparent_HD.png"
             alt="Wanderlust"
-            className="h-8 w-8 rounded-full object-cover ring-2 ring-white/30 shadow-sm"
+            className="h-7 sm:h-8 w-auto object-contain drop-shadow-xs"
           />
-          <span className="font-display text-lg sm:text-xl font-bold tracking-tight text-white drop-shadow-sm">
-            Wanderlust
-          </span>
         </Link>
 
         <ul className="hidden items-center gap-1 lg:flex">
@@ -118,8 +116,8 @@ export function Navbar({ transparentOverHero = false }: { transparentOverHero?: 
         </ul>
 
         {/* Desktop Auth Section */}
-        <div className="hidden items-center gap-2 lg:flex">
-          <AnimatedThemeToggler className="text-white/85 hover:bg-white/15 hover:text-white" />
+        <div className="hidden items-center gap-3 lg:flex">
+          <AnimatedThemeToggler id="theme-toggle-desktop" />
           {!loading && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -206,8 +204,8 @@ export function Navbar({ transparentOverHero = false }: { transparentOverHero?: 
         </div>
 
         {/* Mobile controls */}
-        <div className="flex items-center gap-1 lg:hidden">
-          <AnimatedThemeToggler className="text-white/85 hover:bg-white/15 hover:text-white" />
+        <div className="flex items-center gap-2 lg:hidden">
+          <AnimatedThemeToggler id="theme-toggle-mobile" />
           <button
             type="button"
             className="inline-flex h-10 w-10 items-center justify-center rounded-full text-white hover:bg-white/15 transition-colors"

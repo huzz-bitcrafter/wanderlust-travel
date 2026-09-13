@@ -4,6 +4,11 @@
 
 ## Completed
 
+- [x] Brand Identity & Theme Switch Modernization:
+  - Upgraded theme toggle to interactive Uiverse `red-dingo-61` by JustCode14 with smooth cubic-bezier transitions, celestial sun/moon morphing, twinkling stars, animated clouds, and circular ripple view-transition.
+  - Replaced header and footer brand marks with `Wanderlust_Nasalization_transparent_HD.png` in `src/components/layout/Navbar.tsx` and `src/components/layout/Footer.tsx`.
+  - Updated browser tab favicon in `src/routes/__root.tsx` to `Bookify_W_logo_transparent_2048px.png` and regenerated `favicon.ico` and `favicon.png`.
+  - Purged all legacy Lovable logos from `public/` and `assets.img/`.
 - [x] Theme System Phase D — Contrast, Polish Effects & Dark Flow QA:
   - Verified `.cta-shine` and `.card-edge-light` in dark mode: added `.dark .cta-shine:hover` with black elevation (`oklch(0 0 0 / 0.5)`) and subtle luminous ivory rim reflection (`oklch(0.92 0.015 85 / 0.2)`).
   - Hardened photographic hero overlays across `destinations.$slug.tsx`, `packages.$slug.tsx`, and `hotels.$id.tsx` to use neutral `from-black/90 via-black/60 to-black/20` scrims and `bg-card` image fallbacks, preventing ivory overlay regressions and guaranteeing pristine AAA contrast on text/badges.

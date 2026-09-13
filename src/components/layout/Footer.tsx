@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Compass, Facebook, Instagram, Twitter, Check } from "lucide-react";
+import { Facebook, Instagram, Twitter, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -42,10 +42,13 @@ export function Footer() {
     <footer className="bg-primary text-primary-foreground">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 lg:grid-cols-4 lg:px-8">
         <div>
-          <div className="flex items-center gap-2">
-            <Compass className="h-6 w-6 text-accent" aria-hidden="true" />
-            <span className="font-display text-xl font-bold">Wanderlust</span>
-          </div>
+          <Link to="/" className="inline-block transition-opacity hover:opacity-90" aria-label="Wanderlust Home">
+            <img
+              src="/Wanderlust_Nasalization_transparent_HD.png"
+              alt="Wanderlust"
+              className="h-7 sm:h-8 w-auto object-contain"
+            />
+          </Link>
           <p className="mt-4 max-w-xs text-sm text-primary-foreground/60">
             Discover destinations, book tours, hotels and flights, and plan every day of the trip in
             one place.
