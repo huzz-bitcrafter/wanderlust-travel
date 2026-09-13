@@ -22,6 +22,7 @@ import { requireAdminGuard } from "@/lib/auth-guard";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AnimatedThemeToggler } from "@/components/vendored/AnimatedThemeToggler";
 
 export const Route = createFileRoute("/admin")({
   beforeLoad: async ({ location }) => {
@@ -164,9 +165,11 @@ function AdminLayout() {
         {/* Brand Header */}
         <div className="h-16 px-6 border-b border-border flex items-center justify-between">
           <Link to="/admin/overview" className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground font-display font-black text-lg shadow-xs">
-              W
-            </div>
+            <img
+              src="/Bookify_W_logo_transparent_2048px.png"
+              alt="Wanderlust"
+              className="h-9 w-9 object-contain drop-shadow-xs"
+            />
             <div>
               <span className="font-display text-lg font-bold tracking-tight text-foreground block leading-tight">
                 Wanderlust
@@ -293,6 +296,7 @@ function AdminLayout() {
           </div>
 
           <div className="flex items-center gap-3">
+            <AnimatedThemeToggler id="theme-toggle-admin" />
             <Button
               asChild
               variant="ghost"

@@ -4,13 +4,18 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
-import { Compass, Mail, Loader2, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { Mail, ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
+import { motion } from "motion/react";
 
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  AuthCardWrapper,
+  AnimatedSubmitButton,
+} from "@/components/ui/sign-in-card-2";
 
 const title = "Reset Password — Wanderlust";
 const description = "Reset your Wanderlust account password.";
@@ -38,6 +43,7 @@ type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
 function ForgotPasswordPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedEmail, setSubmittedEmail] = useState<string | null>(null);
+  const [focusedInput, setFocusedInput] = useState<string | null>(null);
 
   const {
     register,
@@ -79,38 +85,32 @@ function ForgotPasswordPage() {
   return (
     <SiteLayout>
       <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-muted/20 px-4 py-12 sm:px-6 lg:px-8">
-        <div className="w-full max-w-md space-y-8 rounded-2xl border border-border bg-card p-6 shadow-card sm:p-8">
-          <div className="text-center">
-            <div className="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-full bg-accent/15 text-accent">
-              <Compass className="h-6 w-6" aria-hidden="true" />
-            </div>
-            <h1 className="mt-4 font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              Reset your password
-            </h1>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Enter the email address associated with your account and we&apos;ll send you a link to
-              reset your password.
-            </p>
-          </div>
-
-          {submittedEmail ? (
-            <div className="space-y-6 text-center">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600">
-                <CheckCircle2 className="h-8 w-8" aria-hidden="true" />
+        {submittedEmail ? (
+          <AuthCardWrapper
+            title="Check your email"
+            subtitle="Password reset instructions have been sent."
+          >
+            <div className="space-y-5 text-center py-1">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+                <CheckCircle2 className="h-6 w-6" aria-hidden="true" />
               </div>
-              <div className="space-y-2">
-                <h2 className="text-lg font-semibold text-foreground">Check your email</h2>
-                <p className="text-sm text-muted-foreground">
+              <div className="space-y-1.5">
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   We have sent password reset instructions to:
                 </p>
-                <p className="font-medium text-foreground">{submittedEmail}</p>
+                <p className="font-semibold text-foreground text-sm bg-muted/40 py-1 px-3 rounded-lg inline-block border border-border/50">
+                  {submittedEmail}
+                </p>
               </div>
-              <p className="text-xs text-muted-foreground">
-                If you don&apos;t see the email within a few minutes, please check your spam or junk
-                folder.
+              <p className="text-xs text-muted-foreground max-w-xs mx-auto">
+                If you don&apos;t see the email within a few minutes, please check your spam or junk folder.
               </p>
               <div className="pt-2">
-                <Button asChild variant="outline" className="w-full rounded-lg">
+                <Button
+                  asChild
+                  variant="outline"
+                  className="w-full h-11 rounded-xl border-border/80 hover:bg-accent/10 hover:text-accent font-medium text-sm transition-all"
+                >
                   <Link to="/login">
                     <ArrowLeft className="mr-2 h-4 w-4" aria-hidden="true" />
                     Back to Sign In
@@ -118,13 +118,28 @@ function ForgotPasswordPage() {
                 </Button>
               </div>
             </div>
-          ) : (
-            <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-5" noValidate>
+          </AuthCardWrapper>
+        ) : (
+          <AuthCardWrapper
+            title="Reset your password"
+            subtitle="Enter the email address associated with your account and we'll send you a link to reset your password."
+          >
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
               <div className="space-y-1.5">
-                <Label htmlFor="email" className="text-sm font-medium text-foreground">
+                <Label htmlFor="email" className="text-xs sm:text-sm font-medium text-foreground">
                   Email Address
                 </Label>
-                <div className="relative">
+                <motion.div
+                  className="relative"
+                  whileFocus={{ scale: 1.01 }}
+                  whileHover={{ scale: 1.005 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                >
+                  <Mail
+                    className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors duration-200 pointer-events-none ${
+                      focusedInput === "email" ? "text-accent" : "text-muted-foreground"
+                    }`}
+                  />
                   <Input
                     id="email"
                     type="email"
@@ -133,14 +148,12 @@ function ForgotPasswordPage() {
                     disabled={isSubmitting}
                     aria-invalid={Boolean(errors.email)}
                     aria-describedby={errors.email ? "email-error" : undefined}
-                    className="h-11 pl-10"
+                    className="h-11 pl-10 pr-3 bg-background/50 border-input transition-all duration-200 focus-visible:ring-accent/40"
                     {...register("email")}
+                    onFocus={() => setFocusedInput("email")}
+                    onBlur={() => setFocusedInput(null)}
                   />
-                  <Mail
-                    className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground"
-                    aria-hidden="true"
-                  />
-                </div>
+                </motion.div>
                 {errors.email ? (
                   <p id="email-error" className="text-xs font-medium text-destructive">
                     {errors.email.message}
@@ -148,34 +161,31 @@ function ForgotPasswordPage() {
                 ) : null}
               </div>
 
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="h-11 w-full rounded-lg bg-accent text-accent-foreground shadow-sm hover:bg-accent/90"
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
-                    Sending reset link...
-                  </>
-                ) : (
-                  "Send Reset Link"
-                )}
-              </Button>
+              <div className="pt-2">
+                <AnimatedSubmitButton
+                  type="submit"
+                  isLoading={isSubmitting}
+                  loadingText="Sending reset link..."
+                >
+                  <span>Send Reset Link</span>
+                  <ArrowRight className="w-4 h-4 ml-1" />
+                </AnimatedSubmitButton>
+              </div>
 
-              <div className="pt-2 text-center">
+              <div className="mt-5 border-t border-border/60 pt-4 text-center">
                 <Link
                   to="/login"
-                  className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground"
+                  className="inline-flex items-center text-xs sm:text-sm font-medium text-accent-text underline-offset-4 hover:underline"
                 >
-                  <ArrowLeft className="mr-1.5 h-4 w-4" aria-hidden="true" />
+                  <ArrowLeft className="mr-1.5 h-3.5 w-3.5" />
                   Back to Sign In
                 </Link>
               </div>
             </form>
-          )}
-        </div>
+          </AuthCardWrapper>
+        )}
       </div>
     </SiteLayout>
   );
 }
+

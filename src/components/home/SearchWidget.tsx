@@ -380,7 +380,7 @@ export function SearchWidget({
                       type="date"
                       value={flightDate}
                       onChange={(e) => setFlightDate(e.target.value)}
-                      className="h-11 rounded-2xl bg-background border-border/80 text-sm"
+                      className="h-11 rounded-2xl bg-background border-border/80 text-sm pr-2 [color-scheme:light] dark:[color-scheme:dark] [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:mr-2.5 [&::-webkit-calendar-picker-indicator]:opacity-80 hover:[&::-webkit-calendar-picker-indicator]:opacity-100 transition-opacity"
                       aria-label="Departure date"
                     />
                   </div>

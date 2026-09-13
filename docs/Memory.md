@@ -1,8 +1,15 @@
 # Memory — Wanderlust
 
-**Last updated:** 2026-09-14 | **Current phase:** Motion Root-Cause Debugging + Consistency Sweep & Eyebrow Sizing — Complete | **Session #:** 14
+**Last updated:** 2026-09-14 | **Current phase:** Admin Branding, Search Calendar Fix & Forgot Password AuthCard — Complete | **Session #:** 15
 
 ## Completed
+
+- [x] Admin Branding & Theme Switch, Home Search Calendar Icon Alignment, and Forgot Password AuthCard Overhaul:
+  - **Admin Portal Branding (`src/routes/admin.tsx`)**: Replaced the static `'W'` text badge in the top-left sidebar brand header with the official high-resolution `/Bookify_W_logo_transparent_2048px.png` image. Integrated `AnimatedThemeToggler` (`id="theme-toggle-admin"`) in the admin sticky top header bar beside the live website action buttons, enabling instant light/dark mode switching across all viewports.
+  - **Home Tabbed Search Date Calendar Icon Alignment (`src/components/home/SearchWidget.tsx`)**: Shifted the native calendar picker indicator inward away from the right rounded border (`rounded-2xl`) using `[&::-webkit-calendar-picker-indicator]:mr-2.5` and padding relief (`pr-2`), aligning it to the designated safe zone. Configured `[color-scheme:light] dark:[color-scheme:dark]` and indicator opacity states so the calendar icon is crisp and clearly visible in both dark and light modes without altering any other tabbed search elements.
+  - **Forgot Password AuthCard Overhaul (`src/routes/forgot-password.tsx`)**: Upgraded the static card to the interactive 3D perspective `AuthCardWrapper` from `@/components/ui/sign-in-card-2` with 4 traveling perimeter light beams, ambient glowing border on hover, and the official `/Bookify_W_logo_transparent_2048px.png` brand medallion. Added interactive motion input focus zoom and replaced the submit button with `AnimatedSubmitButton` featuring loading spinner and transition sheen. Enhanced the confirmation dispatched view with a consistent card structure.
+  - **Quality Gates**: Verified zero TypeScript / build regressions with successful `npm run build` production compilation. Verified SSR hydration across all modified routes.
+
 
 - [x] Motion Root-Cause Debugging, Site-Wide Reveal Sweep & Eyebrow Size Doubling:
   - **Environment Audit (Step 1)**: Checked `matchMedia('(prefers-reduced-motion: reduce)').matches` in dev-server browser context (Chromium/Chrome/Edge) = `false`. Evaluated Windows registry `HKCU:\Control Panel\Desktop\UserPreferencesMask` (`9E 1E 03 80 12 00 00 00`): Bit 2 (`SPI_GETCLIENTAREAANIMATION` / Windows Animation Effects) is `0` (`Off` in OS visual settings). When desktop browsers inherit this, reduced-motion fallbacks activate as designed.
