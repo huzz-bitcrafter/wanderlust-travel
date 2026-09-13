@@ -4,11 +4,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
-import { Compass, Eye, EyeOff, Loader2, ArrowRight } from "lucide-react";
+import { Eye, EyeOff, Loader2, ArrowRight } from "lucide-react";
+import { motion } from "motion/react";
 
 import { SiteLayout } from "@/components/layout/SiteLayout";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { AuthCardWrapper } from "@/components/ui/sign-in-card-2";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -98,117 +98,117 @@ function LoginPage() {
 
   return (
     <SiteLayout>
-      <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-muted/20 px-4 py-12 sm:px-6 lg:px-8">
-        <div className="w-full max-w-md space-y-8 rounded-2xl border border-border bg-card p-6 shadow-card sm:p-8">
-          <div className="text-center">
-            <div className="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-full bg-accent/15 text-accent">
-              <Compass className="h-6 w-6" aria-hidden="true" />
-            </div>
-            <h1 className="mt-4 font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              Welcome back
-            </h1>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Sign in to access your saved trips and travel bookings.
-            </p>
-          </div>
-
-          <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-5" noValidate>
-            <div className="space-y-1.5">
-              <Label htmlFor="email" className="text-sm font-medium text-foreground">
-                Email Address
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                autoComplete="email"
-                placeholder="alex@example.com"
-                disabled={isSubmitting}
-                aria-invalid={Boolean(errors.email)}
-                aria-describedby={errors.email ? "email-error" : undefined}
-                className="h-11"
-                {...register("email")}
-              />
-              {errors.email ? (
-                <p id="email-error" className="text-xs font-medium text-destructive">
-                  {errors.email.message}
-                </p>
-              ) : null}
-            </div>
-
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password" className="text-sm font-medium text-foreground">
-                  Password
-                </Label>
-                <Link
-                  to="/forgot-password"
-                  className="text-xs font-medium text-accent-text underline-offset-4 hover:underline"
-                >
-                  Forgot password?
-                </Link>
-              </div>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  autoComplete="current-password"
-                  placeholder="••••••••"
-                  disabled={isSubmitting}
-                  aria-invalid={Boolean(errors.password)}
-                  aria-describedby={errors.password ? "password-error" : undefined}
-                  className="h-11 pr-10"
-                  {...register("password")}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((prev) => !prev)}
-                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" aria-hidden="true" />
-                  ) : (
-                    <Eye className="h-4 w-4" aria-hidden="true" />
-                  )}
-                </button>
-              </div>
-              {errors.password ? (
-                <p id="password-error" className="text-xs font-medium text-destructive">
-                  {errors.password.message}
-                </p>
-              ) : null}
-            </div>
-
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="h-11 w-full rounded-lg bg-accent text-accent-foreground shadow-sm hover:bg-accent/90"
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
-                  Signing in...
-                </>
-              ) : (
-                <>
-                  Sign In
-                  <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
-                </>
-              )}
-            </Button>
-          </form>
-
-          <div className="mt-6 border-t border-border pt-6 text-center text-sm text-muted-foreground">
-            Don't have an account?{" "}
+      <AuthCardWrapper
+        title="Welcome back"
+        subtitle="Sign in to access your saved trips and travel bookings."
+        footerContent={
+          <p>
+            Don&apos;t have an account?{" "}
             <Link
               to="/register"
-              className="font-medium text-accent-text underline-offset-4 hover:underline"
+              className="font-medium text-accent hover:underline transition-colors"
             >
               Create account
             </Link>
+          </p>
+        }
+      >
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-5" noValidate>
+          <div className="space-y-1.5">
+            <Label htmlFor="email" className="text-sm font-medium text-white/90">
+              Email Address
+            </Label>
+            <input
+              id="email"
+              type="email"
+              autoComplete="email"
+              placeholder="alex@example.com"
+              disabled={isSubmitting}
+              aria-invalid={Boolean(errors.email)}
+              aria-describedby={errors.email ? "email-error" : undefined}
+              className="h-11 w-full rounded-xl bg-white/5 border border-white/10 px-3.5 text-sm text-white placeholder:text-white/30 focus:border-accent/60 focus:ring-1 focus:ring-accent/40 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              {...register("email")}
+            />
+            {errors.email ? (
+              <p id="email-error" className="text-xs font-medium text-destructive mt-1">
+                {errors.email.message}
+              </p>
+            ) : null}
           </div>
-        </div>
-      </div>
+
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="password" className="text-sm font-medium text-white/90">
+                Password
+              </Label>
+              <Link
+                to="/forgot-password"
+                className="text-xs font-medium text-accent hover:underline transition-colors"
+              >
+                Forgot password?
+              </Link>
+            </div>
+            <div className="relative flex items-center">
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
+                placeholder="••••••••"
+                disabled={isSubmitting}
+                aria-invalid={Boolean(errors.password)}
+                aria-describedby={errors.password ? "password-error" : undefined}
+                className="h-11 w-full rounded-xl bg-white/5 border border-white/10 pl-3.5 pr-10 text-sm text-white placeholder:text-white/30 focus:border-accent/60 focus:ring-1 focus:ring-accent/40 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                {...register("password")}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-3 flex items-center text-white/40 hover:text-white transition-colors p-1"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" aria-hidden="true" />
+                ) : (
+                  <Eye className="h-4 w-4" aria-hidden="true" />
+                )}
+              </button>
+            </div>
+            {errors.password ? (
+              <p id="password-error" className="text-xs font-medium text-destructive mt-1">
+                {errors.password.message}
+              </p>
+            ) : null}
+          </div>
+
+          <motion.button
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.98 }}
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full relative group/button mt-5"
+          >
+            <div className="relative h-11 w-full rounded-xl bg-accent text-accent-foreground font-medium text-sm flex items-center justify-center gap-1.5 shadow-lg shadow-accent/20 hover:bg-accent/90 transition-all disabled:opacity-50 disabled:pointer-events-none">
+              {isSubmitting ? (
+                <div className="flex items-center gap-2">
+                  <Loader2
+                    className="h-4 w-4 animate-spin text-accent-foreground"
+                    aria-hidden="true"
+                  />
+                  <span>Signing in...</span>
+                </div>
+              ) : (
+                <div className="flex items-center justify-center gap-1.5">
+                  <span>Sign In</span>
+                  <ArrowRight
+                    className="h-4 w-4 transition-transform group-hover/button:translate-x-0.5"
+                    aria-hidden="true"
+                  />
+                </div>
+              )}
+            </div>
+          </motion.button>
+        </form>
+      </AuthCardWrapper>
     </SiteLayout>
   );
 }

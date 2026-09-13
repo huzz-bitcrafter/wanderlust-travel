@@ -1,9 +1,14 @@
 # Memory — Wanderlust
 
-**Last updated:** 2026-09-13 | **Current phase:** Dual-Theme System Complete — Signed Off | **Session #:** 9
+**Last updated:** 2026-09-13 | **Current phase:** Modernized Auth UI Complete — Signed Off | **Session #:** 10
 
 ## Completed
 
+- [x] Phase 15 — Modernized Auth UI (21st.dev sign-in-card-2 Adaptation):
+  - Created reusable `AuthCardWrapper` in `src/components/ui/sign-in-card-2.tsx` with 3D perspective card tilt (`useMotionValue`, `useTransform`), traveling perimeter border light beams, corner light spots, atmospheric radial glows, brand Compass emblem, and accessible `useReducedMotion()` fallbacks.
+  - Redesigned Sign In page (`src/routes/login.tsx`) with the modern 21st.dev glass card aesthetic, retaining 100% of existing auth logic (`useAuth().login`), Zod validation, redirect query param behavior, loading spinner states, and navigation links.
+  - Redesigned Sign Up page (`src/routes/register.tsx`) with matching visual card treatment, preserving all fields (Full Name, Email Address, Password, Confirm Password), Zod validation contract, error states, and registration handlers.
+  - Verified 100% clean production build (`npm run build`) and zero ESLint errors across all modified and newly created files.
 - [x] Brand Identity & Theme Switch Modernization:
   - Upgraded theme toggle to interactive Uiverse `red-dingo-61` by JustCode14 with smooth cubic-bezier transitions, celestial sun/moon morphing, twinkling stars, animated clouds, and circular ripple view-transition.
   - Replaced header and footer brand marks with `Wanderlust_Nasalization_transparent_HD.png` in `src/components/layout/Navbar.tsx` and `src/components/layout/Footer.tsx`.
