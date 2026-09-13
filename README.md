@@ -1,5 +1,7 @@
 <div align="center">
 
+  <img src="public/Wanderlust_Nasalization_transparent_HD.png" alt="Wanderlust Logo" width="240"/>
+
 # 🌍 Wanderlust
 
 ### Full-Stack Travel Booking & Trip Planning Platform
@@ -31,12 +33,12 @@
 
 ## ✨ What It Does
 
-Wanderlust is a complete travel booking platform — **24 destinations** (international + India), tour packages, hotels, and flights — with real bookings, trip planning, moderated reviews, and a full admin panel.
+Wanderlust is a complete travel booking platform — **24 destinations** (international + India), tour packages, hotels, and flights — with real bookings, trip planning, moderated reviews, and a[...]
 
 | 🗺️ Discovery | 🏨 Booking | 🧳 Planning | ⚙️ Management |
 |---|---|---|---|
-| SSR destination & package catalogs with URL-synced search, filters & pagination | Multi-step checkout for **tours, hotels & flights** — multi-guest, live price math, booking references | Day-by-day itinerary builder with drag-reordering & print view | Full admin: CRUD, booking management, review moderation, contact inbox, KPI dashboard |
-| Photo gallery with keyboard-navigable lightbox | Auth-gated booking flow with deep-link redirects | User dashboard: trips, itineraries, reviews, profile + avatar | Role-based access via `is_admin()` security definers |
+| SSR destination & package catalogs with URL-synced search, filters & pagination | Multi-step checkout for **tours, hotels & flights** — multi-guest, live price math, booking references | Day-b[...] 
+| Photo gallery with keyboard-navigable lightbox | Auth-gated booking flow with deep-link redirects | User dashboard: trips, itineraries, reviews, profile + avatar | Role-based access via `is_admi[...]
 | Reviews with star distribution & moderation workflow | Simulated payment (demo mode, clearly labeled) | Review system with approval gating | Real-time stats & 30-day booking charts |
 
 ## 🏗️ Architecture
@@ -70,9 +72,9 @@ flowchart TB
 
 **Key engineering decisions:**
 
-- 🖥️ **SSR-first for public pages** — catalog data is prefetched in route loaders via `ensureQueryData` + `useSuspenseQuery`, so the initial HTML ships with content (SEO + zero layout shift). Account/admin pages render client-side.
-- 🔐 **Security at the database layer** — every table is RLS-protected with role checks via PostgreSQL security-definer functions (`is_admin()`, `has_role()`). Client-side guards are UX only; the database is the real enforcement.
-- 🎨 **Design-token discipline** — the entire UI (including dual light/dark themes and glass materials) is driven by centralized **OKLCH CSS custom properties**; zero hard-coded colors in components.
+- 🖥️ **SSR-first for public pages** — catalog data is prefetched in route loaders via `ensureQueryData` + `useSuspenseQuery`, so the initial HTML ships with content (SEO + zero layout shift[...]
+- 🔐 **Security at the database layer** — every table is RLS-protected with role checks via PostgreSQL security-definer functions (`is_admin()`, `has_role()`). Client-side guards are UX only; [...]
+- 🎨 **Design-token discipline** — the entire UI (including dual light/dark themes and glass materials) is driven by centralized **OKLCH CSS custom properties**; zero hard-coded colors in comp[...]
 - 🎬 **Apple-style motion system** — critically-damped springs (`motion`), View Transitions API theme reveal, staggered scroll reveals — all with `prefers-reduced-motion` fallbacks.
 
 ## 🛠️ Tech Stack
@@ -93,7 +95,7 @@ flowchart TB
 
 `profiles` · `user_roles` · `destinations` · `tour_packages` · `hotels` · `flights` · `bookings` · `itineraries` · `itinerary_items` · `reviews` · `gallery_images` · `contact_messages`
 
-Every table enforces authorization at the row level — e.g. users CRUD only their own bookings/itineraries/reviews, catalog reads are public but writes are admin-only, and reviews are publicly visible **only when approved**.
+Every table enforces authorization at the row level — e.g. users CRUD only their own bookings/itineraries/reviews, catalog reads are public but writes are admin-only, and reviews are publicly vi[...]
 
 ## 📁 Project Structure
 
@@ -109,7 +111,7 @@ wanderlust-codebase/
 │   │   └── admin/         # DataTable, EntityForm, dashboards
 │   ├── lib/               # Server functions (SSR data layer), guards, utils
 │   ├── hooks/             # use-auth (session/role context)
-│   └── integrations/      # Supabase clients + generated DB types
+│   │   └── integrations/      # Supabase clients + generated DB types
 ├── docs/                  # PRD, architecture, design system, memory
 └── drizzle/               # Schema & migrations
 ```
@@ -141,7 +143,7 @@ npm run dev             # → http://localhost:8080
 
 ## 🤝 Credits
 
-Built as a solo full-stack project with an AI-assisted, spec-driven workflow — 14 documented phases, full PRD/architecture/design-system docs in [`docs/`](docs/), and a git history that tells the whole story.
+Built as a solo full-stack project with an AI-assisted, spec-driven workflow — 14 documented phases, full PRD/architecture/design-system docs in [`docs/`](docs/), and a git history that tells t[...]
 
 <div align="center">
 
