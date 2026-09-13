@@ -1,9 +1,17 @@
 # Memory — Wanderlust
 
-**Last updated:** 2026-09-13 | **Current phase:** Tabbed Search Border Beam & Modernized Auth UI — Complete | **Session #:** 11
+**Last updated:** 2026-09-14 | **Current phase:** Halenoir Compact Global Typography — Complete | **Session #:** 12
 
 ## Completed
 
+- [x] Typography: Halenoir Compact Global UI Font & Weight-Collapse Compensation:
+  - Copied `HalenoirCompact-Medium.otf` (126,216 bytes) to `public/fonts/HalenoirCompact-Medium.otf`.
+  - Registered `@font-face` for `"Halenoir Compact"` with static weight range 100–900 resolving to Medium in `src/styles.css`.
+  - Updated `--font-sans` token to `"Halenoir Compact", Inter, ui-sans-serif, system-ui, sans-serif`.
+  - Preloaded `/fonts/HalenoirCompact-Medium.otf` in `src/routes/__root.tsx` for zero-FOUT first paint; removed Inter from Google Fonts `<link>` while preserving Playfair Display (and existing Tropikal preload).
+  - Enforced Apple Design §15 weight-collapse compensations: added `+0.005em` letter-spacing relief to `body` reading copy, `+0.01em` tracking to `.text-xs` / `.text-sm` compact metadata, and enabled `font-variant-numeric: tabular-nums;` on tables.
+  - Updated `docs/Design.md` with complete Font Usage Map, weight-collapse mapping decisions, and license-verification-pending note.
+  - Production build and multi-route SSR tests passed with 0 errors.
 - [x] Tabbed Search Card Border Beam & Velocity Tuning:
   - Integrated Motiq `BorderBeamPanel` (`src/components/ui/border-beam-panel.tsx`) orbiting twin comets (Cyan `#22c7d9` and Coral `#ff6b5e`) around the tabbed search widget in `src/components/home/SearchWidget.tsx`.
   - Calibrated rotation speed down by over 60% (`idleSpeed: 22°/s`, `hoverSpeed: 48°/s`) with buttery spring damping (`stiffness: 18`, `damping: 12`) for serene, luxurious ambient orbital motion.
@@ -119,7 +127,6 @@
 ## In Progress
 
 - None. All phases complete and signed off.
-
 
 ## Key Decisions
 

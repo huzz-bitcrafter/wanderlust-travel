@@ -11,58 +11,60 @@ base with energetic coral accents. Dual-theme system (Light & Dark) — editoria
 
 #### Light Mode Palette (Direction A: Premium Travel Editorial + Restrained Liquid-Glass Depth)
 
-| Token | OKLCH | ~Hex | Semantic Purpose | Usage Guidance | Contrast Result |
-|---|---|---|---|---|---|
-| `primary` | `oklch(0.24 0.066 256)` | #071f3e | Midnight Navy — cinematic depth, anchor | Navbar, footer, primary buttons, major headings | **16.50:1** vs white (AAA), **15.35:1** vs bg (AAA) |
-| `primary-foreground` | `oklch(1 0 0)` | #ffffff | Crisp Pure White | Text on primary/midnight surfaces | **16.50:1** vs primary (AAA) |
-| `accent` | `oklch(0.680 0.168 38)` | #ec6c44 | Luminous Coral — emotional warmth & action | Primary CTAs, booking actions, large prices, star ratings | **3.08:1** vs white/card (AA Large/UI) |
-| `accent-foreground` | `oklch(1 0 0)` | #ffffff | Crisp Pure White | Button text on accent CTAs | **3.08:1** vs accent (AA Large/UI) |
-| `accent-text` | `oklch(0.565 0.168 38)` | #c4471c | Deep Coral Text — WCAG AA compliant small text | Small/normal accent text, metadata warnings, links on light surfaces | **4.92:1** vs white/card (AA Normal), **4.57:1** vs bg (AA Normal) |
-| `secondary` | `oklch(0.62 0.096 186)` | #2d998f | Restrained Travel Teal | Links, subtle badges, secondary tags, focus rings | **3.67:1** vs card (AA UI) |
-| `secondary-foreground` | `oklch(1 0 0)` | #ffffff | Crisp Pure White | Text on solid secondary surfaces | **3.67:1** vs secondary |
-| `background` | `oklch(0.975 0.008 85)` | #f9f6f1 | Warm Ivory / Off-White | Editorial page canvas, comfortable luxury | **13.96:1** vs foreground (AAA) |
-| `foreground` | `oklch(0.27 0.019 230)` | #1d282e | Deep Ink Neutral | Body text, titles on light backgrounds | **13.96:1** vs background (AAA) |
-| `card` | `oklch(1 0 0)` | #ffffff | Crisp White Surface | Destination cards, hotel cards, modal bodies | **1.08:1** separation vs background |
-| `card-foreground` | `oklch(0.27 0.019 230)` | #1d282e | Deep Ink Neutral | Content text within cards | **14.50:1** vs card (AAA) |
-| `muted` | `oklch(0.938 0.012 80)` | #efeae2 | Soft Sand Neutral | Subdued chips, disabled tabs, divider fills | — |
-| `muted-foreground` | `oklch(0.51 0.019 225)` | #5b696e | Slate Editorial Neutral | Subtitles, metadata, reviews counts, captions | **5.31:1** vs bg (AA), **5.71:1** vs card (AA) |
-| `border` | `oklch(0.898 0.014 85)` | #e2ddd3 | Subtle Warm Edge | 1px material separator | Subtle boundary |
+| Token                  | OKLCH                   | ~Hex    | Semantic Purpose                               | Usage Guidance                                                       | Contrast Result                                                    |
+| ---------------------- | ----------------------- | ------- | ---------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `primary`              | `oklch(0.24 0.066 256)` | #071f3e | Midnight Navy — cinematic depth, anchor        | Navbar, footer, primary buttons, major headings                      | **16.50:1** vs white (AAA), **15.35:1** vs bg (AAA)                |
+| `primary-foreground`   | `oklch(1 0 0)`          | #ffffff | Crisp Pure White                               | Text on primary/midnight surfaces                                    | **16.50:1** vs primary (AAA)                                       |
+| `accent`               | `oklch(0.680 0.168 38)` | #ec6c44 | Luminous Coral — emotional warmth & action     | Primary CTAs, booking actions, large prices, star ratings            | **3.08:1** vs white/card (AA Large/UI)                             |
+| `accent-foreground`    | `oklch(1 0 0)`          | #ffffff | Crisp Pure White                               | Button text on accent CTAs                                           | **3.08:1** vs accent (AA Large/UI)                                 |
+| `accent-text`          | `oklch(0.565 0.168 38)` | #c4471c | Deep Coral Text — WCAG AA compliant small text | Small/normal accent text, metadata warnings, links on light surfaces | **4.92:1** vs white/card (AA Normal), **4.57:1** vs bg (AA Normal) |
+| `secondary`            | `oklch(0.62 0.096 186)` | #2d998f | Restrained Travel Teal                         | Links, subtle badges, secondary tags, focus rings                    | **3.67:1** vs card (AA UI)                                         |
+| `secondary-foreground` | `oklch(1 0 0)`          | #ffffff | Crisp Pure White                               | Text on solid secondary surfaces                                     | **3.67:1** vs secondary                                            |
+| `background`           | `oklch(0.975 0.008 85)` | #f9f6f1 | Warm Ivory / Off-White                         | Editorial page canvas, comfortable luxury                            | **13.96:1** vs foreground (AAA)                                    |
+| `foreground`           | `oklch(0.27 0.019 230)` | #1d282e | Deep Ink Neutral                               | Body text, titles on light backgrounds                               | **13.96:1** vs background (AAA)                                    |
+| `card`                 | `oklch(1 0 0)`          | #ffffff | Crisp White Surface                            | Destination cards, hotel cards, modal bodies                         | **1.08:1** separation vs background                                |
+| `card-foreground`      | `oklch(0.27 0.019 230)` | #1d282e | Deep Ink Neutral                               | Content text within cards                                            | **14.50:1** vs card (AAA)                                          |
+| `muted`                | `oklch(0.938 0.012 80)` | #efeae2 | Soft Sand Neutral                              | Subdued chips, disabled tabs, divider fills                          | —                                                                  |
+| `muted-foreground`     | `oklch(0.51 0.019 225)` | #5b696e | Slate Editorial Neutral                        | Subtitles, metadata, reviews counts, captions                        | **5.31:1** vs bg (AA), **5.71:1** vs card (AA)                     |
+| `border`               | `oklch(0.898 0.014 85)` | #e2ddd3 | Subtle Warm Edge                               | 1px material separator                                               | Subtle boundary                                                    |
 
 #### Dark Mode Palette (.dark Token Block — Deep Midnight Navy Architecture)
 
-| Token | OKLCH | ~Hex | Semantic Purpose | Usage Guidance | Contrast Result |
-|---|---|---|---|---|---|
-| `background` | `oklch(0.14 0.035 256)` | #020917 | Deep Midnight Abyss — void canvas | Dark page body, canvas behind cards | **17.73:1** vs foreground (AAA) |
-| `foreground` | `oklch(0.96 0.008 85)` | #f4f1ec | Moonlight Ivory — high legibility | Body text, headings on dark backgrounds | **17.73:1** vs bg (AAA), **16.45:1** vs card (AAA) |
-| `card` | `oklch(0.19 0.040 256)` | #071425 | Elevated Midnight Surface | Destination cards, hotel cards, dialog bodies | **1.08:1** separation vs bg + 1px border |
-| `card-foreground` | `oklch(0.96 0.008 85)` | #f4f1ec | Moonlight Ivory | Content text within cards | **16.45:1** vs card (AAA) |
-| `primary` | `oklch(0.92 0.015 85)` | #e9e4da | Luminous Moonlight Ivory CTA | Buttons, active filter pills, search action | **15.72:1** vs bg (AAA), **15.72:1** vs primary-fg (AAA) |
-| `primary-foreground` | `oklch(0.14 0.035 256)` | #020917 | Deep Midnight Navy Text | Text on solid primary buttons/pills | **15.72:1** vs primary (AAA) |
-| `accent` | `oklch(0.70 0.165 38)` | #ee724d | Luminous Coral CTA | Booking action buttons, large prices, star ratings | **6.98:1** vs bg (AAA) |
-| `accent-foreground` | `oklch(0.14 0.035 256)` | #020917 | Deep Midnight Text | Text on solid accent CTAs | **6.98:1** vs accent (AAA) |
-| `accent-text` | `oklch(0.74 0.160 42)` | #f57f58 | Luminous Coral Text — WCAG AA/AAA compliant | Small/normal accent text, badges, metadata | **8.15:1** vs bg (AAA), **7.56:1** vs card (AAA) |
-| `secondary` | `oklch(0.68 0.110 186)` | #3db3a6 | Luminous Travel Teal | Links, focus rings, subtle badges | **7.28:1** vs bg (AAA) |
-| `secondary-foreground` | `oklch(0.14 0.035 256)` | #020917 | Deep Midnight Text | Text on solid secondary surfaces | **7.28:1** vs secondary (AAA) |
-| `muted` | `oklch(0.22 0.030 256)` | #0f1c2d | Subdued Midnight Neutral | Subdued chips, unselected tabs | — |
-| `muted-foreground` | `oklch(0.70 0.025 220)` | #93a5b1 | Slate Editorial Neutral | Subtitles, metadata, reviews counts, captions | **7.52:1** vs bg (AAA), **6.97:1** vs card (AA) |
-| `border` | `oklch(0.28 0.035 256)` | #1c2b42 | Crisp Midnight Edge | 1px material separator | Subtle boundary |
+| Token                  | OKLCH                   | ~Hex    | Semantic Purpose                            | Usage Guidance                                     | Contrast Result                                          |
+| ---------------------- | ----------------------- | ------- | ------------------------------------------- | -------------------------------------------------- | -------------------------------------------------------- |
+| `background`           | `oklch(0.14 0.035 256)` | #020917 | Deep Midnight Abyss — void canvas           | Dark page body, canvas behind cards                | **17.73:1** vs foreground (AAA)                          |
+| `foreground`           | `oklch(0.96 0.008 85)`  | #f4f1ec | Moonlight Ivory — high legibility           | Body text, headings on dark backgrounds            | **17.73:1** vs bg (AAA), **16.45:1** vs card (AAA)       |
+| `card`                 | `oklch(0.19 0.040 256)` | #071425 | Elevated Midnight Surface                   | Destination cards, hotel cards, dialog bodies      | **1.08:1** separation vs bg + 1px border                 |
+| `card-foreground`      | `oklch(0.96 0.008 85)`  | #f4f1ec | Moonlight Ivory                             | Content text within cards                          | **16.45:1** vs card (AAA)                                |
+| `primary`              | `oklch(0.92 0.015 85)`  | #e9e4da | Luminous Moonlight Ivory CTA                | Buttons, active filter pills, search action        | **15.72:1** vs bg (AAA), **15.72:1** vs primary-fg (AAA) |
+| `primary-foreground`   | `oklch(0.14 0.035 256)` | #020917 | Deep Midnight Navy Text                     | Text on solid primary buttons/pills                | **15.72:1** vs primary (AAA)                             |
+| `accent`               | `oklch(0.70 0.165 38)`  | #ee724d | Luminous Coral CTA                          | Booking action buttons, large prices, star ratings | **6.98:1** vs bg (AAA)                                   |
+| `accent-foreground`    | `oklch(0.14 0.035 256)` | #020917 | Deep Midnight Text                          | Text on solid accent CTAs                          | **6.98:1** vs accent (AAA)                               |
+| `accent-text`          | `oklch(0.74 0.160 42)`  | #f57f58 | Luminous Coral Text — WCAG AA/AAA compliant | Small/normal accent text, badges, metadata         | **8.15:1** vs bg (AAA), **7.56:1** vs card (AAA)         |
+| `secondary`            | `oklch(0.68 0.110 186)` | #3db3a6 | Luminous Travel Teal                        | Links, focus rings, subtle badges                  | **7.28:1** vs bg (AAA)                                   |
+| `secondary-foreground` | `oklch(0.14 0.035 256)` | #020917 | Deep Midnight Text                          | Text on solid secondary surfaces                   | **7.28:1** vs secondary (AAA)                            |
+| `muted`                | `oklch(0.22 0.030 256)` | #0f1c2d | Subdued Midnight Neutral                    | Subdued chips, unselected tabs                     | —                                                        |
+| `muted-foreground`     | `oklch(0.70 0.025 220)` | #93a5b1 | Slate Editorial Neutral                     | Subtitles, metadata, reviews counts, captions      | **7.52:1** vs bg (AAA), **6.97:1** vs card (AA)          |
+| `border`               | `oklch(0.28 0.035 256)` | #1c2b42 | Crisp Midnight Edge                         | 1px material separator                             | Subtle boundary                                          |
 
 Status colors (dark): confirmed = success green (`oklch(0.68 0.140 158)`), pending = amber (`oklch(0.78 0.135 72)`), cancelled/error = destructive (`oklch(0.65 0.190 25)`).
 
 ### Gradient System
 
-| Gradient Token | Light Value | Dark Value | Intended Usage |
-|---|---|---|---|
-| `--gradient-primary` | `linear-gradient(135deg, oklch(0.24 0.066 256) 0%, oklch(0.32 0.070 200) 100%)` | `linear-gradient(135deg, oklch(0.18 0.045 256) 0%, oklch(0.24 0.055 200) 100%)` | Hero atmospheric overlays, admin sidebar depth |
-| `--gradient-accent` | `linear-gradient(135deg, oklch(0.680 0.168 38) 0%, oklch(0.720 0.150 62) 100%)` | `linear-gradient(135deg, oklch(0.70 0.165 38) 0%, oklch(0.74 0.155 62) 100%)` | Primary CTA highlights, premium badges |
-| `--gradient-card-edge` | `linear-gradient(135deg, oklch(0.68 0.168 38 / 0.32) 0%, oklch(0.62 0.096 186 / 0.28) 100%)` | `linear-gradient(135deg, oklch(0.70 0.165 38 / 0.40) 0%, oklch(0.68 0.110 186 / 0.35) 100%)` | Card perimeter highlight on hover |
+| Gradient Token         | Light Value                                                                                  | Dark Value                                                                                   | Intended Usage                                 |
+| ---------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| `--gradient-primary`   | `linear-gradient(135deg, oklch(0.24 0.066 256) 0%, oklch(0.32 0.070 200) 100%)`              | `linear-gradient(135deg, oklch(0.18 0.045 256) 0%, oklch(0.24 0.055 200) 100%)`              | Hero atmospheric overlays, admin sidebar depth |
+| `--gradient-accent`    | `linear-gradient(135deg, oklch(0.680 0.168 38) 0%, oklch(0.720 0.150 62) 100%)`              | `linear-gradient(135deg, oklch(0.70 0.165 38) 0%, oklch(0.74 0.155 62) 100%)`                | Primary CTA highlights, premium badges         |
+| `--gradient-card-edge` | `linear-gradient(135deg, oklch(0.68 0.168 38 / 0.32) 0%, oklch(0.62 0.096 186 / 0.28) 100%)` | `linear-gradient(135deg, oklch(0.70 0.165 38 / 0.40) 0%, oklch(0.68 0.110 186 / 0.35) 100%)` | Card perimeter highlight on hover              |
 
 #### Gradient Rules:
+
 - **Natural Depth, Not Decorative Rainbows**: Gradients must evoke atmospheric depth and natural lighting.
 - **Dominance Preservation**: In `--gradient-primary`, midnight navy must anchor the identity; teal is an atmospheric wash. In `--gradient-accent`, coral remains the action color; amber adds warm sunlight energy.
 - **Never Overuse**: Never layer accent gradients over large areas; keep them focused on points of action and delight.
 
 ### Glass / Material Depth & Surface Hierarchy
+
 1. **Layer 1 (Page Canvas / Photography)**: `var(--color-background)` or high-res landscape imagery.
 2. **Layer 2 (Atmospheric Wash)**: Gradient overlays (`--gradient-primary` with low opacity) pushing background back in perceptual z-space.
 3. **Layer 3 (Functional Surface)**: Translucent materials (`.glass-navbar`, `.glass-chrome`, `.admin-sidebar`, `.glass-search`):
@@ -71,6 +73,7 @@ Status colors (dark): confirmed = success green (`oklch(0.68 0.140 158)`), pendi
 4. **Layer 4 (Typography & Content)**: High-contrast typography (`text-foreground` or `text-primary-foreground`) never placed on raw uncontrolled photos without an obscuring scrim.
 
 ### Shadow Depth Architecture
+
 - **Light Mode Shadows**:
   - `--shadow-card`: `0 1px 3px oklch(0.24 0.066 256 / 0.04), 0 4px 12px -2px oklch(0.24 0.066 256 / 0.05)`
   - `--shadow-card-hover`: `0 16px 36px -10px oklch(0.24 0.066 256 / 0.16), 0 4px 12px -2px oklch(0.24 0.066 256 / 0.06)`
@@ -83,6 +86,7 @@ Status colors (dark): confirmed = success green (`oklch(0.68 0.140 158)`), pendi
   - `--shadow-modal`: `0 32px 64px -16px oklch(0 0 0 / 0.75), 0 0 0 1px oklch(1 0 0 / 0.10)`
 
 ### Accessibility & Contrast Compliance (Dual Theme)
+
 - **Light Theme**:
   - `foreground` on `bg`: **13.96:1** (AAA)
   - `muted-foreground` on `bg`: **5.31:1** (AA)
@@ -104,9 +108,38 @@ Status colors (dark): confirmed = success green (`oklch(0.68 0.140 158)`), pendi
 
 ## Typography
 
-- Headings: Playfair Display (600/700) — loaded in __root.tsx
-- Body/UI: Inter (400–700)
-- Scale: H1 48/56 · H2 36 · H3 24 · Body 16 · Small 14 · Eyebrow 12 uppercase wide
+- **Headlines & Editorial Display**: Playfair Display (600/700) loaded via Google Fonts in `src/routes/__root.tsx`.
+- **Hero Headline (Home)**: Tropikal Bold (`/fonts/tropikal-bold.otf`), 700 weight, loaded via local `@font-face`.
+- **Global Body & UI**: Halenoir Compact (`/fonts/HalenoirCompact-Medium.otf`), Medium (500) weight resolving across all requested weights (100–900), loaded via local `@font-face` and preloaded in `src/routes/__root.tsx`. Inter remains only as fallback.
+- **Scale**: H1 48/64 · H2 36 · H3 20/24 · Body 16 · Small 14 · Eyebrow 12 uppercase wide.
+
+### Font Usage Map (Current State)
+
+> [!NOTE]
+> **License Verification Pending**: Halenoir Compact is currently licensed for internal design evaluation / development testing. Commercial font license verification is pending final production audit.
+
+| Element                   | Font (Previous)  | Font (Today)                | Weight             | Size / Leading   | Tracking       | Weight-Collapse Compensation & Notes                                | Where it appears                                       |
+| :------------------------ | :--------------- | :-------------------------- | :----------------- | :--------------- | :------------- | :------------------------------------------------------------------ | :----------------------------------------------------- |
+| **Hero H1**               | Playfair Display | Tropikal Bold               | 700                | ~48–64px / 1.05  | -0.025em       | Standalone display headline; high contrast, full brand identity     | Home hero headline                                     |
+| **Section headings (H2)** | Playfair Display | Playfair Display            | 600 / 700          | ~36px / 1.15     | -0.02em        | Editorial display serif anchor; untouched                           | "Explore India", "Featured Destinations", page headers |
+| **H3 / card titles**      | Playfair Display | Playfair Display            | 600                | ~20–24px / 1.22  | -0.015em       | Editorial card titles; untouched                                    | Destination / Package / Hotel card titles              |
+| **Body text**             | Inter (400)      | Halenoir Compact            | Medium (500)       | 16px / 1.6       | +0.005em       | +0.005em tracking relief prevents density/fatigue in paragraphs     | Descriptions, detail pages, forms                      |
+| **Card body copy**        | Inter (400)      | Halenoir Compact            | Medium (500)       | 14px / 1.5–1.6   | +0.01em        | +0.01em tracking relief prevents glyph collision in compact cards   | Card descriptions                                      |
+| **Eyebrow labels**        | Inter (600)      | Halenoir Compact            | Medium (500)       | 12px / uppercase | +0.12em (wide) | Uppercase styling + wide letter-spacing maintains hierarchy         | Small labels above section headings                    |
+| **Buttons / CTAs**        | Inter (500–600)  | Halenoir Compact            | Medium (500)       | 14–16px          | 0              | Crisp Medium weight naturally suits pill/button geometries          | Search, Book Now, Sign In                              |
+| **Navbar links**          | Inter (500)      | Halenoir Compact            | Medium (500)       | 14–15px          | 0              | Medium provides optimal legibility over glass navbars               | Nav + footer links                                     |
+| **Prices / numbers**      | Inter (600–700)  | Halenoir Compact / Playfair | Medium (500) / 700 | 24–32px          | 0              | Coral accent color (`text-accent`) + display sizes carry emphasis   | Prices, ratings, stats                                 |
+| **Muted metadata**        | Inter (400)      | Halenoir Compact            | Medium (500)       | 12–14px          | +0.01em        | Subordinated via `text-muted-foreground` color + size differential  | Review counts, captions, dates                         |
+| **Admin UI**              | Inter (400–600)  | Halenoir Compact            | Medium (500)       | 13–16px          | +0.01em        | `tabular-nums` applied site-wide to tables for aligned data columns | Tables, forms, sidebar, KPI cards                      |
+
+### Weight-Collapse Mapping Decisions
+
+Because Halenoir Compact is provisioned in a single static cut (Medium 500), visual hierarchy cannot rely on font-weight contrast alone. Hierarchy is preserved via four coordinated design vectors:
+
+1. **Color & Contrast Dominance**: Primary emphasis on numeric figures (prices, ratings) is carried by the vivid coral accent token (`--accent` / `--accent-text`), while secondary metadata is heavily subordinated by `--muted-foreground` (0.51 lightness in light mode, 0.68 in dark mode).
+2. **Scale & Typography Contrast**: Headings remain anchored in Playfair Display (editorial serif) and Tropikal (hero), creating high typographic contrast against Halenoir Compact UI controls and body text.
+3. **Tracking Relief**: Compact cuts can feel crowded at text sizes. Long-form body copy receives `+0.005em` relief (`letter-spacing: 0.005em;` on `body`), while compact metadata and small UI labels (12–14px) receive `+0.01em` relief (`letter-spacing: 0.01em;`). Eyebrows maintain wide `+0.12em` uppercase tracking.
+4. **Tabular Numerics**: Data-dense admin interfaces and financial grids enforce `font-variant-numeric: tabular-nums;` ensuring numeric columns align crisply without jitter.
 
 ## Components
 
@@ -126,10 +159,12 @@ full keyboard navigation.
 
 ## v2 Addendum: Motion & Typography Rules (Apple Design Tiers 1 & 2)
 
-Adopted from Apple Human Interface Guidelines and WWDC principles (*Designing Fluid Interfaces* & *The Details of UI Typography*). Pure-CSS polish rules.
+Adopted from Apple Human Interface Guidelines and WWDC principles (_Designing Fluid Interfaces_ & _The Details of UI Typography_). Pure-CSS polish rules.
 
 ### 1. Typography Hierarchy & Optical Tracking Scale (skill §15)
+
 Tracking (letter-spacing) is size-specific and inversely proportional to font size. Optical sizing is enabled (`font-optical-sizing: auto;`).
+
 - **H1 (Display / Hero)**: `letter-spacing: -0.025em`, `line-height: 1.05`, `font-weight: 700`
 - **H2 (Section titles)**: `letter-spacing: -0.02em`, `line-height: 1.15`, `font-weight: 700`
 - **H3 (Card & subset titles)**: `letter-spacing: -0.015em`, `line-height: 1.22`, `font-weight: 600`
@@ -140,7 +175,9 @@ Tracking (letter-spacing) is size-specific and inversely proportional to font si
 - **Headings & .font-display**: Optical sizing automatically enabled site-wide in `src/styles.css`.
 
 ### 2. Press Response & Interactive Feedback (skill §1)
+
 Immediate physical response on pointer-down (touch-down, not release).
+
 - **Buttons (`<Button>`, `<button>`, `[role="button"]`)**: `:active { transform: scale(0.97); transition: transform 100ms ease-out; }`
 - **Primary CTA Hover Shine (`.cta-shine`)**:
   - Rest: coral or midnight navy base unchanged, `position: relative; overflow: hidden;`
@@ -162,7 +199,9 @@ Immediate physical response on pointer-down (touch-down, not release).
 - **Skeletons**: Smooth `transition-opacity duration-300 ease-out` cross-fading into live loaded content (`content-crossfade`).
 
 ### 3. Materials & Depth Hierarchy (skill §12)
+
 Translucency acts as a functional structural layer rather than an opaque block.
+
 - **Translucent Scrolled Navbar (`.glass-navbar`)**:
   - Background: `oklch(0.3 0.062 250 / 0.82)` (primary navy at 82% opacity)
   - Backdrop filter: `blur(16px) saturate(180%)`
@@ -180,6 +219,7 @@ Translucency acts as a functional structural layer rather than an opaque block.
   - Rule: Never stack light translucent surfaces on other light translucent surfaces.
 
 ### 4. Accessibility & Fallbacks (skill §14)
+
 - **`@media (prefers-reduced-motion: reduce)`**:
   - All transform scale effects, pulse loops, and translations are disabled (`transform: none !important`).
   - Animations replaced with zero-duration or gentle opacity cross-fades (`duration: 0.01ms !important`).
@@ -189,6 +229,7 @@ Translucency acts as a functional structural layer rather than an opaque block.
 - **Contrast**: Contrast on translucent navbar exceeds 7:1 against light page content, satisfying WCAG AAA and AA requirements.
 
 ### 5. Hero Cinematic Footage & Neutral Scrim Specification
+
 - **Full-Bleed Viewport Dimensions**:
   - Desktop: `h-[100svh] min-h-[600px]`
   - Mobile: `h-[85svh] min-h-[520px]` (ensures headline and tabbed widget stay visible under mobile browser chrome).
@@ -205,6 +246,7 @@ Translucency acts as a functional structural layer rather than an opaque block.
 ### 6. Expressive Gallery Specification & Vendored Component Porting Record (Phase 5)
 
 #### Gallery Specification
+
 - **Curated Spotlight**: Features an interactive desktop spotlight collage powered by the ported `ImageCollage` component (`src/components/vendored/ImageCollage.tsx`) using up to 9 featured photographs from the active destination selection.
 - **Expressive Interaction**: Provides a tactile layout toggle between **Collage view** (artistic scattered layout with natural angle rotations and offsets) and **Editorial view** (clean synchronized deck). Clicking anywhere on the collage stage or toggle buttons smoothly animates between states.
 - **Fullscreen Lightbox Integration**: Every photo card in the collage is an accessible interactive element (`role="button"`, `tabIndex={0}`, Enter/Space key support). Clicking any card directly triggers the fullscreen accessible Lightbox at that image index, maintaining seamless arrow navigation (Left/Right), ESC to close, and focus retention.
@@ -213,6 +255,7 @@ Translucency acts as a functional structural layer rather than an opaque block.
 - **Complete Archive Preservation**: The full masonry collection is positioned directly below the spotlight, ensuring 100% of photographs remain immediately discoverable and accessible across all screen sizes.
 
 #### Vendored Component Porting Record
+
 - **Component Source**: Vengeance UI (`https://www.vengenceui.com/components/image-collage`, original file: `src/components/ui/image-collage.tsx`).
 - **Vendored Path**: `src/components/vendored/ImageCollage.tsx`.
 - **Porting Adaptations**:
@@ -221,6 +264,3 @@ Translucency acts as a functional structural layer rather than an opaque block.
   3. **Token Alignment**: Replaced ungrounded hard-coded hex and zinc classes with Wanderlust OKLCH tokens (`bg-card`, `border-border/80`, `shadow-card-hover`, `focus-visible:ring-secondary`).
   4. **Interactive Callback & A11y**: Added `onImageClick` callback with full keyboard support (`Enter`/`Space`) and ARIA labels, linking directly to the existing Lightbox modal.
   5. **Reduced Motion**: Wired `useReducedMotion()` from `motion/react` with zero-duration spring suppression.
-
-
-
