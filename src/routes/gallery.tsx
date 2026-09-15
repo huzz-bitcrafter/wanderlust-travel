@@ -11,7 +11,9 @@ import {
   Maximize2,
   Sparkles,
 } from "lucide-react";
-import { SiteLayout, PageHeader } from "@/components/layout/SiteLayout";
+import { SiteLayout } from "@/components/layout/SiteLayout";
+import { PageHeroBanner } from "@/components/shared/PageHeroBanner";
+import { HERO_REGISTRY } from "@/config/hero-registry";
 import { SectionReveal } from "@/components/shared/SectionReveal";
 import {
   fetchGalleryImages,
@@ -167,10 +169,13 @@ function GalleryPage() {
   }, [lightboxIndex]);
 
   return (
-    <SiteLayout>
-      <PageHeader eyebrow="Visual Odyssey" title="Destination Gallery" description={description} />
+    <SiteLayout transparentNav>
+      <PageHeroBanner {...HERO_REGISTRY.gallery} />
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-12">
+      <div
+        id="gallery-catalog"
+        className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-12"
+      >
         {/* Category / Destination Filter Pills */}
         <SectionReveal className="flex flex-wrap items-center justify-center gap-2 max-w-5xl mx-auto">
           <button

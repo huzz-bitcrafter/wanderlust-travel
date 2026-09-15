@@ -424,7 +424,7 @@ function FlightsPage() {
   const totalSummaryPrice = selectedFlight ? selectedFlight.price * currentPassengers : 0;
 
   return (
-    <SiteLayout>
+    <SiteLayout transparentNav>
       {/* ============================================================ */}
       {/* 1. Hero & Floating Search Bar                                */}
       {/* ============================================================ */}

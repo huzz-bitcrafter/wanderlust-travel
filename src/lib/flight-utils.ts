@@ -54,6 +54,53 @@ export function formatPrice(amount: number): string {
 }
 
 /**
+ * Curated destination-specific arrival photography
+ * Mapping arrival city or airport code to real scenic imagery of that destination.
+ */
+export const DESTINATION_THUMBNAILS: Record<string, string[]> = {
+  // Bengaluru / Bangalore (BLR)
+  BLR: [
+    "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&w=600&q=80", // Bangalore Vidhana Soudha illuminated
+    "https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&w=600&q=80", // Bangalore Lalbagh glasshouse & greenery
+  ],
+  // New Delhi / Delhi (DEL)
+  DEL: [
+    "https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=600&q=80", // Delhi India Gate
+    "https://images.unsplash.com/photo-1585131032130-9b43d3b66472?auto=format&fit=crop&w=600&q=80", // Delhi Humayun's tomb
+  ],
+  // Mumbai (BOM)
+  BOM: [
+    "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=600&q=80", // Mumbai Gateway of India
+    "https://images.unsplash.com/photo-1567157577867-05ccb1388e66?auto=format&fit=crop&w=600&q=80", // Mumbai Marine Drive Queens Necklace
+  ],
+  // Chennai (MAA)
+  MAA: [
+    "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=600&q=80", // Chennai Kapaleeshwarar Temple
+    "https://images.unsplash.com/photo-1616843413587-9e3a37f7bbd8?auto=format&fit=crop&w=600&q=80", // Chennai coastal beach sunrise
+  ],
+  // Jaipur (JAI)
+  JAI: [
+    "https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&w=600&q=80", // Jaipur Hawa Mahal palace
+    "https://images.unsplash.com/photo-1603262110263-fb010d6e75dc?auto=format&fit=crop&w=600&q=80", // Jaipur Amber Fort
+  ],
+  // Goa (GOI)
+  GOI: [
+    "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=600&q=80", // Goa tropical palm beach
+    "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80", // Goa coastal sunset
+  ],
+  // Dubai (DXB)
+  DXB: [
+    "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=600&q=80", // Dubai Burj Khalifa & skyline
+    "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=600&q=80", // Dubai Marina water reflection
+  ],
+  // London (LHR)
+  LHR: [
+    "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=600&q=80", // London Big Ben & Westminster
+    "https://images.unsplash.com/photo-1533929736458-ca588d08c8be?auto=format&fit=crop&w=600&q=80", // London Tower Bridge
+  ],
+};
+
+/**
  * Curated high-resolution Unsplash aviation and airplane wing images
  * matching the aesthetic of the reference dashboard.
  */
@@ -68,11 +115,61 @@ export const AVIATION_THUMBNAILS = [
 ];
 
 /**
- * Deterministically pick an aviation thumbnail based on flight ID or flight number
+ * Deterministically pick an authentic destination or aviation thumbnail based on flight details
  */
 export function getFlightThumbnail(
-  flight: FlightData | { id: string; flight_number?: string },
+  flight:
+    | FlightData
+    | {
+        id: string;
+        flight_number?: string;
+        destination?: string;
+        destination_city?: string;
+        destination_code?: string;
+      },
 ): string {
+  const rawCode =
+    ("destination_code" in flight && flight.destination_code) ||
+    ("destination" in flight && flight.destination) ||
+    "";
+  const code = rawCode.toUpperCase();
+  const rawCity =
+    "destination_city" in flight && flight.destination_city ? flight.destination_city : "";
+  const city = rawCity.toLowerCase().trim();
+
+  let targetKey = "";
+  if (DESTINATION_THUMBNAILS[code]) {
+    targetKey = code;
+  } else if (city.includes("bengaluru") || city.includes("bangalore")) {
+    targetKey = "BLR";
+  } else if (city.includes("delhi")) {
+    targetKey = "DEL";
+  } else if (city.includes("mumbai")) {
+    targetKey = "BOM";
+  } else if (city.includes("chennai")) {
+    targetKey = "MAA";
+  } else if (city.includes("jaipur")) {
+    targetKey = "JAI";
+  } else if (city.includes("goa")) {
+    targetKey = "GOI";
+  } else if (city.includes("dubai")) {
+    targetKey = "DXB";
+  } else if (city.includes("london")) {
+    targetKey = "LHR";
+  }
+
+  if (targetKey && DESTINATION_THUMBNAILS[targetKey]) {
+    const list = DESTINATION_THUMBNAILS[targetKey];
+    const seed = (flight.flight_number || "") + (flight.id || "");
+    let hash = 0;
+    for (let i = 0; i < seed.length; i++) {
+      hash = (hash << 5) - hash + seed.charCodeAt(i);
+      hash |= 0;
+    }
+    return list[Math.abs(hash) % list.length];
+  }
+
+  // 2. Fall back to curated aviation images
   const seed = (flight.flight_number || "") + (flight.id || "");
   let hash = 0;
   for (let i = 0; i < seed.length; i++) {

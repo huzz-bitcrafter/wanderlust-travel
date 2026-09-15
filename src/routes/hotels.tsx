@@ -12,7 +12,9 @@ import {
   ArrowUpDown,
   Star,
 } from "lucide-react";
-import { SiteLayout, PageHeader } from "@/components/layout/SiteLayout";
+import { SiteLayout } from "@/components/layout/SiteLayout";
+import { PageHeroBanner } from "@/components/shared/PageHeroBanner";
+import { HERO_REGISTRY } from "@/config/hero-registry";
 import { HotelCard } from "@/components/shared/HotelCard";
 import { SectionReveal } from "@/components/shared/SectionReveal";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -249,14 +251,14 @@ function HotelsPage() {
   const selectedDestinationObj = destinations.find((d) => d.slug === currentDestination);
 
   return (
-    <SiteLayout>
-      <PageHeader
-        eyebrow="Sanctuaries & Stays"
-        title="Hotels & Resorts"
-        description="Browse luxury boutique retreats, clifftop suites, historic riads, and serene villas curated for comfort and unforgettable views."
-      />
+    <SiteLayout transparentNav>
+      <PageHeroBanner {...HERO_REGISTRY.hotels} />
 
-      <SectionReveal as="section" className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <SectionReveal
+        as="section"
+        id="hotels-catalog"
+        className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
+      >
         {/* Filter Controls Card */}
         <div className="rounded-2xl border border-border/70 bg-card p-4 sm:p-6 shadow-sm">
           {/* Row 1: Search, Destination, and Sort */}

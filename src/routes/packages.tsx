@@ -12,7 +12,9 @@ import {
   Compass,
   ArrowUpDown,
 } from "lucide-react";
-import { SiteLayout, PageHeader } from "@/components/layout/SiteLayout";
+import { SiteLayout } from "@/components/layout/SiteLayout";
+import { PageHeroBanner } from "@/components/shared/PageHeroBanner";
+import { HERO_REGISTRY } from "@/config/hero-registry";
 import { PackageCard } from "@/components/shared/PackageCard";
 import { SectionReveal } from "@/components/shared/SectionReveal";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -266,14 +268,14 @@ function PackagesPage() {
   const selectedDestinationObj = destinations.find((d) => d.slug === currentDestination);
 
   return (
-    <SiteLayout>
-      <PageHeader
-        eyebrow="Guided Journeys"
-        title="Tour Packages"
-        description="Immerse yourself in world-class travel itineraries designed end-to-end by local specialists. Filter by destination, pace, duration, or budget."
-      />
+    <SiteLayout transparentNav>
+      <PageHeroBanner {...HERO_REGISTRY.tours} />
 
-      <SectionReveal as="section" className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <SectionReveal
+        as="section"
+        id="packages-catalog"
+        className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
+      >
         {/* Filter Controls Card */}
         <div className="rounded-2xl border border-border/70 bg-card p-4 sm:p-6 shadow-sm">
           {/* Row 1: Search & Destination & Sort */}

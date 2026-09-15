@@ -11,7 +11,9 @@ import {
   Globe2,
   Compass,
 } from "lucide-react";
-import { SiteLayout, PageHeader } from "@/components/layout/SiteLayout";
+import { SiteLayout } from "@/components/layout/SiteLayout";
+import { PageHeroBanner } from "@/components/shared/PageHeroBanner";
+import { HERO_REGISTRY } from "@/config/hero-registry";
 import { DestinationCard } from "@/components/shared/DestinationCard";
 import { SectionReveal } from "@/components/shared/SectionReveal";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -229,14 +231,14 @@ function DestinationsPage() {
   );
 
   return (
-    <SiteLayout>
-      <PageHeader
-        eyebrow="Explore the World"
-        title="Destinations"
-        description="Discover awe-inspiring places across all six continents. Filter by continent, region, or keyword to find your next unforgettable journey."
-      />
+    <SiteLayout transparentNav>
+      <PageHeroBanner {...HERO_REGISTRY.destinations} />
 
-      <SectionReveal as="section" className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <SectionReveal
+        as="section"
+        id="destinations-catalog"
+        className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
+      >
         {/* Filters & Search Controls */}
         <div className="rounded-2xl border border-border/70 bg-card p-4 sm:p-6 shadow-sm">
           {/* Search bar & Region Select */}

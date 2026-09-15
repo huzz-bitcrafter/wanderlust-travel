@@ -16,7 +16,9 @@ import {
   Loader2,
   ShieldCheck,
 } from "lucide-react";
-import { SiteLayout, PageHeader } from "@/components/layout/SiteLayout";
+import { SiteLayout } from "@/components/layout/SiteLayout";
+import { PageHeroBanner } from "@/components/shared/PageHeroBanner";
+import { HERO_REGISTRY } from "@/config/hero-registry";
 import { SectionReveal } from "@/components/shared/SectionReveal";
 import { DotPattern } from "@/components/vendored/DotPattern";
 import { supabase } from "@/integrations/supabase/client";
@@ -154,10 +156,10 @@ function ContactPage() {
   };
 
   return (
-    <SiteLayout>
-      <PageHeader eyebrow="Travel Concierge" title="Get in Touch" description={description} />
+    <SiteLayout transparentNav>
+      <PageHeroBanner {...HERO_REGISTRY.contact} />
 
-      <div className="relative overflow-hidden">
+      <div id="contact-form" className="relative overflow-hidden">
         <DotPattern
           width={24}
           height={24}

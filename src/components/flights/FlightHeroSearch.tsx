@@ -131,18 +131,21 @@ export function FlightHeroSearch({
       {/* ============================================================ */}
       <div className="relative w-full h-[420px] sm:h-[460px] lg:h-[480px] overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=2000&q=80"
+          src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=2400&q=80"
           alt="Passenger jet airliner banking above sunset clouds"
-          className="absolute inset-0 h-full w-full object-cover object-[center_35%]"
-          priority="true"
+          className="absolute inset-0 h-full w-full object-cover object-[right_35%]"
+          loading="eager"
+          // @ts-expect-error fetchpriority is a modern HTML attribute
+          fetchpriority="high"
         />
 
         {/* Ambient multi-stage gradient scrim for AAA text contrast */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/35 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/55 via-45% to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/50 to-transparent pointer-events-none" />
         <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-background via-background/40 to-transparent pointer-events-none" />
 
         {/* Hero Copy Content */}
-        <div className="relative mx-auto max-w-7xl h-full px-4 sm:px-6 lg:px-8 flex flex-col justify-center pb-16 sm:pb-20">
+        <div className="relative mx-auto max-w-7xl h-full px-4 sm:px-6 lg:px-8 flex flex-col justify-center pt-16 sm:pt-20 pb-16 sm:pb-20">
           <div className="max-w-2xl text-white">
             {/* Eyebrow */}
             <div className="flex items-center gap-2 mb-3">
@@ -174,167 +177,170 @@ export function FlightHeroSearch({
           onSubmit={handleSubmit}
           className="rounded-3xl border border-border/80 bg-card/95 backdrop-blur-xl p-2 sm:p-2.5 shadow-xl ring-1 ring-black/5 dark:ring-white/10"
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-2 p-1 sm:p-1.5 items-center">
-            {/* Origin (From) */}
-            <div className="sm:col-span-1 lg:col-span-3 min-w-0">
-              <Popover open={openOrigin} onOpenChange={setOpenOrigin}>
-                <PopoverTrigger asChild>
-                  <button
-                    type="button"
-                    aria-expanded={openOrigin}
-                    className="flex w-full items-center gap-2.5 sm:gap-3 rounded-2xl p-2 sm:p-2.5 text-left transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary group min-w-0 overflow-hidden"
-                  >
-                    <div className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full bg-muted/80 text-muted-foreground group-hover:bg-secondary/15 group-hover:text-secondary transition-colors">
-                      <PlaneTakeoff className="h-4 w-4" aria-hidden="true" />
-                    </div>
-                    <div className="min-w-0 flex-1 overflow-hidden">
-                      <span className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wide truncate">
-                        From
-                      </span>
-                      <span className="block truncate text-xs sm:text-sm font-semibold text-foreground">
-                        {getOriginLabel()}
-                      </span>
-                    </div>
-                    <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0 opacity-60 group-hover:opacity-100 ml-auto" />
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent className="w-72 p-0" align="start">
-                  <Command>
-                    <CommandInput placeholder="Search origin airport or city..." />
-                    <CommandList>
-                      <CommandEmpty>No airport found.</CommandEmpty>
-                      <CommandGroup heading="Available Origins">
-                        <CommandItem
-                          value="All Origins"
-                          onSelect={() => {
-                            setOrigin("All");
-                            setOpenOrigin(false);
-                          }}
-                        >
-                          <Check
-                            className={`mr-2 h-4 w-4 ${
-                              origin === "All" ? "opacity-100" : "opacity-0"
-                            }`}
-                          />
-                          All Origins
-                        </CommandItem>
-                        {origins.map((opt) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-2.5 p-1 sm:p-1.5 items-center">
+            {/* Origin & Destination Combined Pair (6 cols on lg) with Floating Center Swap */}
+            <div className="sm:col-span-2 lg:col-span-6 relative grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-1 items-center">
+              {/* Origin (From) */}
+              <div className="min-w-0 sm:pr-2 lg:pr-3">
+                <Popover open={openOrigin} onOpenChange={setOpenOrigin}>
+                  <PopoverTrigger asChild>
+                    <button
+                      type="button"
+                      aria-expanded={openOrigin}
+                      className="flex w-full items-center gap-2.5 sm:gap-3 rounded-2xl p-2 sm:p-2.5 text-left transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary group min-w-0 overflow-hidden"
+                    >
+                      <div className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full bg-muted/80 text-muted-foreground group-hover:bg-secondary/15 group-hover:text-secondary transition-colors">
+                        <PlaneTakeoff className="h-4 w-4" aria-hidden="true" />
+                      </div>
+                      <div className="min-w-0 flex-1 overflow-hidden">
+                        <span className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wide truncate">
+                          From
+                        </span>
+                        <span className="block truncate text-xs sm:text-sm font-semibold text-foreground">
+                          {getOriginLabel()}
+                        </span>
+                      </div>
+                      <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0 opacity-60 group-hover:opacity-100 ml-auto" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-72 p-0" align="start">
+                    <Command>
+                      <CommandInput placeholder="Search origin airport or city..." />
+                      <CommandList>
+                        <CommandEmpty>No airport found.</CommandEmpty>
+                        <CommandGroup heading="Available Origins">
                           <CommandItem
-                            key={opt.code}
-                            value={`${opt.city} ${opt.code}`}
+                            value="All Origins"
                             onSelect={() => {
-                              setOrigin(opt.code);
+                              setOrigin("All");
                               setOpenOrigin(false);
                             }}
                           >
                             <Check
                               className={`mr-2 h-4 w-4 ${
-                                origin.toLowerCase() === opt.code.toLowerCase()
-                                  ? "opacity-100"
-                                  : "opacity-0"
+                                origin === "All" ? "opacity-100" : "opacity-0"
                               }`}
                             />
-                            <span>{opt.city}</span>
-                            <span className="ml-auto text-xs text-muted-foreground font-mono">
-                              {opt.code}
-                            </span>
+                            All Origins
                           </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-            </div>
+                          {origins.map((opt) => (
+                            <CommandItem
+                              key={opt.code}
+                              value={`${opt.city} ${opt.code}`}
+                              onSelect={() => {
+                                setOrigin(opt.code);
+                                setOpenOrigin(false);
+                              }}
+                            >
+                              <Check
+                                className={`mr-2 h-4 w-4 ${
+                                  origin.toLowerCase() === opt.code.toLowerCase()
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                }`}
+                              />
+                              <span>{opt.city}</span>
+                              <span className="ml-auto text-xs text-muted-foreground font-mono">
+                                {opt.code}
+                              </span>
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              </div>
 
-            {/* Swap Button */}
-            <div className="hidden lg:flex lg:col-span-1 justify-center shrink-0">
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={handleSwap}
-                title="Swap origin and destination"
-                aria-label="Swap origin and destination"
-                className="h-9 w-9 rounded-full border border-border/80 bg-background/80 hover:bg-muted text-muted-foreground hover:text-foreground shadow-xs transition-transform active:scale-95"
-              >
-                <ArrowRightLeft className="h-4 w-4" />
-              </Button>
-            </div>
+              {/* Floating Center Swap Button */}
+              <div className="hidden sm:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 justify-center">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleSwap}
+                  title="Swap origin and destination"
+                  aria-label="Swap origin and destination"
+                  className="h-9 w-9 rounded-full border border-border/80 bg-background/95 hover:bg-muted text-muted-foreground hover:text-foreground shadow-sm hover:shadow transition-transform active:scale-90"
+                >
+                  <ArrowRightLeft className="h-4 w-4" />
+                </Button>
+              </div>
 
-            {/* Destination (To) */}
-            <div className="sm:col-span-1 lg:col-span-3 min-w-0">
-              <Popover open={openDest} onOpenChange={setOpenDest}>
-                <PopoverTrigger asChild>
-                  <button
-                    type="button"
-                    aria-expanded={openDest}
-                    className="flex w-full items-center gap-2.5 sm:gap-3 rounded-2xl p-2 sm:p-2.5 text-left transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary group min-w-0 overflow-hidden"
-                  >
-                    <div className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full bg-muted/80 text-muted-foreground group-hover:bg-secondary/15 group-hover:text-secondary transition-colors">
-                      <PlaneLanding className="h-4 w-4" aria-hidden="true" />
-                    </div>
-                    <div className="min-w-0 flex-1 overflow-hidden">
-                      <span className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wide truncate">
-                        To
-                      </span>
-                      <span className="block truncate text-xs sm:text-sm font-semibold text-foreground">
-                        {getDestinationLabel()}
-                      </span>
-                    </div>
-                    <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0 opacity-60 group-hover:opacity-100 ml-auto" />
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent className="w-72 p-0" align="start">
-                  <Command>
-                    <CommandInput placeholder="Search destination airport or city..." />
-                    <CommandList>
-                      <CommandEmpty>No airport found.</CommandEmpty>
-                      <CommandGroup heading="Available Destinations">
-                        <CommandItem
-                          value="All Destinations"
-                          onSelect={() => {
-                            setDestination("All");
-                            setOpenDest(false);
-                          }}
-                        >
-                          <Check
-                            className={`mr-2 h-4 w-4 ${
-                              destination === "All" ? "opacity-100" : "opacity-0"
-                            }`}
-                          />
-                          All Destinations
-                        </CommandItem>
-                        {destinations.map((opt) => (
+              {/* Destination (To) */}
+              <div className="min-w-0 sm:pl-2 lg:pl-3">
+                <Popover open={openDest} onOpenChange={setOpenDest}>
+                  <PopoverTrigger asChild>
+                    <button
+                      type="button"
+                      aria-expanded={openDest}
+                      className="flex w-full items-center gap-2.5 sm:gap-3 rounded-2xl p-2 sm:p-2.5 text-left transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary group min-w-0 overflow-hidden"
+                    >
+                      <div className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full bg-muted/80 text-muted-foreground group-hover:bg-secondary/15 group-hover:text-secondary transition-colors">
+                        <PlaneLanding className="h-4 w-4" aria-hidden="true" />
+                      </div>
+                      <div className="min-w-0 flex-1 overflow-hidden">
+                        <span className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wide truncate">
+                          To
+                        </span>
+                        <span className="block truncate text-xs sm:text-sm font-semibold text-foreground">
+                          {getDestinationLabel()}
+                        </span>
+                      </div>
+                      <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0 opacity-60 group-hover:opacity-100 ml-auto" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-72 p-0" align="start">
+                    <Command>
+                      <CommandInput placeholder="Search destination airport or city..." />
+                      <CommandList>
+                        <CommandEmpty>No airport found.</CommandEmpty>
+                        <CommandGroup heading="Available Destinations">
                           <CommandItem
-                            key={opt.code}
-                            value={`${opt.city} ${opt.code}`}
+                            value="All Destinations"
                             onSelect={() => {
-                              setDestination(opt.code);
+                              setDestination("All");
                               setOpenDest(false);
                             }}
                           >
                             <Check
                               className={`mr-2 h-4 w-4 ${
-                                destination.toLowerCase() === opt.code.toLowerCase()
-                                  ? "opacity-100"
-                                  : "opacity-0"
+                                destination === "All" ? "opacity-100" : "opacity-0"
                               }`}
                             />
-                            <span>{opt.city}</span>
-                            <span className="ml-auto text-xs text-muted-foreground font-mono">
-                              {opt.code}
-                            </span>
+                            All Destinations
                           </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
+                          {destinations.map((opt) => (
+                            <CommandItem
+                              key={opt.code}
+                              value={`${opt.city} ${opt.code}`}
+                              onSelect={() => {
+                                setDestination(opt.code);
+                                setOpenDest(false);
+                              }}
+                            >
+                              <Check
+                                className={`mr-2 h-4 w-4 ${
+                                  destination.toLowerCase() === opt.code.toLowerCase()
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                }`}
+                              />
+                              <span>{opt.city}</span>
+                              <span className="ml-auto text-xs text-muted-foreground font-mono">
+                                {opt.code}
+                              </span>
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              </div>
             </div>
 
-            {/* Departure Date */}
+            {/* Departure Date (2 cols on lg) */}
             <div className="sm:col-span-1 lg:col-span-2 min-w-0">
               <div className="relative flex w-full items-center gap-2.5 sm:gap-3 rounded-2xl p-2 sm:p-2.5 text-left transition-colors hover:bg-muted/60 group min-w-0 overflow-hidden">
                 <div className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full bg-muted/80 text-muted-foreground group-hover:bg-secondary/15 group-hover:text-secondary transition-colors">
@@ -358,16 +364,16 @@ export function FlightHeroSearch({
               </div>
             </div>
 
-            {/* Passengers */}
-            <div className="sm:col-span-1 lg:col-span-1 min-w-[110px]">
+            {/* Passengers (2 cols on lg - ample room, zero truncation!) */}
+            <div className="sm:col-span-1 lg:col-span-2 min-w-0">
               <Popover open={openPassengers} onOpenChange={setOpenPassengers}>
                 <PopoverTrigger asChild>
                   <button
                     type="button"
                     aria-expanded={openPassengers}
-                    className="flex w-full items-center gap-2 rounded-2xl p-2 sm:p-2.5 text-left transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary group min-w-0 overflow-hidden"
+                    className="flex w-full items-center gap-2.5 sm:gap-3 rounded-2xl p-2 sm:p-2.5 text-left transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary group min-w-0 overflow-hidden"
                   >
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted/80 text-muted-foreground group-hover:bg-secondary/15 group-hover:text-secondary transition-colors">
+                    <div className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full bg-muted/80 text-muted-foreground group-hover:bg-secondary/15 group-hover:text-secondary transition-colors">
                       <Users className="h-4 w-4" aria-hidden="true" />
                     </div>
                     <div className="min-w-0 flex-1 overflow-hidden">
@@ -378,7 +384,7 @@ export function FlightHeroSearch({
                         {passengers} {passengers === 1 ? "Adult" : "Adults"}
                       </span>
                     </div>
-                    <ChevronDown className="h-3.5 w-3.5 text-muted-foreground shrink-0 opacity-60 group-hover:opacity-100 ml-auto" />
+                    <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0 opacity-60 group-hover:opacity-100 ml-auto" />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent className="w-56 p-4" align="end">
@@ -420,7 +426,7 @@ export function FlightHeroSearch({
               </Popover>
             </div>
 
-            {/* Search Flights CTA Button */}
+            {/* Search Flights CTA Button (2 cols on lg) */}
             <div className="sm:col-span-2 lg:col-span-2 w-full flex justify-end">
               <Button
                 type="submit"
