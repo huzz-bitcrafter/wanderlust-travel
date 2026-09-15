@@ -172,30 +172,30 @@ export function FlightHeroSearch({
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 -mt-14 sm:-mt-16 z-20">
         <form
           onSubmit={handleSubmit}
-          className="rounded-3xl border border-border/80 bg-card/95 backdrop-blur-xl p-2.5 sm:p-3 shadow-xl ring-1 ring-black/5 dark:ring-white/10"
+          className="rounded-3xl border border-border/80 bg-card/95 backdrop-blur-xl p-2 sm:p-2.5 shadow-xl ring-1 ring-black/5 dark:ring-white/10"
         >
-          <div className="grid grid-cols-1 md:grid-cols-12 items-center gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-2 p-1 sm:p-1.5 items-center">
             {/* Origin (From) */}
-            <div className="md:col-span-3">
+            <div className="sm:col-span-1 lg:col-span-3 min-w-0">
               <Popover open={openOrigin} onOpenChange={setOpenOrigin}>
                 <PopoverTrigger asChild>
                   <button
                     type="button"
                     aria-expanded={openOrigin}
-                    className="flex w-full items-center gap-3 rounded-2xl p-2.5 sm:p-3 text-left transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary group"
+                    className="flex w-full items-center gap-2.5 sm:gap-3 rounded-2xl p-2 sm:p-2.5 text-left transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary group min-w-0 overflow-hidden"
                   >
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted/80 text-muted-foreground group-hover:bg-secondary/15 group-hover:text-secondary transition-colors">
+                    <div className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full bg-muted/80 text-muted-foreground group-hover:bg-secondary/15 group-hover:text-secondary transition-colors">
                       <PlaneTakeoff className="h-4 w-4" aria-hidden="true" />
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <span className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">
+                    <div className="min-w-0 flex-1 overflow-hidden">
+                      <span className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wide truncate">
                         From
                       </span>
                       <span className="block truncate text-xs sm:text-sm font-semibold text-foreground">
                         {getOriginLabel()}
                       </span>
                     </div>
-                    <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0 opacity-60 group-hover:opacity-100" />
+                    <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0 opacity-60 group-hover:opacity-100 ml-auto" />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent className="w-72 p-0" align="start">
@@ -248,7 +248,7 @@ export function FlightHeroSearch({
             </div>
 
             {/* Swap Button */}
-            <div className="flex md:col-span-1 justify-center -my-1 md:my-0">
+            <div className="hidden lg:flex lg:col-span-1 justify-center shrink-0">
               <Button
                 type="button"
                 variant="ghost"
@@ -263,26 +263,26 @@ export function FlightHeroSearch({
             </div>
 
             {/* Destination (To) */}
-            <div className="md:col-span-3">
+            <div className="sm:col-span-1 lg:col-span-3 min-w-0">
               <Popover open={openDest} onOpenChange={setOpenDest}>
                 <PopoverTrigger asChild>
                   <button
                     type="button"
                     aria-expanded={openDest}
-                    className="flex w-full items-center gap-3 rounded-2xl p-2.5 sm:p-3 text-left transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary group"
+                    className="flex w-full items-center gap-2.5 sm:gap-3 rounded-2xl p-2 sm:p-2.5 text-left transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary group min-w-0 overflow-hidden"
                   >
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted/80 text-muted-foreground group-hover:bg-secondary/15 group-hover:text-secondary transition-colors">
+                    <div className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full bg-muted/80 text-muted-foreground group-hover:bg-secondary/15 group-hover:text-secondary transition-colors">
                       <PlaneLanding className="h-4 w-4" aria-hidden="true" />
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <span className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">
+                    <div className="min-w-0 flex-1 overflow-hidden">
+                      <span className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wide truncate">
                         To
                       </span>
                       <span className="block truncate text-xs sm:text-sm font-semibold text-foreground">
                         {getDestinationLabel()}
                       </span>
                     </div>
-                    <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0 opacity-60 group-hover:opacity-100" />
+                    <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0 opacity-60 group-hover:opacity-100 ml-auto" />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent className="w-72 p-0" align="start">
@@ -335,13 +335,13 @@ export function FlightHeroSearch({
             </div>
 
             {/* Departure Date */}
-            <div className="md:col-span-2">
-              <div className="relative flex w-full items-center gap-3 rounded-2xl p-2.5 sm:p-3 text-left transition-colors hover:bg-muted/60 group">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted/80 text-muted-foreground group-hover:bg-secondary/15 group-hover:text-secondary transition-colors">
+            <div className="sm:col-span-1 lg:col-span-2 min-w-0">
+              <div className="relative flex w-full items-center gap-2.5 sm:gap-3 rounded-2xl p-2 sm:p-2.5 text-left transition-colors hover:bg-muted/60 group min-w-0 overflow-hidden">
+                <div className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full bg-muted/80 text-muted-foreground group-hover:bg-secondary/15 group-hover:text-secondary transition-colors">
                   <CalendarIcon className="h-4 w-4" aria-hidden="true" />
                 </div>
-                <div className="min-w-0 flex-1">
-                  <span className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">
+                <div className="min-w-0 flex-1 overflow-hidden">
+                  <span className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wide truncate">
                     Departure
                   </span>
                   <span className="block truncate text-xs sm:text-sm font-semibold text-foreground">
@@ -359,26 +359,26 @@ export function FlightHeroSearch({
             </div>
 
             {/* Passengers */}
-            <div className="md:col-span-1 sm:col-span-2">
+            <div className="sm:col-span-1 lg:col-span-1 min-w-[110px]">
               <Popover open={openPassengers} onOpenChange={setOpenPassengers}>
                 <PopoverTrigger asChild>
                   <button
                     type="button"
                     aria-expanded={openPassengers}
-                    className="flex w-full items-center gap-2.5 rounded-2xl p-2.5 sm:p-3 text-left transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary group"
+                    className="flex w-full items-center gap-2 rounded-2xl p-2 sm:p-2.5 text-left transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary group min-w-0 overflow-hidden"
                   >
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted/80 text-muted-foreground group-hover:bg-secondary/15 group-hover:text-secondary transition-colors">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted/80 text-muted-foreground group-hover:bg-secondary/15 group-hover:text-secondary transition-colors">
                       <Users className="h-4 w-4" aria-hidden="true" />
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <span className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">
+                    <div className="min-w-0 flex-1 overflow-hidden">
+                      <span className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wide truncate">
                         Passengers
                       </span>
                       <span className="block truncate text-xs sm:text-sm font-semibold text-foreground">
                         {passengers} {passengers === 1 ? "Adult" : "Adults"}
                       </span>
                     </div>
-                    <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0 opacity-60 group-hover:opacity-100" />
+                    <ChevronDown className="h-3.5 w-3.5 text-muted-foreground shrink-0 opacity-60 group-hover:opacity-100 ml-auto" />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent className="w-56 p-4" align="end">
@@ -421,13 +421,13 @@ export function FlightHeroSearch({
             </div>
 
             {/* Search Flights CTA Button */}
-            <div className="md:col-span-2 flex justify-end pt-1 md:pt-0">
+            <div className="sm:col-span-2 lg:col-span-2 w-full flex justify-end">
               <Button
                 type="submit"
-                className="cta-shine w-full h-12 rounded-full font-semibold text-sm bg-gradient-to-r from-accent to-accent/90 text-accent-foreground shadow-md hover:shadow-accent/25 hover:shadow-lg transition-all active:scale-[0.98]"
+                className="cta-shine w-full h-11 sm:h-12 rounded-full font-semibold text-xs sm:text-sm bg-gradient-to-r from-accent to-accent/90 text-accent-foreground shadow-md hover:shadow-accent/25 hover:shadow-lg transition-all active:scale-[0.98] shrink-0"
               >
-                <Search className="h-4 w-4 mr-2" aria-hidden="true" />
-                Search Flights
+                <Search className="h-4 w-4 mr-2 shrink-0" aria-hidden="true" />
+                <span className="truncate">Search Flights</span>
               </Button>
             </div>
           </div>

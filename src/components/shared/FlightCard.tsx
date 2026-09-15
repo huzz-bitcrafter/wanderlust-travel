@@ -44,13 +44,17 @@ export function FlightCard({ flight, passengers = 1, dealBadge, onSelect }: Flig
           alt={`${flight.airline} flight ${flight.flight_number}`}
           className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
           loading="lazy"
+          onError={(e) => {
+            e.currentTarget.src =
+              "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=600&q=80";
+          }}
         />
         {/* Ambient vignette scrim */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
 
         {/* Anchored Pill Badge: "⭐ Best Deal" or "⭐ Lowest Price" */}
         {dealBadge ? (
-          <span className="absolute left-2.5 top-2.5 inline-flex items-center gap-1 rounded-full bg-secondary/20 text-secondary backdrop-blur-md px-2.5 py-0.5 text-xs font-semibold shadow-xs border border-secondary/30">
+          <span className="absolute top-2.5 left-2.5 z-10 bg-slate-950/85 dark:bg-black/90 backdrop-blur-md text-amber-300 border border-amber-400/40 shadow-lg text-[11px] font-semibold px-2.5 py-1 rounded-full flex items-center gap-1 tracking-wide">
             {dealBadge}
           </span>
         ) : null}

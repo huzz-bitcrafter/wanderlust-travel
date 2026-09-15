@@ -509,7 +509,7 @@ function FlightsPage() {
         {/* 2-Column Grid: Left Sidebar (w-72 / w-80) + Right Flights Feed */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Column: Filter Sidebar (Desktop) */}
-          <div className="hidden lg:block lg:col-span-4 xl:col-span-3 sticky top-24">
+          <div className="hidden lg:block lg:col-span-4 xl:col-span-3 sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-1.5 scrollbar-thin">
             <FlightFilterSidebar
               minPrice={minPriceBound}
               maxPrice={maxPriceBound}
