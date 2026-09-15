@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Plane, ArrowRight, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { FlightData } from "@/lib/catalog.functions";
 import { formatFlightDuration, formatFlightTime, formatPrice } from "@/lib/flight-utils";
+import { getAirlineLogo } from "@/lib/airline-logos";
 
 export interface FlightCardProps {
   flight: FlightData;
@@ -19,6 +21,8 @@ export function FlightCard({ flight, passengers = 1, dealBadge, onSelect }: Flig
   const airlineFirstLetter = (flight.airline || "").trim().charAt(0).toUpperCase();
   const travelClassLabel = flight.class.charAt(0).toUpperCase() + flight.class.slice(1);
   const stopsCount = (flight as { stops?: number }).stops ?? 0;
+  const logo = getAirlineLogo(flight.airline);
+  const [logoError, setLogoError] = useState(false);
 
   return (
     <article
@@ -34,13 +38,23 @@ export function FlightCard({ flight, passengers = 1, dealBadge, onSelect }: Flig
       <div className="hidden md:flex md:items-center md:justify-between md:gap-3 lg:gap-5">
         {/* ZONE 1 — AIRLINE IDENTITY (~200px) */}
         <div className="w-[170px] lg:w-[200px] shrink-0 flex items-center gap-3">
-          {/* Brand mark monogram avatar */}
-          <div
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 font-semibold text-primary text-base select-none border border-primary/10"
-            aria-hidden="true"
-          >
-            {airlineFirstLetter || <Plane className="h-5 w-5 text-primary" aria-hidden="true" />}
-          </div>
+          {/* Brand mark */}
+          {logo && !logoError ? (
+            <img
+              src={logo}
+              alt={flight.airline}
+              loading="lazy"
+              className="h-10 w-10 rounded-xl object-contain bg-white p-1.5 border border-border/60 select-none shrink-0"
+              onError={() => setLogoError(true)}
+            />
+          ) : (
+            <div
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 font-semibold text-primary text-base select-none border border-primary/10"
+              aria-hidden="true"
+            >
+              {airlineFirstLetter || <Plane className="h-5 w-5 text-primary" aria-hidden="true" />}
+            </div>
+          )}
 
           {/* Airline metadata */}
           <div className="min-w-0 flex-1">
@@ -186,12 +200,24 @@ export function FlightCard({ flight, passengers = 1, dealBadge, onSelect }: Flig
         {/* (a) Airline Header Row: mark + name + flight number, badge right */}
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 font-semibold text-primary text-sm select-none border border-primary/10"
-              aria-hidden="true"
-            >
-              {airlineFirstLetter || <Plane className="h-4 w-4 text-primary" aria-hidden="true" />}
-            </div>
+            {logo && !logoError ? (
+              <img
+                src={logo}
+                alt={flight.airline}
+                loading="lazy"
+                className="h-10 w-10 rounded-xl object-contain bg-white p-1.5 border border-border/60 select-none shrink-0"
+                onError={() => setLogoError(true)}
+              />
+            ) : (
+              <div
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 font-semibold text-primary text-sm select-none border border-primary/10"
+                aria-hidden="true"
+              >
+                {airlineFirstLetter || (
+                  <Plane className="h-4 w-4 text-primary" aria-hidden="true" />
+                )}
+              </div>
+            )}
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">
                 <p className="text-sm font-medium text-foreground truncate">{flight.airline}</p>

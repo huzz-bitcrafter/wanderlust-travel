@@ -4,6 +4,12 @@
 
 ## Completed
 
+- [x] Real Airline Logo Marks on Flight Cards (/flights):
+  - **Self-Hosted IATA-Coded Logo Assets (`public/airlines/`)**: Audited all 23 distinct airline carriers in the database (IndiGo, Air India, Air India Express, Vistara, Akasa Air, SpiceJet, Emirates, Qatar Airways, British Airways, Singapore Airlines, ANA, Aegean, Air Canada, Air New Zealand, Garuda Indonesia, ITA Airways, Icelandair, Japan Airlines, KLM, LATAM, Royal Air Maroc, TAP Air Portugal, United Airlines). Downloaded clean, verified square PNG wordmarks into `public/airlines/{CODE}.png` (all >2.7KB) with zero external hotlinking.
+  - **Airline Logo Resolver (`src/lib/airline-logos.ts`)**: Built normalized carrier name-to-asset resolver (`getAirlineLogo(airline)`), returning local paths or `null` for unrecognized carriers.
+  - **Zone 1 Brand Mark Upgrade (`src/components/shared/FlightCard.tsx`)**: Replaced the initial monogram letter with an authentic airline logo chip on a crisp white backdrop (`bg-white p-1.5 border border-border/60 rounded-xl h-10 w-10 object-contain`) ensuring pristine AAA legibility across both dark and light themes. Preserved robust graceful degradation via `onError` falling back to the monogram avatar and `<Plane />` icon.
+  - **Quality Gates**: `npm run lint` (0 errors), `npm run build` (clean code 0 production build), and verified all 53 flight cards correctly display their brand marks.
+
 - [x] Flight Card UX Refinement (/flights):
   - **Zero Decorative Photography (`src/components/shared/FlightCard.tsx`, `src/lib/flight-utils.ts`)**: Completely removed decorative destination and aviation photograph thumbnails from the flight results list. Purged `DESTINATION_THUMBNAILS`, `AVIATION_THUMBNAILS`, and `getFlightThumbnail` from flight utilities. Confirmed exactly 0 `<img>` elements rendered inside the flight results list (the hero banner is the only photographic visual element above the feed).
   - **5-Zone Airline-Anchored Data Hierarchy (`src/components/shared/FlightCard.tsx`)**: Re-architected desktop and tablet flight cards into a streamlined horizontal data row:
