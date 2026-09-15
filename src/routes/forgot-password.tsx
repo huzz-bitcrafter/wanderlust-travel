@@ -12,10 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  AuthCardWrapper,
-  AnimatedSubmitButton,
-} from "@/components/ui/sign-in-card-2";
+import { AuthCardWrapper, AnimatedSubmitButton } from "@/components/ui/sign-in-card-2";
 
 const title = "Reset Password — Wanderlust";
 const description = "Reset your Wanderlust account password.";
@@ -103,7 +100,8 @@ function ForgotPasswordPage() {
                 </p>
               </div>
               <p className="text-xs text-muted-foreground max-w-xs mx-auto">
-                If you don&apos;t see the email within a few minutes, please check your spam or junk folder.
+                If you don&apos;t see the email within a few minutes, please check your spam or junk
+                folder.
               </p>
               <div className="pt-2">
                 <Button
@@ -188,4 +186,3 @@ function ForgotPasswordPage() {
     </SiteLayout>
   );
 }
-

@@ -1,8 +1,16 @@
 # Memory — Wanderlust
 
-**Last updated:** 2026-09-14 | **Current phase:** Admin Branding, Search Calendar Fix & Forgot Password AuthCard — Complete | **Session #:** 15
+**Last updated:** 2026-09-16 | **Current phase:** Flight Booking Page Redesign — Complete | **Session #:** 16
 
 ## Completed
+
+- [x] Flight Booking Page Redesign (/flights) — Sky Hero, Floating Search Bar & 2-Column Dashboard:
+  - **Sky Hero & Floating Search Console (`src/components/flights/FlightHeroSearch.tsx`)**: Implemented full-bleed high-res aviation hero (`https://images.unsplash.com/photo-1436491865332-7a61a109cc05`) with multi-stage dark scrims, uppercase wide-tracked eyebrow (`FLY FURTHER, EXPLORE MORE`), Playfair Display headline (`Find Your Next Flight`), and subtitle. Positioned a glassmorphic floating search bar straddling the hero and page content with circular icon badges for Origin (From), Swap airport button, Destination (To), Departure date picker, Passengers counter (1–9), and gradient coral Search CTA (`--accent` with `.cta-shine`).
+  - **2-Column Layout Architecture (`src/routes/flights.tsx`)**: Redesigned page below hero into a 2-column layout with a "Best Flights" headline and dynamic flight count metadata. Left column features the sticky `FlightFilterSidebar` with interactive Price Range slider, Airline checkboxes with dynamic counts, Stops checkboxes with counts, and Departure Time blocks with counts. Tablet and mobile viewports integrate a responsive sliding Sheet drawer with zero horizontal overflow.
+  - **Premium Flight Card Anatomy (`src/components/shared/FlightCard.tsx`)**: Re-architected flight card matching the exact reference layout: left aviation photography thumbnail with top-left anchored deal badge (`⭐ Best Deal` or `⭐ Lowest Price` in maritime teal `--secondary`), Departure block with bold time and large airport code, Route journey indicator with flight number, duration, airline brand logo/tag, cabin class, and pulsing `🟢 Non Stop` badge, Arrival block, and price with `$${flight.price.toLocaleString()}` currency formatting and luminous coral `Book Now →` button with hover shine. Handled sold-out flight states with disabled badges.
+  - **Helpers & Architecture Extraction (`src/lib/flight-utils.ts`)**: Extracted deterministic aviation thumbnail mapping, time/duration/price formatters, and airline brand metadata, eliminating component export warnings and ensuring fast refresh compliance.
+  - **SSR & Checkout Preservation**: Preserved 100% server-side prefetching with TanStack Start route loaders and TanStack Query `useSuspenseQuery`. Retained URL search synchronization via `validateSearch`. Maintained the Phase 10 flight reservation summary modal and seamless link to `/checkout` passenger registration and payment flow.
+  - **Quality Gates**: Verified `npm run lint` (0 errors) and `npm run build` (clean code 0 production build). Confirmed SSR HTTP 200 responses with full pre-rendered HTML payloads.
 
 - [x] Admin Branding & Theme Switch, Home Search Calendar Icon Alignment, and Forgot Password AuthCard Overhaul:
   - **Admin Portal Branding (`src/routes/admin.tsx`)**: Replaced the static `'W'` text badge in the top-left sidebar brand header with the official high-resolution `/Bookify_W_logo_transparent_2048px.png` image. Integrated `AnimatedThemeToggler` (`id="theme-toggle-admin"`) in the admin sticky top header bar beside the live website action buttons, enabling instant light/dark mode switching across all viewports.

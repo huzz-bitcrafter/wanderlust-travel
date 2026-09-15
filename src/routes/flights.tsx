@@ -1,42 +1,19 @@
-import { useState, useTransition } from "react";
+import { useState, useTransition, useMemo } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import {
-  Plane,
-  Search,
-  X,
-  RotateCcw,
-  ArrowRightLeft,
-  Calendar,
-  Users,
-  ArrowUpDown,
-  Compass,
-  Clock,
-  ShieldCheck,
-  CheckCircle2,
-  AlertCircle,
-} from "lucide-react";
-import { SiteLayout, PageHeader } from "@/components/layout/SiteLayout";
+import { Plane, Sparkles, RotateCcw, SlidersHorizontal, Compass } from "lucide-react";
+import { SiteLayout } from "@/components/layout/SiteLayout";
 import { SectionReveal } from "@/components/shared/SectionReveal";
+import { FlightCard } from "@/components/shared/FlightCard";
+import { FlightHeroSearch } from "@/components/flights/FlightHeroSearch";
 import {
-  FlightCard,
-  formatFlightDuration,
-  formatFlightTime,
-  formatFlightDate,
-} from "@/components/shared/FlightCard";
+  FlightFilterSidebar,
+  type FilterOptionWithCount,
+} from "@/components/flights/FlightFilterSidebar";
 import { BookingCTA } from "@/components/shared/BookingCTA";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -44,12 +21,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import {
   searchFlights,
   fetchFlightCities,
   type FlightData,
   type FlightsFilterParams,
 } from "@/lib/catalog.functions";
+import {
+  formatFlightDuration,
+  formatFlightTime,
+  formatFlightDate,
+  formatPrice,
+} from "@/lib/flight-utils";
 
 const title = "Flight Search & Booking — Wanderlust";
 const description =
@@ -91,6 +75,10 @@ export type FlightsSearch = {
   travelClass?: "all" | "economy" | "business" | "first";
   passengers?: number;
   sort?: "price_asc" | "price_desc" | "duration_asc" | "departure_asc";
+  maxPrice?: number;
+  airlines?: string;
+  stops?: string;
+  departureTime?: string;
 };
 
 export const Route = createFileRoute("/flights")({
@@ -126,6 +114,26 @@ export const Route = createFileRoute("/flights")({
         ? (search.sort as FlightsSearch["sort"])
         : undefined;
 
+    const maxPrice =
+      typeof search.maxPrice === "number" && search.maxPrice > 0
+        ? search.maxPrice
+        : typeof search.maxPrice === "string" && Number(search.maxPrice) > 0
+          ? Number(search.maxPrice)
+          : undefined;
+
+    const airlines =
+      typeof search.airlines === "string" && search.airlines.trim()
+        ? search.airlines.trim()
+        : undefined;
+
+    const stops =
+      typeof search.stops === "string" && search.stops.trim() ? search.stops.trim() : undefined;
+
+    const departureTime =
+      typeof search.departureTime === "string" && search.departureTime.trim()
+        ? search.departureTime.trim()
+        : undefined;
+
     return {
       ...(origin ? { origin } : {}),
       ...(destination ? { destination } : {}),
@@ -133,6 +141,10 @@ export const Route = createFileRoute("/flights")({
       ...(travelClass && travelClass !== "all" ? { travelClass } : {}),
       ...(passengers > 1 ? { passengers } : {}),
       ...(sort && sort !== "price_asc" ? { sort } : {}),
+      ...(maxPrice ? { maxPrice } : {}),
+      ...(airlines ? { airlines } : {}),
+      ...(stops ? { stops } : {}),
+      ...(departureTime ? { departureTime } : {}),
     };
   },
   loaderDeps: ({ search }) => ({
@@ -173,9 +185,11 @@ function FlightsPage() {
   const currentPassengers = searchParams.passengers ?? 1;
   const currentSort = searchParams.sort ?? "price_asc";
 
-  // Selected Flight for Summary Dialog (Step 3)
+  // Selected Flight for Step 3 Summary Dialog
   const [selectedFlight, setSelectedFlight] = useState<FlightData | null>(null);
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
+  // SSR-prefetched queries
   const query = useSuspenseQuery(
     flightsQueryOptions({
       origin: searchParams.origin,
@@ -188,7 +202,133 @@ function FlightsPage() {
 
   const citiesQuery = useSuspenseQuery(flightCitiesQueryOptions());
   const { origins, destinations } = citiesQuery.data;
-  const flights = query.data;
+  const rawFlights = query.data;
+
+  // Derive min/max price bounds from the raw fetched flights
+  const { minPriceBound, maxPriceBound } = useMemo(() => {
+    if (!rawFlights.length) return { minPriceBound: 0, maxPriceBound: 1000 };
+    const prices = rawFlights.map((f) => f.price);
+    return {
+      minPriceBound: Math.min(...prices),
+      maxPriceBound: Math.max(...prices),
+    };
+  }, [rawFlights]);
+
+  // Active filter states from URL search params
+  const activeMaxPrice = searchParams.maxPrice ?? maxPriceBound;
+  const activeAirlines = useMemo(
+    () => (searchParams.airlines ? searchParams.airlines.split(",") : []),
+    [searchParams.airlines],
+  );
+  const activeStops = useMemo(
+    () => (searchParams.stops ? searchParams.stops.split(",") : []),
+    [searchParams.stops],
+  );
+  const activeDepartureTimes = useMemo(
+    () => (searchParams.departureTime ? searchParams.departureTime.split(",") : []),
+    [searchParams.departureTime],
+  );
+
+  // Filter options with dynamic counts
+  const { airlineOptions, stopOptions, departureTimeOptions } = useMemo(() => {
+    const airlineCountMap = new Map<string, number>();
+    let nonStopCount = 0;
+    let morningCount = 0;
+    let afternoonCount = 0;
+    let eveningCount = 0;
+
+    rawFlights.forEach((flight) => {
+      // Airline count
+      airlineCountMap.set(flight.airline, (airlineCountMap.get(flight.airline) || 0) + 1);
+
+      // Stops count (all scheduled flights in DB are direct non-stop)
+      nonStopCount++;
+
+      // Departure time count
+      try {
+        const hour = new Date(flight.departure_time).getUTCHours();
+        if (hour >= 6 && hour < 12) {
+          morningCount++;
+        } else if (hour >= 12 && hour < 18) {
+          afternoonCount++;
+        } else {
+          eveningCount++;
+        }
+      } catch {
+        // fallback
+      }
+    });
+
+    const airlines: FilterOptionWithCount[] = Array.from(airlineCountMap.entries())
+      .map(([name, count]) => ({ id: name, label: name, count }))
+      .sort((a, b) => b.count - a.count);
+
+    const stops: FilterOptionWithCount[] = [
+      { id: "non_stop", label: "Non Stop", count: nonStopCount },
+      { id: "1_stop", label: "1 Stop", count: 0 },
+      { id: "2_plus_stops", label: "2+ Stops", count: 0 },
+    ];
+
+    const departureTimes: FilterOptionWithCount[] = [
+      { id: "morning", label: "Morning (6AM – 12PM)", count: morningCount },
+      { id: "afternoon", label: "Afternoon (12PM – 6PM)", count: afternoonCount },
+      { id: "evening", label: "Evening (6PM – 12AM)", count: eveningCount },
+    ];
+
+    return {
+      airlineOptions: airlines,
+      stopOptions: stops,
+      departureTimeOptions: departureTimes,
+    };
+  }, [rawFlights]);
+
+  // Apply filters to flights
+  const filteredFlights = useMemo(() => {
+    return rawFlights.filter((flight) => {
+      // Price range
+      if (searchParams.maxPrice !== undefined && flight.price > searchParams.maxPrice) {
+        return false;
+      }
+
+      // Airlines
+      if (activeAirlines.length > 0 && !activeAirlines.includes(flight.airline)) {
+        return false;
+      }
+
+      // Stops (if non_stop is unchecked while other stop types are selected)
+      if (activeStops.length > 0 && !activeStops.includes("non_stop")) {
+        return false;
+      }
+
+      // Departure Time
+      if (activeDepartureTimes.length > 0) {
+        try {
+          const hour = new Date(flight.departure_time).getUTCHours();
+          let timeBucket = "evening";
+          if (hour >= 6 && hour < 12) timeBucket = "morning";
+          else if (hour >= 12 && hour < 18) timeBucket = "afternoon";
+
+          if (!activeDepartureTimes.includes(timeBucket)) {
+            return false;
+          }
+        } catch {
+          // keep
+        }
+      }
+
+      return true;
+    });
+  }, [rawFlights, searchParams.maxPrice, activeAirlines, activeStops, activeDepartureTimes]);
+
+  // Lowest and Second-Lowest Price flight IDs for "⭐ Lowest Price" & "⭐ Best Deal" badges
+  const { lowestPriceId, secondLowestPriceId } = useMemo(() => {
+    if (!filteredFlights.length) return { lowestPriceId: null, secondLowestPriceId: null };
+    const sorted = [...filteredFlights].sort((a, b) => a.price - b.price);
+    return {
+      lowestPriceId: sorted[0]?.id ?? null,
+      secondLowestPriceId: sorted[1]?.id ?? null,
+    };
+  }, [filteredFlights]);
 
   const updateSearch = (newParams: Partial<FlightsSearch>) => {
     startTransition(() => {
@@ -207,6 +347,16 @@ function FlightsPage() {
             delete merged["travelClass"];
           if (merged["passengers"] === 1 || !merged["passengers"]) delete merged["passengers"];
           if (merged["sort"] === "price_asc" || !merged["sort"]) delete merged["sort"];
+          if (
+            merged["maxPrice"] === undefined ||
+            merged["maxPrice"] === null ||
+            merged["maxPrice"] === maxPriceBound
+          ) {
+            delete merged["maxPrice"];
+          }
+          if (!merged["airlines"]) delete merged["airlines"];
+          if (!merged["stops"]) delete merged["stops"];
+          if (!merged["departureTime"]) delete merged["departureTime"];
 
           return merged as FlightsSearch;
         },
@@ -214,27 +364,60 @@ function FlightsPage() {
     });
   };
 
-  const handleSwapAirports = () => {
-    if (currentOrigin === "All" && currentDestination === "All") return;
-    updateSearch({
-      origin: currentDestination === "All" ? undefined : currentDestination,
-      destination: currentOrigin === "All" ? undefined : currentOrigin,
-    });
+  const handleHeroSearch = (params: {
+    origin?: string;
+    destination?: string;
+    date?: string;
+    passengers?: number;
+  }) => {
+    updateSearch(params);
   };
 
-  const handleResetFilters = () => {
+  const handlePriceFilterChange = (val: number) => {
+    updateSearch({ maxPrice: val });
+  };
+
+  const handleToggleAirline = (airline: string) => {
+    const next = activeAirlines.includes(airline)
+      ? activeAirlines.filter((a) => a !== airline)
+      : [...activeAirlines, airline];
+    updateSearch({ airlines: next.length > 0 ? next.join(",") : undefined });
+  };
+
+  const handleToggleStop = (stopId: string) => {
+    const next = activeStops.includes(stopId)
+      ? activeStops.filter((s) => s !== stopId)
+      : [...activeStops, stopId];
+    updateSearch({ stops: next.length > 0 ? next.join(",") : undefined });
+  };
+
+  const handleToggleDepartureTime = (timeId: string) => {
+    const next = activeDepartureTimes.includes(timeId)
+      ? activeDepartureTimes.filter((t) => t !== timeId)
+      : [...activeDepartureTimes, timeId];
+    updateSearch({ departureTime: next.length > 0 ? next.join(",") : undefined });
+  };
+
+  const handleResetAllFilters = () => {
     startTransition(() => {
-      navigate({ search: {} });
+      navigate({
+        search: (prev) => ({
+          origin: prev.origin,
+          destination: prev.destination,
+          date: prev.date,
+          passengers: prev.passengers,
+          travelClass: prev.travelClass,
+          sort: prev.sort,
+        }),
+      });
     });
   };
 
-  const hasActiveFilters = Boolean(
-    currentOrigin !== "All" ||
-    currentDestination !== "All" ||
-    currentDate ||
-    currentTravelClass !== "all" ||
-    currentPassengers > 1 ||
-    currentSort !== "price_asc",
+  const hasActiveSidebarFilters = Boolean(
+    (searchParams.maxPrice !== undefined && searchParams.maxPrice < maxPriceBound) ||
+    activeAirlines.length > 0 ||
+    activeStops.length > 0 ||
+    activeDepartureTimes.length > 0,
   );
 
   // Flight Summary Pricing
@@ -242,371 +425,196 @@ function FlightsPage() {
 
   return (
     <SiteLayout>
-      <PageHeader
-        eyebrow="Air Travel & Fares"
-        title="Find & Book Flights"
-        description="Explore direct flights and seamless airline connections to iconic worldwide destinations with verified schedules and transparent fares."
+      {/* ============================================================ */}
+      {/* 1. Hero & Floating Search Bar                                */}
+      {/* ============================================================ */}
+      <FlightHeroSearch
+        currentOrigin={currentOrigin}
+        currentDestination={currentDestination}
+        currentDate={currentDate}
+        currentPassengers={currentPassengers}
+        origins={origins}
+        destinations={destinations}
+        onSearch={handleHeroSearch}
       />
 
-      <SectionReveal as="section" className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Flight Search Console Card */}
-        <div className="rounded-3xl border border-border/70 bg-card p-5 sm:p-7 shadow-sm">
-          <div className="grid gap-4 md:grid-cols-12 md:items-end">
-            {/* Origin Select */}
-            <div className="md:col-span-3">
-              <Label className="text-xs font-semibold text-muted-foreground">From (Origin)</Label>
-              <Select
-                value={currentOrigin}
-                onValueChange={(val) => updateSearch({ origin: val === "All" ? undefined : val })}
-              >
-                <SelectTrigger
-                  className="mt-1.5 h-11 w-full rounded-2xl bg-background border-border/80 text-sm"
-                  aria-label="Select origin airport or city"
-                >
-                  <SelectValue placeholder="All Origins" />
-                </SelectTrigger>
-                <SelectContent className="max-h-72">
-                  <SelectItem value="All">All Origins</SelectItem>
-                  {origins.map((opt) => (
-                    <SelectItem key={opt.code} value={opt.code}>
-                      {opt.city} ({opt.code})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+      {/* ============================================================ */}
+      {/* 2. Main Page Layout (2-Column Architecture)                   */}
+      {/* ============================================================ */}
+      <SectionReveal as="div" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+        {/* Results Header: "✦ Best Flights" + Metadata count */}
+        <div className="flex flex-wrap items-center justify-between gap-4 pb-6 mb-6 border-b border-border/60">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary/10 text-secondary">
+              <Sparkles className="h-4 w-4" aria-hidden="true" />
             </div>
-
-            {/* Swap Airports Button */}
-            <div className="hidden md:flex md:col-span-1 items-center justify-center pb-1">
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                onClick={handleSwapAirports}
-                className="h-10 w-10 rounded-full border-border/80 hover:bg-muted text-muted-foreground hover:text-foreground"
-                title="Swap origin and destination"
-                aria-label="Swap origin and destination"
-              >
-                <ArrowRightLeft className="h-4 w-4" />
-              </Button>
-            </div>
-
-            {/* Destination Select */}
-            <div className="md:col-span-3">
-              <Label className="text-xs font-semibold text-muted-foreground">
-                To (Destination)
-              </Label>
-              <Select
-                value={currentDestination}
-                onValueChange={(val) =>
-                  updateSearch({ destination: val === "All" ? undefined : val })
-                }
-              >
-                <SelectTrigger
-                  className="mt-1.5 h-11 w-full rounded-2xl bg-background border-border/80 text-sm"
-                  aria-label="Select destination airport or city"
-                >
-                  <SelectValue placeholder="All Destinations" />
-                </SelectTrigger>
-                <SelectContent className="max-h-72">
-                  <SelectItem value="All">All Destinations</SelectItem>
-                  {destinations.map((opt) => (
-                    <SelectItem key={opt.code} value={opt.code}>
-                      {opt.city} ({opt.code})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Date Input */}
-            <div className="md:col-span-3">
-              <div className="flex items-center justify-between">
-                <Label className="text-xs font-semibold text-muted-foreground">
-                  Departure Date
-                </Label>
-                {currentDate ? (
-                  <button
-                    type="button"
-                    onClick={() => updateSearch({ date: undefined })}
-                    className="text-[11px] text-muted-foreground hover:text-foreground"
-                  >
-                    Clear date
-                  </button>
-                ) : null}
-              </div>
-              <div className="relative mt-1.5">
-                <Input
-                  type="date"
-                  value={currentDate}
-                  onChange={(e) => updateSearch({ date: e.target.value || undefined })}
-                  className="h-11 rounded-2xl bg-background border-border/80 text-sm pl-3 pr-3"
-                  aria-label="Select flight departure date"
-                />
-              </div>
-            </div>
-
-            {/* Travel Class Select */}
-            <div className="md:col-span-2">
-              <Label className="text-xs font-semibold text-muted-foreground">Cabin Class</Label>
-              <Select
-                value={currentTravelClass}
-                onValueChange={(val) =>
-                  updateSearch({ travelClass: val as FlightsSearch["travelClass"] })
-                }
-              >
-                <SelectTrigger
-                  className="mt-1.5 h-11 w-full rounded-2xl bg-background border-border/80 text-sm"
-                  aria-label="Select cabin class"
-                >
-                  <SelectValue placeholder="All Classes" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Classes</SelectItem>
-                  <SelectItem value="economy">Economy</SelectItem>
-                  <SelectItem value="business">Business</SelectItem>
-                  <SelectItem value="first">First Class</SelectItem>
-                </SelectContent>
-              </Select>
+            <div>
+              <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+                Best Flights
+              </h2>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Handpicked verified routes & airline connections
+              </p>
             </div>
           </div>
 
-          {/* Row 2: Passengers Stepper & Quick Actions */}
-          <div className="mt-4 pt-4 border-t border-border/50 flex flex-wrap items-center justify-between gap-4">
-            {/* Passengers Stepper */}
-            <div className="flex items-center gap-3">
-              <span className="text-xs font-medium text-muted-foreground">Passengers:</span>
-              <div className="flex items-center rounded-full border border-border/80 bg-background px-3 h-9 gap-3 shadow-xs">
-                <Users className="h-3.5 w-3.5 text-muted-foreground" />
-                <span className="text-xs font-semibold text-foreground">
-                  {currentPassengers} {currentPassengers === 1 ? "Traveller" : "Travellers"}
-                </span>
-                <div className="flex items-center gap-1 pl-1">
-                  <button
-                    type="button"
-                    onClick={() => updateSearch({ passengers: Math.max(1, currentPassengers - 1) })}
-                    disabled={currentPassengers <= 1}
-                    className="h-5 w-5 rounded-full text-xs font-bold text-muted-foreground hover:bg-muted disabled:opacity-30 flex items-center justify-center"
-                    aria-label="Decrease passengers"
-                  >
-                    -
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => updateSearch({ passengers: Math.min(9, currentPassengers + 1) })}
-                    disabled={currentPassengers >= 9}
-                    className="h-5 w-5 rounded-full text-xs font-bold text-muted-foreground hover:bg-muted disabled:opacity-30 flex items-center justify-center"
-                    aria-label="Increase passengers"
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-            </div>
+          <div className="flex items-center gap-3">
+            <span className="text-xs sm:text-sm font-semibold text-muted-foreground bg-muted/60 px-3 py-1.5 rounded-full border border-border/50">
+              {filteredFlights.length} {filteredFlights.length === 1 ? "flight" : "flights"} found
+            </span>
 
-            {/* Quick Filter Reset */}
-            {hasActiveFilters ? (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleResetFilters}
-                className="h-9 rounded-full px-3 text-xs text-muted-foreground hover:text-foreground hover:bg-muted"
-                title="Reset all filters"
-              >
-                <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
-                Reset filters
-              </Button>
-            ) : null}
+            {/* Mobile / Tablet Filter Sheet Trigger */}
+            <div className="lg:hidden">
+              <Sheet open={mobileFilterOpen} onOpenChange={setMobileFilterOpen}>
+                <SheetTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-9 rounded-full border-border/80 text-xs font-semibold gap-1.5"
+                  >
+                    <SlidersHorizontal className="h-3.5 w-3.5" />
+                    Filters
+                    {hasActiveSidebarFilters ? (
+                      <span className="h-2 w-2 rounded-full bg-accent" />
+                    ) : null}
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-[310px] sm:w-[360px] p-4 overflow-y-auto">
+                  <SheetHeader className="text-left pb-2">
+                    <SheetTitle className="font-display text-xl">Filter Flights</SheetTitle>
+                  </SheetHeader>
+                  <FlightFilterSidebar
+                    minPrice={minPriceBound}
+                    maxPrice={maxPriceBound}
+                    selectedMaxPrice={activeMaxPrice}
+                    onPriceChange={handlePriceFilterChange}
+                    airlines={airlineOptions}
+                    selectedAirlines={activeAirlines}
+                    onToggleAirline={handleToggleAirline}
+                    stops={stopOptions}
+                    selectedStops={activeStops}
+                    onToggleStop={handleToggleStop}
+                    departureTimes={departureTimeOptions}
+                    selectedDepartureTimes={activeDepartureTimes}
+                    onReset={handleResetAllFilters}
+                    hasActiveFilters={hasActiveSidebarFilters}
+                    className="border-0 shadow-none p-0"
+                  />
+                </SheetContent>
+              </Sheet>
+            </div>
           </div>
         </div>
 
-        {/* Results Metadata Bar */}
-        <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <Plane className="h-4 w-4 text-secondary" aria-hidden="true" />
-            <p className="text-sm font-medium text-foreground">
-              Found <span className="font-semibold text-primary">{flights.length}</span>{" "}
-              {flights.length === 1 ? "flight" : "flights"}
-              {currentOrigin !== "All" ? ` from ${currentOrigin}` : ""}
-              {currentDestination !== "All" ? ` to ${currentDestination}` : ""}
-            </p>
+        {/* 2-Column Grid: Left Sidebar (w-72 / w-80) + Right Flights Feed */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Left Column: Filter Sidebar (Desktop) */}
+          <div className="hidden lg:block lg:col-span-4 xl:col-span-3 sticky top-24">
+            <FlightFilterSidebar
+              minPrice={minPriceBound}
+              maxPrice={maxPriceBound}
+              selectedMaxPrice={activeMaxPrice}
+              onPriceChange={handlePriceFilterChange}
+              airlines={airlineOptions}
+              selectedAirlines={activeAirlines}
+              onToggleAirline={handleToggleAirline}
+              stops={stopOptions}
+              selectedStops={activeStops}
+              onToggleStop={handleToggleStop}
+              departureTimes={departureTimeOptions}
+              selectedDepartureTimes={activeDepartureTimes}
+              onReset={handleResetAllFilters}
+              hasActiveFilters={hasActiveSidebarFilters}
+            />
           </div>
 
-          {/* Sort Dropdown */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground hidden sm:inline">Sort:</span>
-            <Select
-              value={currentSort}
-              onValueChange={(val) => updateSearch({ sort: val as FlightsSearch["sort"] })}
-            >
-              <SelectTrigger
-                className="h-9 w-48 rounded-full bg-card border-border/80 text-xs"
-                aria-label="Sort flight results"
-              >
-                <div className="flex items-center gap-1.5 truncate">
-                  <ArrowUpDown className="h-3.5 w-3.5 text-muted-foreground" />
-                  <SelectValue placeholder="Sort By" />
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="price_asc">Price: Low to High</SelectItem>
-                <SelectItem value="price_desc">Price: High to Low</SelectItem>
-                <SelectItem value="duration_asc">Shortest Flight Duration</SelectItem>
-                <SelectItem value="departure_asc">Earliest Departure Time</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        {/* Active Filter Badges */}
-        {hasActiveFilters ? (
-          <div className="mt-3 flex flex-wrap items-center gap-1.5 text-xs">
-            {currentOrigin !== "All" ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-secondary/10 px-2.5 py-1 text-secondary font-medium">
-                Origin: {currentOrigin}
-                <button
-                  type="button"
-                  onClick={() => updateSearch({ origin: undefined })}
-                  aria-label="Remove origin filter"
-                  className="hover:opacity-75"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </span>
-            ) : null}
-
-            {currentDestination !== "All" ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-secondary/10 px-2.5 py-1 text-secondary font-medium">
-                Destination: {currentDestination}
-                <button
-                  type="button"
-                  onClick={() => updateSearch({ destination: undefined })}
-                  aria-label="Remove destination filter"
-                  className="hover:opacity-75"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </span>
-            ) : null}
-
-            {currentDate ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-secondary/10 px-2.5 py-1 text-secondary font-medium">
-                Date: {currentDate}
-                <button
-                  type="button"
-                  onClick={() => updateSearch({ date: undefined })}
-                  aria-label="Remove date filter"
-                  className="hover:opacity-75"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </span>
-            ) : null}
-
-            {currentTravelClass !== "all" ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-secondary/10 px-2.5 py-1 text-secondary font-medium capitalize">
-                Class: {currentTravelClass}
-                <button
-                  type="button"
-                  onClick={() => updateSearch({ travelClass: undefined })}
-                  aria-label="Remove travel class filter"
-                  className="hover:opacity-75"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </span>
-            ) : null}
-
-            {currentPassengers > 1 ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-secondary/10 px-2.5 py-1 text-secondary font-medium">
-                {currentPassengers} Travellers
-                <button
-                  type="button"
-                  onClick={() => updateSearch({ passengers: undefined })}
-                  aria-label="Reset passengers count"
-                  className="hover:opacity-75"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </span>
-            ) : null}
-          </div>
-        ) : null}
-
-        {/* Flight Cards Grid / List */}
-        {isPending ? (
-          <div className="mt-6 space-y-4">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="rounded-2xl border border-border/50 bg-card p-6 space-y-4">
-                <div className="flex justify-between items-center">
-                  <Skeleton className="h-6 w-36 rounded-full" />
-                  <Skeleton className="h-4 w-24" />
-                </div>
-                <div className="grid grid-cols-12 gap-4 items-center py-2">
-                  <div className="col-span-4 space-y-2">
-                    <Skeleton className="h-8 w-16" />
-                    <Skeleton className="h-4 w-24" />
+          {/* Right Column: Flight Results Feed */}
+          <div className="lg:col-span-8 xl:col-span-9 space-y-4">
+            {isPending ? (
+              /* Loading Skeletons */
+              <div className="space-y-4">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="rounded-2xl border border-border/60 bg-card p-5 space-y-4 shadow-xs"
+                  >
+                    <div className="flex flex-col md:flex-row gap-4 items-center">
+                      <Skeleton className="h-36 w-full md:w-48 rounded-xl" />
+                      <div className="flex-1 space-y-3 w-full">
+                        <div className="flex justify-between items-center">
+                          <Skeleton className="h-6 w-28" />
+                          <Skeleton className="h-6 w-28" />
+                        </div>
+                        <Skeleton className="h-1.5 w-full rounded-full" />
+                        <div className="flex justify-between items-center">
+                          <Skeleton className="h-4 w-32" />
+                          <Skeleton className="h-4 w-24" />
+                        </div>
+                      </div>
+                      <Skeleton className="h-10 w-28 rounded-full ml-auto" />
+                    </div>
                   </div>
-                  <div className="col-span-4 flex flex-col items-center gap-2">
-                    <Skeleton className="h-4 w-20" />
-                    <Skeleton className="h-1 w-full" />
-                  </div>
-                  <div className="col-span-4 space-y-2 text-right">
-                    <Skeleton className="h-8 w-16 ml-auto" />
-                    <Skeleton className="h-4 w-24 ml-auto" />
-                  </div>
+                ))}
+              </div>
+            ) : filteredFlights.length === 0 ? (
+              /* Empty State */
+              <div className="rounded-3xl border border-dashed border-border bg-card p-12 text-center shadow-xs">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-secondary/10 text-secondary">
+                  <Compass className="h-7 w-7" aria-hidden="true" />
                 </div>
-                <div className="flex justify-between items-center border-t border-border/50 pt-4">
-                  <Skeleton className="h-4 w-28" />
-                  <Skeleton className="h-9 w-28 rounded-full" />
+                <h3 className="mt-4 font-display text-xl text-foreground">
+                  No flights match your filter criteria
+                </h3>
+                <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground leading-relaxed">
+                  We couldn't find any scheduled flights for this route and filter combination. Try
+                  expanding your price range, resetting airline filters, or searching popular hubs
+                  like Delhi (DEL), Bengaluru (BLR), or Goa (GOI).
+                </p>
+                <div className="mt-6 flex flex-wrap justify-center gap-3">
+                  <Button
+                    onClick={handleResetAllFilters}
+                    className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-md font-semibold text-xs"
+                  >
+                    <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
+                    Reset all filters
+                  </Button>
                 </div>
               </div>
-            ))}
+            ) : (
+              /* Vertically Stacked Flight Cards */
+              <div className="space-y-4">
+                {filteredFlights.map((flight) => {
+                  let dealBadge: string | null = null;
+                  if (flight.id === lowestPriceId) {
+                    dealBadge = "⭐ Lowest Price";
+                  } else if (flight.id === secondLowestPriceId) {
+                    dealBadge = "⭐ Best Deal";
+                  }
+
+                  return (
+                    <FlightCard
+                      key={flight.id}
+                      flight={flight}
+                      passengers={currentPassengers}
+                      dealBadge={dealBadge}
+                      onSelect={(f) => setSelectedFlight(f)}
+                    />
+                  );
+                })}
+              </div>
+            )}
           </div>
-        ) : flights.length === 0 ? (
-          /* Empty State */
-          <div className="mt-10 rounded-3xl border border-dashed border-border bg-card p-12 text-center">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-secondary/10 text-secondary">
-              <Compass className="h-7 w-7" aria-hidden="true" />
-            </div>
-            <h3 className="mt-4 font-display text-xl text-foreground">
-              No flights found for this route or date
-            </h3>
-            <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground leading-relaxed">
-              We couldn't find flights matching your exact criteria. Try clearing the departure date
-              to explore all available schedules, or select popular hubs like London (LHR), New York
-              (JFK), or Dubai (DXB).
-            </p>
-            <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <Button
-                onClick={handleResetFilters}
-                className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
-              >
-                <RotateCcw className="h-4 w-4 mr-2" />
-                Reset all search filters
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <div className="mt-6 space-y-4">
-            {flights.map((flight) => (
-              <FlightCard
-                key={flight.id}
-                flight={flight}
-                passengers={currentPassengers}
-                onSelect={(f) => setSelectedFlight(f)}
-              />
-            ))}
-          </div>
-        )}
+        </div>
       </SectionReveal>
 
-      {/* Step 3: Flight Booking Summary Dialog */}
+      {/* ============================================================ */}
+      {/* 3. Step 3: Flight Booking Summary Dialog (Phase 10 Checkout) */}
+      {/* ============================================================ */}
       <Dialog
         open={Boolean(selectedFlight)}
         onOpenChange={(open) => !open && setSelectedFlight(null)}
       >
-        <DialogContent className="max-w-md rounded-3xl p-6 sm:p-7">
+        <DialogContent className="max-w-md rounded-3xl p-6 sm:p-7 bg-card text-card-foreground border-border/80 shadow-modal">
           <DialogHeader>
             <div className="flex items-center gap-2 text-secondary">
               <Plane className="h-5 w-5" aria-hidden="true" />
@@ -616,7 +624,8 @@ function FlightsPage() {
               Confirm Reservation
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">
-              Review your flight schedule and fare breakdown before confirming.
+              Review your flight schedule and fare breakdown before proceeding to passenger
+              checkout.
             </DialogDescription>
           </DialogHeader>
 
@@ -688,7 +697,7 @@ function FlightsPage() {
                 <div className="flex justify-between text-muted-foreground">
                   <span>Fare per passenger</span>
                   <span className="font-medium text-foreground">
-                    ${selectedFlight.price.toLocaleString()}
+                    {formatPrice(selectedFlight.price)}
                   </span>
                 </div>
 
@@ -702,12 +711,12 @@ function FlightsPage() {
                 <div className="flex justify-between border-t border-border/60 pt-2 font-semibold text-foreground text-sm">
                   <span>Total Amount</span>
                   <span className="text-accent-text font-display text-lg font-bold">
-                    ${totalSummaryPrice.toLocaleString()}
+                    {formatPrice(totalSummaryPrice)}
                   </span>
                 </div>
               </div>
 
-              {/* Live Booking CTA */}
+              {/* Live Booking CTA (Wired to Phase 10 /checkout) */}
               <div className="pt-2">
                 <BookingCTA
                   label="Proceed to Booking"
