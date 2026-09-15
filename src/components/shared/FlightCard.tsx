@@ -1,13 +1,7 @@
-import { Plane, ArrowRight, CheckCircle2, Users } from "lucide-react";
+import { Plane, ArrowRight, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { FlightData } from "@/lib/catalog.functions";
-import {
-  formatFlightDuration,
-  formatFlightTime,
-  formatPrice,
-  getFlightThumbnail,
-  getAirlineBrand,
-} from "@/lib/flight-utils";
+import { formatFlightDuration, formatFlightTime, formatPrice } from "@/lib/flight-utils";
 
 export interface FlightCardProps {
   flight: FlightData;
@@ -22,172 +16,294 @@ export function FlightCard({ flight, passengers = 1, dealBadge, onSelect }: Flig
   const departureFormatted = formatFlightTime(flight.departure_time);
   const arrivalFormatted = formatFlightTime(flight.arrival_time);
   const durationFormatted = formatFlightDuration(flight.duration_minutes);
-  const thumbnail = getFlightThumbnail(flight);
-  const brand = getAirlineBrand(flight.airline);
-
+  const airlineFirstLetter = (flight.airline || "").trim().charAt(0).toUpperCase();
   const travelClassLabel = flight.class.charAt(0).toUpperCase() + flight.class.slice(1);
+  const stopsCount = (flight as { stops?: number }).stops ?? 0;
 
   return (
     <article
-      className={`card-lift card-edge-light group relative flex flex-col md:flex-row items-stretch md:items-center justify-between rounded-2xl border bg-card p-4 sm:p-5 transition-all duration-300 ${
+      className={`card-lift card-edge-light group relative rounded-2xl border bg-card p-4 sm:p-5 shadow-card hover:shadow-card-hover transition-all duration-300 ${
         isSoldOut
           ? "border-border/50 opacity-70 grayscale-[25%]"
-          : "border-border/80 hover:border-secondary/40 shadow-card hover:shadow-card-hover"
+          : "border-border/60 hover:border-secondary/40"
       }`}
     >
       {/* ============================================================ */}
-      {/* 1. Image Thumbnail (Left)                                     */}
+      {/* DESKTOP & TABLET LAYOUT (>=768px): Single Horizontal Row     */}
       {/* ============================================================ */}
-      <div className="relative h-44 sm:h-48 md:h-36 w-full md:w-48 lg:w-56 shrink-0 overflow-hidden rounded-xl bg-muted">
-        <img
-          src={thumbnail}
-          alt={`${flight.airline} flight ${flight.flight_number}`}
-          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-          loading="lazy"
-          onError={(e) => {
-            e.currentTarget.src =
-              "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=600&q=80";
-          }}
-        />
-        {/* Ambient vignette scrim */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
-
-        {/* Anchored Pill Badge: "⭐ Best Deal" or "⭐ Lowest Price" */}
-        {dealBadge ? (
-          <span className="absolute top-2.5 left-2.5 z-10 bg-slate-950/85 dark:bg-black/90 backdrop-blur-md text-amber-300 border border-amber-400/40 shadow-lg text-[11px] font-semibold px-2.5 py-1 rounded-full flex items-center gap-1 tracking-wide">
-            {dealBadge}
-          </span>
-        ) : null}
-
-        {/* Seat warning overlay for low availability */}
-        {isLowSeats && !isSoldOut ? (
-          <span className="absolute bottom-2 left-2 inline-flex items-center gap-1 rounded-full bg-black/60 text-white backdrop-blur-xs px-2 py-0.5 text-[10px] font-medium">
-            <Users className="h-3 w-3 text-accent" />
-            {flight.seats_available} seats left
-          </span>
-        ) : null}
-      </div>
-
-      {/* ============================================================ */}
-      {/* Middle Content Grid: Departure -> Route -> Arrival           */}
-      {/* ============================================================ */}
-      <div className="my-4 md:my-0 flex-1 grid grid-cols-12 items-center gap-2 sm:gap-4 px-1 md:px-5">
-        {/* 2. Departure Block */}
-        <div className="col-span-3 text-left">
-          <p className="text-xs sm:text-sm font-semibold text-muted-foreground">
-            {departureFormatted}
-          </p>
-          <p className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-foreground mt-0.5">
-            {flight.origin_code}
-          </p>
-          <p className="text-xs text-muted-foreground truncate" title={flight.origin_city}>
-            {flight.origin_city}
-          </p>
-        </div>
-
-        {/* 3. Route Journey Indicator (Center) */}
-        <div className="col-span-6 flex flex-col items-center justify-center text-center px-1">
-          {/* Flight Number & Duration */}
-          <p className="text-xs font-semibold text-foreground tracking-wide">
-            {flight.flight_number}
-          </p>
-
-          {/* Route path line with plane */}
-          <div className="relative flex w-full max-w-[190px] items-center justify-center my-1.5">
-            <div className="h-[1.5px] w-full bg-border" />
-            <div className="absolute flex h-6 w-6 items-center justify-center rounded-full bg-card border border-border text-muted-foreground shadow-xs">
-              <Plane className="h-3 w-3 rotate-90 text-secondary" aria-hidden="true" />
-            </div>
+      <div className="hidden md:flex md:items-center md:justify-between md:gap-3 lg:gap-5">
+        {/* ZONE 1 — AIRLINE IDENTITY (~200px) */}
+        <div className="w-[170px] lg:w-[200px] shrink-0 flex items-center gap-3">
+          {/* Brand mark monogram avatar */}
+          <div
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 font-semibold text-primary text-base select-none border border-primary/10"
+            aria-hidden="true"
+          >
+            {airlineFirstLetter || <Plane className="h-5 w-5 text-primary" aria-hidden="true" />}
           </div>
 
-          <p className="text-[11px] font-medium text-muted-foreground">{durationFormatted}</p>
-
-          {/* Bottom metadata: Airline logo & name, class, non-stop */}
-          <div className="mt-2.5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs">
-            {/* Airline */}
-            <div className="flex items-center gap-1.5">
-              <span
-                className="flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-bold text-white shrink-0"
-                style={{ backgroundColor: brand.color }}
-              >
-                {brand.shortName}
-              </span>
-              <span className="font-semibold text-foreground truncate max-w-[90px] sm:max-w-none">
-                {flight.airline}
-              </span>
-            </div>
-
-            <span className="text-border hidden sm:inline">•</span>
-
-            {/* Cabin Class */}
-            <span className="text-muted-foreground hidden xs:inline">{travelClassLabel} Class</span>
-
-            <span className="text-border hidden sm:inline">•</span>
-
-            {/* Non-stop Badge */}
-            <span className="inline-flex items-center gap-1 font-medium text-emerald-600 dark:text-emerald-400 text-[11px]">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-              Non Stop
+          {/* Airline metadata */}
+          <div className="min-w-0 flex-1">
+            <p className="font-medium text-foreground text-sm truncate" title={flight.airline}>
+              {flight.airline}
+            </p>
+            <p className="text-xs text-muted-foreground">{flight.flight_number}</p>
+            <span className="hidden lg:inline-block text-[11px] bg-muted text-muted-foreground font-medium rounded-full px-2 py-0.5 mt-1">
+              {travelClassLabel}
             </span>
           </div>
         </div>
 
-        {/* 4. Arrival Block */}
-        <div className="col-span-3 text-right">
-          <p className="text-xs sm:text-sm font-semibold text-muted-foreground">
-            {arrivalFormatted}
-          </p>
-          <p className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-foreground mt-0.5">
-            {flight.destination_code}
-          </p>
-          <p className="text-xs text-muted-foreground truncate" title={flight.destination_city}>
-            {flight.destination_city}
-          </p>
+        {/* Subtle Vertical Divider */}
+        <div className="w-px h-12 bg-border/60 shrink-0" aria-hidden="true" />
+
+        {/* ZONES 2, 3, 4 — ROUTE JOURNEY (Departure | Route Line | Arrival) */}
+        <div className="flex-1 flex items-center justify-between px-2 lg:px-6 max-w-[480px] mx-auto">
+          {/* ZONE 2 — DEPARTURE */}
+          <div className="text-left">
+            <p className="text-sm lg:text-base font-semibold text-foreground">
+              {departureFormatted}
+            </p>
+            <p className="font-display text-xl lg:text-3xl font-bold tracking-tight text-foreground mt-0.5">
+              {flight.origin_code}
+            </p>
+            <p
+              className="text-xs text-muted-foreground truncate max-w-[90px] lg:max-w-[120px]"
+              title={flight.origin_city}
+            >
+              {flight.origin_city}
+            </p>
+          </div>
+
+          {/* ZONE 3 — ROUTE */}
+          <div className="flex flex-col items-center justify-center text-center px-2 min-w-[110px] lg:min-w-[140px]">
+            {/* Duration */}
+            <span className="text-xs font-medium text-muted-foreground mb-1">
+              {durationFormatted}
+            </span>
+
+            {/* Horizontal dashed line with centered plane icon */}
+            <div className="relative flex w-full max-w-[110px] lg:max-w-[140px] items-center justify-center my-0.5">
+              <div className="w-full border-t border-dashed border-border/80" />
+              <div className="absolute flex h-5 w-5 items-center justify-center rounded-full bg-card border border-border/60 text-muted-foreground shadow-2xs">
+                <Plane className="h-2.5 w-2.5 rotate-90 text-secondary" aria-hidden="true" />
+              </div>
+            </div>
+
+            {/* Stops badge */}
+            <div className="mt-1">
+              {stopsCount === 0 ? (
+                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-secondary">
+                  <span className="h-1.5 w-1.5 rounded-full bg-secondary shrink-0 animate-pulse" />
+                  Non Stop
+                </span>
+              ) : stopsCount === 1 ? (
+                <span className="text-[11px] font-medium text-muted-foreground">1 Stop</span>
+              ) : (
+                <span className="text-[11px] font-medium text-muted-foreground">
+                  {stopsCount}+ Stops
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* ZONE 4 — ARRIVAL */}
+          <div className="text-right">
+            <p className="text-sm lg:text-base font-semibold text-foreground">{arrivalFormatted}</p>
+            <p className="font-display text-xl lg:text-3xl font-bold tracking-tight text-foreground mt-0.5">
+              {flight.destination_code}
+            </p>
+            <p
+              className="text-xs text-muted-foreground truncate max-w-[90px] lg:max-w-[120px] text-right ml-auto"
+              title={flight.destination_city}
+            >
+              {flight.destination_city}
+            </p>
+          </div>
+        </div>
+
+        {/* Subtle Vertical Divider */}
+        <div className="w-px h-12 bg-border/60 shrink-0" aria-hidden="true" />
+
+        {/* ZONE 5 — FARE & CTA (~200px, right-aligned) */}
+        <div className="w-[180px] lg:w-[210px] shrink-0 flex flex-col items-end justify-center gap-1.5">
+          {/* Badge Pill or Low Seats notice */}
+          {dealBadge ? (
+            <span className="bg-secondary/10 text-secondary border border-secondary/20 text-[11px] font-semibold rounded-full px-2.5 py-0.5">
+              {dealBadge}
+            </span>
+          ) : isLowSeats && !isSoldOut ? (
+            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-600 dark:text-amber-400">
+              <Users className="h-3 w-3" />
+              {flight.seats_available} seats left
+            </span>
+          ) : null}
+
+          {/* Price */}
+          <div className="text-right">
+            <div className="font-display text-2xl lg:text-3xl font-bold text-foreground leading-none">
+              {formatPrice(flight.price)}
+            </div>
+            <span className="text-xs text-muted-foreground block mt-0.5">per person</span>
+            {passengers > 1 ? (
+              <span className="text-[10px] text-muted-foreground block">
+                Total: {formatPrice(flight.price * passengers)} ({passengers}p)
+              </span>
+            ) : null}
+          </div>
+
+          {/* CTA Button */}
+          <Button
+            onClick={() => onSelect(flight)}
+            disabled={isSoldOut}
+            className={`cta-shine relative rounded-full px-5 sm:px-6 py-2 text-xs sm:text-sm font-semibold shadow-md transition-all active:scale-[0.97] ${
+              isSoldOut
+                ? "bg-muted text-muted-foreground cursor-not-allowed border border-border/50"
+                : "bg-accent text-accent-foreground hover:bg-accent/90 shadow-accent/20 hover:shadow-lg"
+            }`}
+            aria-label={
+              isSoldOut
+                ? `Flight ${flight.flight_number} is sold out`
+                : `Book flight ${flight.flight_number} from ${flight.origin_city} to ${flight.destination_city} for ${formatPrice(flight.price)} per person`
+            }
+          >
+            {isSoldOut ? (
+              "Sold Out"
+            ) : (
+              <span className="inline-flex items-center gap-1.5">
+                Book Now
+                <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+              </span>
+            )}
+          </Button>
         </div>
       </div>
 
-      {/* Vertical separation rule for desktop */}
-      <div className="hidden md:block w-px self-stretch bg-border/60 mx-2" aria-hidden="true" />
-
       {/* ============================================================ */}
-      {/* 5. Price & Booking CTA (Right)                                */}
+      {/* MOBILE LAYOUT (<768px): Stacked 3 Rows                       */}
       {/* ============================================================ */}
-      <div className="pt-3 md:pt-0 border-t md:border-t-0 border-border/60 flex md:flex-col items-center md:items-end justify-between md:justify-center gap-3 shrink-0 min-w-[135px]">
-        <div className="text-left md:text-right">
-          <div className="font-display text-2xl sm:text-3xl font-bold text-foreground">
-            {formatPrice(flight.price)}
+      <div className="md:hidden space-y-3">
+        {/* (a) Airline Header Row: mark + name + flight number, badge right */}
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 font-semibold text-primary text-sm select-none border border-primary/10"
+              aria-hidden="true"
+            >
+              {airlineFirstLetter || <Plane className="h-4 w-4 text-primary" aria-hidden="true" />}
+            </div>
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5">
+                <p className="text-sm font-medium text-foreground truncate">{flight.airline}</p>
+                <span className="text-[10px] bg-muted text-muted-foreground font-medium rounded-full px-2 py-0.5 shrink-0">
+                  {travelClassLabel}
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground">{flight.flight_number}</p>
+            </div>
           </div>
-          <span className="text-xs text-muted-foreground block -mt-0.5">per person</span>
-          {passengers > 1 ? (
-            <span className="text-[10px] text-muted-foreground block">
-              Total: {formatPrice(flight.price * passengers)} ({passengers}p)
+
+          {dealBadge ? (
+            <span className="bg-secondary/10 text-secondary border border-secondary/20 text-[11px] font-semibold rounded-full px-2.5 py-1 shrink-0">
+              {dealBadge}
+            </span>
+          ) : isLowSeats && !isSoldOut ? (
+            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-600 dark:text-amber-400 shrink-0">
+              <Users className="h-3 w-3" />
+              {flight.seats_available} left
             </span>
           ) : null}
         </div>
 
-        <Button
-          onClick={() => onSelect(flight)}
-          disabled={isSoldOut}
-          className={`cta-shine relative rounded-full px-5 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold shadow-md transition-all active:scale-[0.97] ${
-            isSoldOut
-              ? "bg-muted text-muted-foreground cursor-not-allowed border border-border/50"
-              : "bg-accent text-accent-foreground hover:bg-accent/90 shadow-accent/20 hover:shadow-lg"
-          }`}
-          aria-label={
-            isSoldOut
-              ? `Flight ${flight.flight_number} is sold out`
-              : `Book flight ${flight.flight_number} from ${flight.origin_city} to ${flight.destination_city} for ${formatPrice(flight.price)} per person`
-          }
-        >
-          {isSoldOut ? (
-            "Sold Out"
-          ) : (
-            <span className="inline-flex items-center gap-1.5">
-              Book Now
-              <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+        {/* (b) Times Row: departure | route line | arrival */}
+        <div className="grid grid-cols-12 items-center gap-2 py-2.5 px-3 rounded-xl bg-muted/30 border border-border/40">
+          {/* Departure */}
+          <div className="col-span-4 text-left">
+            <p className="text-xs font-semibold text-foreground">{departureFormatted}</p>
+            <p className="font-display text-xl font-bold tracking-tight text-foreground mt-0.5">
+              {flight.origin_code}
+            </p>
+            <p className="text-[11px] text-muted-foreground truncate" title={flight.origin_city}>
+              {flight.origin_city}
+            </p>
+          </div>
+
+          {/* Route line */}
+          <div className="col-span-4 flex flex-col items-center justify-center text-center px-1">
+            <span className="text-[10px] font-medium text-muted-foreground">
+              {durationFormatted}
             </span>
-          )}
-        </Button>
+            <div className="relative flex w-full max-w-[80px] items-center justify-center my-1">
+              <div className="w-full border-t border-dashed border-border/80" />
+              <div className="absolute flex h-4 w-4 items-center justify-center rounded-full bg-card border border-border/60 text-muted-foreground shadow-2xs">
+                <Plane className="h-2 w-2 rotate-90 text-secondary" aria-hidden="true" />
+              </div>
+            </div>
+            {stopsCount === 0 ? (
+              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-secondary">
+                <span className="h-1 w-1 rounded-full bg-secondary shrink-0 animate-pulse" />
+                Non Stop
+              </span>
+            ) : (
+              <span className="text-[10px] font-medium text-muted-foreground">
+                {stopsCount} Stop
+              </span>
+            )}
+          </div>
+
+          {/* Arrival */}
+          <div className="col-span-4 text-right">
+            <p className="text-xs font-semibold text-foreground">{arrivalFormatted}</p>
+            <p className="font-display text-xl font-bold tracking-tight text-foreground mt-0.5">
+              {flight.destination_code}
+            </p>
+            <p
+              className="text-[11px] text-muted-foreground truncate text-right ml-auto"
+              title={flight.destination_city}
+            >
+              {flight.destination_city}
+            </p>
+          </div>
+        </div>
+
+        {/* (c) Footer: price left + Book Now right */}
+        <div className="flex items-center justify-between gap-3 pt-1">
+          <div className="text-left">
+            <div className="font-display text-xl sm:text-2xl font-bold text-foreground leading-tight">
+              {formatPrice(flight.price)}
+            </div>
+            <span className="text-xs text-muted-foreground block -mt-0.5">per person</span>
+            {passengers > 1 ? (
+              <span className="text-[10px] text-muted-foreground block">
+                Total: {formatPrice(flight.price * passengers)} ({passengers}p)
+              </span>
+            ) : null}
+          </div>
+
+          <Button
+            onClick={() => onSelect(flight)}
+            disabled={isSoldOut}
+            className={`cta-shine relative rounded-full px-5 py-2 text-xs font-semibold shadow-md transition-all active:scale-[0.97] ${
+              isSoldOut
+                ? "bg-muted text-muted-foreground cursor-not-allowed border border-border/50"
+                : "bg-accent text-accent-foreground hover:bg-accent/90 shadow-accent/20 hover:shadow-lg"
+            }`}
+            aria-label={
+              isSoldOut
+                ? `Flight ${flight.flight_number} is sold out`
+                : `Book flight ${flight.flight_number} from ${flight.origin_city} to ${flight.destination_city} for ${formatPrice(flight.price)} per person`
+            }
+          >
+            {isSoldOut ? (
+              "Sold Out"
+            ) : (
+              <span className="inline-flex items-center gap-1.5">
+                Book Now
+                <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+              </span>
+            )}
+          </Button>
+        </div>
       </div>
     </article>
   );

@@ -4,6 +4,21 @@
 
 ## Completed
 
+- [x] Flight Card UX Refinement (/flights):
+  - **Zero Decorative Photography (`src/components/shared/FlightCard.tsx`, `src/lib/flight-utils.ts`)**: Completely removed decorative destination and aviation photograph thumbnails from the flight results list. Purged `DESTINATION_THUMBNAILS`, `AVIATION_THUMBNAILS`, and `getFlightThumbnail` from flight utilities. Confirmed exactly 0 `<img>` elements rendered inside the flight results list (the hero banner is the only photographic visual element above the feed).
+  - **5-Zone Airline-Anchored Data Hierarchy (`src/components/shared/FlightCard.tsx`)**: Re-architected desktop and tablet flight cards into a streamlined horizontal data row:
+    - Zone 1 — Airline Identity: Monogram avatar (`h-10 w-10 rounded-xl bg-primary/10 text-primary font-semibold`) or fallback Plane icon, airline name, flight number, and cabin class chip.
+    - Zone 2 — Departure: Scheduled departure time, bold airport code (`font-display`), and city name.
+    - Zone 3 — Route: Formatted duration above a horizontal dashed route line with a centered plane icon, and teal `🟢 Non Stop` status badge.
+    - Zone 4 — Arrival: Mirrored arrival time, airport code, and city name.
+    - Zone 5 — Fare & CTA: Standalone tokenized deal pill (`⭐ Lowest Price` / `⭐ Best Deal` in `bg-secondary/10 text-secondary border-secondary/20`), per-person formatted price, and coral `Book Now →` CTA button with `.cta-shine` (disabled for sold-out flights).
+  - **Responsive Layout System**:
+    - Desktop (≥1024px): 5 distinct zones in a single horizontal row separated by subtle vertical dividers (`w-px h-12 bg-border/60`).
+    - Tablet (768–1023px): Compressed airport codes (`text-xl`) and streamlined airline column.
+    - Mobile (<768px): Clean 3-tier vertical stack: (a) airline header row with deal badge, (b) departure | route | arrival journey row, (c) price + Book Now footer.
+  - **Matching Loading Skeletons (`src/routes/flights.tsx`)**: Synchronized `FlightCardSkeleton` to the compact card height across desktop and mobile, eliminating the old 144px photo placeholder.
+  - **Quality Gates**: `npm run lint` (0 errors), `npm run build` (clean code 0 production build), and verified SSR 0-img output across all 53 flight cards.
+
 - [x] Wanderlust Visual Parity, Search Console Overhaul & Destination Flight Imagery:
   - **Section Hero Banner Parity (`src/config/hero-registry.ts`, `src/components/shared/PageHeroBanner.tsx`)**: Created universal, tokenized `<PageHeroBanner />` with multi-stage gradient scrims (horizontal reading scrim, top ambient vignette, bottom background blend), Playfair Display typography, warm coral eyebrow rules, and right-third focal photography. Replaced flat `<PageHeader />` blocks across all 5 major catalog routes (`/destinations`, `/packages`, `/hotels`, `/gallery`, `/contact`) with curated photography (Santorini church domes, alpine ridge hiker at sunrise, infinity pool dusk reflection, Positano coastal village, and twilight sea cliffs). Enabled `transparentNav` across all 6 pages so the floating glass capsule navbar overlays consistently.
   - **Flight Search Console Layout Overhaul (`src/components/flights/FlightHeroSearch.tsx`)**: Re-architected 12-column grid layout to eliminate passenger field truncation and CTA button overlap. Wrapped Origin (From) and Destination (To) in a combined `lg:col-span-6` block with a centered floating circular swap button (`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20`), saving a full column. Allocated `lg:col-span-2` to Departure, `lg:col-span-2` to Passengers (providing ~170px–200px width), and `lg:col-span-2` to Search CTA. Added top ambient vignette scrim and `fetchpriority="high"` eager loading.

@@ -536,22 +536,72 @@ function FlightsPage() {
                 {Array.from({ length: 3 }).map((_, i) => (
                   <div
                     key={i}
-                    className="rounded-2xl border border-border/60 bg-card p-5 space-y-4 shadow-xs"
+                    className="rounded-2xl border border-border/60 bg-card p-4 sm:p-5 shadow-card"
                   >
-                    <div className="flex flex-col md:flex-row gap-4 items-center">
-                      <Skeleton className="h-36 w-full md:w-48 rounded-xl" />
-                      <div className="flex-1 space-y-3 w-full">
-                        <div className="flex justify-between items-center">
-                          <Skeleton className="h-6 w-28" />
-                          <Skeleton className="h-6 w-28" />
-                        </div>
-                        <Skeleton className="h-1.5 w-full rounded-full" />
-                        <div className="flex justify-between items-center">
-                          <Skeleton className="h-4 w-32" />
+                    {/* Desktop skeleton */}
+                    <div className="hidden md:flex items-center justify-between gap-4">
+                      {/* Zone 1: Airline */}
+                      <div className="w-[180px] lg:w-[200px] shrink-0 flex items-center gap-3">
+                        <Skeleton className="h-10 w-10 rounded-xl shrink-0" />
+                        <div className="space-y-1.5 flex-1">
                           <Skeleton className="h-4 w-24" />
+                          <Skeleton className="h-3 w-16" />
                         </div>
                       </div>
-                      <Skeleton className="h-10 w-28 rounded-full ml-auto" />
+
+                      {/* Divider */}
+                      <div className="w-px h-10 bg-border/40 shrink-0" />
+
+                      {/* Zones 2, 3, 4: Times & Route */}
+                      <div className="flex-1 flex items-center justify-between px-2 lg:px-4 max-w-[460px]">
+                        <div className="space-y-1">
+                          <Skeleton className="h-3 w-12" />
+                          <Skeleton className="h-7 w-16" />
+                          <Skeleton className="h-3 w-14" />
+                        </div>
+                        <div className="flex flex-col items-center space-y-1.5">
+                          <Skeleton className="h-3 w-12" />
+                          <Skeleton className="h-1.5 w-24 rounded-full" />
+                          <Skeleton className="h-3 w-16" />
+                        </div>
+                        <div className="space-y-1 items-end flex flex-col">
+                          <Skeleton className="h-3 w-12" />
+                          <Skeleton className="h-7 w-16" />
+                          <Skeleton className="h-3 w-14" />
+                        </div>
+                      </div>
+
+                      {/* Divider */}
+                      <div className="w-px h-10 bg-border/40 shrink-0" />
+
+                      {/* Zone 5: Price & CTA */}
+                      <div className="w-[180px] lg:w-[210px] shrink-0 flex flex-col items-end gap-2">
+                        <Skeleton className="h-7 w-24" />
+                        <Skeleton className="h-9 w-28 rounded-full" />
+                      </div>
+                    </div>
+
+                    {/* Mobile skeleton */}
+                    <div className="md:hidden space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2.5">
+                          <Skeleton className="h-9 w-9 rounded-xl" />
+                          <div className="space-y-1">
+                            <Skeleton className="h-3.5 w-20" />
+                            <Skeleton className="h-3 w-14" />
+                          </div>
+                        </div>
+                        <Skeleton className="h-5 w-20 rounded-full" />
+                      </div>
+                      <div className="flex items-center justify-between py-2 px-1">
+                        <Skeleton className="h-8 w-16" />
+                        <Skeleton className="h-4 w-20" />
+                        <Skeleton className="h-8 w-16" />
+                      </div>
+                      <div className="flex items-center justify-between pt-1">
+                        <Skeleton className="h-6 w-20" />
+                        <Skeleton className="h-8 w-24 rounded-full" />
+                      </div>
                     </div>
                   </div>
                 ))}
