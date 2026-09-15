@@ -4,6 +4,14 @@
 
 ## Completed
 
+- [x] 3D Photo Cylinder Showcase Polish (/gallery):
+  - **Descriptive Text Removal**: Completely stripped the top heading lockup ("Interactive 3D Cylinder Showcase" and "Infinite 360° perspective view of all destinations"), the middle control bar helper text ("Auto-spinning 360° • Drag to rotate • Click photograph to expand"), and the bottom footer line ("36 captures • Continuous 3D auto-spin with interactive drag"). Retained accessibility with `aria-label="3D Photo Cylinder Showcase"` and an `<h2 className="sr-only">`.
+  - **Showcase & Photo Card Enlargement**: Substantially expanded stage height to `h-[70vh] sm:h-[76vh] min-h-[520px] max-h-[780px]` and tuned 3D perspective geometry (`cardWidth={340}`, `perspective="125em"`). Rendered card height increased from ~103px to ~230px–260px (~2.5x larger), occupying ~50% of the vertical frame to eliminate letterboxing entirely.
+  - **Floating Glass Overlay Control Bar**: Replaced the separate control section with an absolute floating glass overlay row (`absolute top-3 sm:top-5 inset-x-0 z-20 flex items-center justify-between pointer-events-none`) with `backdrop-blur-md`, keeping the `3D Cylinder Showcase • 36 Captures` pill and interactive Pause/Spin and step controls fully accessible (`pointer-events-auto`) without blocking carousel drag gestures.
+  - **Image Sharpness**: Bumped Unsplash cylinder image resolutions to `w=1000&q=85` for crisp editorial quality at the larger card dimensions.
+  - **Preserved Wiring & Interactions**: Verified 100% preservation of auto-spin, pointer drag rotation, keyboard arrow navigation, Pause/Spin toggle, and click-to-expand lightbox modal with next/prev cycling.
+  - **Quality Gates**: Verified on 1280px, 768px, and 375px viewports. `npm run lint` (0 errors) and `npm run build` (clean code 0 production build).
+
 - [x] Real Airline Logo Marks on Flight Cards (/flights):
   - **Self-Hosted IATA-Coded Logo Assets (`public/airlines/`)**: Audited all 23 distinct airline carriers in the database (IndiGo, Air India, Air India Express, Vistara, Akasa Air, SpiceJet, Emirates, Qatar Airways, British Airways, Singapore Airlines, ANA, Aegean, Air Canada, Air New Zealand, Garuda Indonesia, ITA Airways, Icelandair, Japan Airlines, KLM, LATAM, Royal Air Maroc, TAP Air Portugal, United Airlines). Downloaded clean, verified square PNG wordmarks into `public/airlines/{CODE}.png` (all >2.7KB) with zero external hotlinking.
   - **Airline Logo Resolver (`src/lib/airline-logos.ts`)**: Built normalized carrier name-to-asset resolver (`getAirlineLogo(airline)`), returning local paths or `null` for unrecognized carriers.

@@ -9,7 +9,6 @@ import {
   ExternalLink,
   MapPin,
   Maximize2,
-  Sparkles,
 } from "lucide-react";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { PageHeroBanner } from "@/components/shared/PageHeroBanner";
@@ -96,11 +95,13 @@ function GalleryPage() {
     return Array.from(destMap.values());
   }, [destinations]);
 
-  // Map into 3D Cylinder Carousel items
+  // Map into 3D Cylinder Carousel items with high-res parameters for larger showcase planes
   const cylinderItems: CylinderImageItem[] = useMemo(() => {
     return allGalleryImages.map((img) => ({
       id: img.id,
-      src: img.url,
+      src: img.url.includes("unsplash.com")
+        ? img.url.replace(/w=\d+/, "w=1000").replace(/q=\d+/, "q=85")
+        : img.url,
       alt: img.caption || img.destination?.name || "Travel photography capture",
       caption: img.caption,
       destinationName: img.destination?.name,
@@ -228,25 +229,15 @@ function GalleryPage() {
           <>
             {/* Expressive Feature: Infinite CSS 3D Cylinder Interactive Carousel */}
             {cylinderItems.length > 2 && (
-              <SectionReveal className="space-y-4">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 px-1">
-                  <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent/15 text-accent-text text-xs font-semibold border border-accent/20">
-                      <Sparkles className="h-3.5 w-3.5 text-accent-text" />
-                      Interactive 3D Cylinder Showcase
-                    </span>
-                    <span className="text-xs text-muted-foreground hidden sm:inline">
-                      Infinite 360° perspective view of all destinations
-                    </span>
-                  </div>
-                </div>
-
-                <div className="rounded-3xl border border-border/80 bg-gradient-to-b from-card/80 via-card/50 to-card/20 backdrop-blur-md p-3 sm:p-5 shadow-xl relative overflow-hidden">
+              <SectionReveal className="space-y-4" aria-label="3D Photo Cylinder Showcase">
+                <h2 className="sr-only">3D Photo Cylinder Showcase</h2>
+                <div className="rounded-3xl border border-border/80 bg-gradient-to-b from-card/80 via-card/50 to-card/20 backdrop-blur-md p-1.5 sm:p-2 shadow-2xl relative overflow-hidden">
                   <CylinderCarousel
                     images={cylinderItems}
-                    cardWidth={210}
-                    stageHeight="h-[420px] sm:h-[480px]"
-                    animationDuration={45}
+                    cardWidth={340}
+                    stageHeight="h-[70vh] sm:h-[76vh] min-h-[520px] max-h-[780px]"
+                    perspective="125em"
+                    animationDuration={48}
                     autoPlay={true}
                     onImageClick={(idx) => openLightbox(idx)}
                   />

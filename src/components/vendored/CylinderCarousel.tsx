@@ -25,8 +25,9 @@ export interface CylinderCarouselProps extends React.HTMLAttributes<HTMLDivEleme
   containerClassName?: string;
   cardClassName?: string;
   animationDuration?: number; // Duration in seconds for full 360 rotation (default 45)
-  cardWidth?: number; // Width of cards in px (default 210)
-  stageHeight?: string; // Viewport height class (default "h-[420px] sm:h-[480px]")
+  cardWidth?: number; // Width of cards in px (default 340)
+  stageHeight?: string; // Viewport height class (default "h-[70vh] sm:h-[76vh] min-h-[520px] max-h-[780px]")
+  perspective?: string; // 3D camera perspective (default "120em")
   onImageClick?: (index: number) => void;
   autoPlay?: boolean;
 }
@@ -39,8 +40,9 @@ export const CylinderCarousel = React.forwardRef<HTMLDivElement, CylinderCarouse
       containerClassName,
       cardClassName,
       animationDuration = 45,
-      cardWidth = 210,
-      stageHeight = "h-[420px] sm:h-[480px]",
+      cardWidth = 340,
+      stageHeight = "h-[70vh] sm:h-[76vh] min-h-[520px] max-h-[780px]",
+      perspective = "120em",
       onImageClick,
       autoPlay = true,
       ...props
@@ -165,7 +167,7 @@ export const CylinderCarousel = React.forwardRef<HTMLDivElement, CylinderCarouse
     return (
       <div
         ref={forwardedRef || internalRef}
-        className={cn("w-full flex flex-col items-center select-none", className)}
+        className={cn("relative w-full flex flex-col items-center select-none", className)}
         onKeyDown={handleKeyDown}
         tabIndex={0}
         role="region"
@@ -182,38 +184,35 @@ export const CylinderCarousel = React.forwardRef<HTMLDivElement, CylinderCarouse
           `}
         </style>
 
-        {/* Interactive Controls & Status Bar */}
-        <div className="w-full flex flex-wrap items-center justify-between gap-2 px-3 py-1.5 mb-2 max-w-5xl">
-          {/* Status badge & hint */}
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-foreground text-xs font-semibold">
-              <MoveHorizontal className="h-3.5 w-3.5 text-primary animate-pulse" />
+        {/* Floating Glass Overlay Control Bar */}
+        <div className="absolute top-3 sm:top-5 inset-x-0 z-20 flex items-center justify-between gap-2 px-3 sm:px-6 pointer-events-none max-w-6xl mx-auto">
+          {/* Status pill (pointer-events-auto) */}
+          <div className="pointer-events-auto">
+            <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-card/90 border border-border/80 backdrop-blur-md shadow-xs text-foreground text-[11px] sm:text-xs font-semibold whitespace-nowrap">
+              <MoveHorizontal className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary animate-pulse shrink-0" />
               <span>3D Cylinder Showcase</span>
               <span className="text-muted-foreground">•</span>
-              <span className="text-primary">{N} Captures</span>
-            </span>
-            <span className="hidden sm:inline text-xs text-muted-foreground">
-              Auto-spinning 360° • Drag to rotate • Click photograph to expand
+              <span className="text-primary font-semibold">{N} Captures</span>
             </span>
           </div>
 
-          {/* Interactive Navigation Controls */}
-          <div className="flex items-center gap-1.5 p-1 rounded-full bg-card/85 border border-border/80 backdrop-blur-md shadow-xs">
+          {/* Interactive Navigation Controls (pointer-events-auto) */}
+          <div className="pointer-events-auto flex items-center gap-1 p-0.5 sm:p-1 rounded-full bg-card/90 border border-border/80 backdrop-blur-md shadow-xs shrink-0">
             <button
               type="button"
               onClick={() => rotateStep("prev")}
-              className="h-7 w-7 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors"
+              className="h-6 w-6 sm:h-7 sm:w-7 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors"
               title="Rotate Left (ArrowLeft)"
               aria-label="Rotate Left"
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </button>
 
             <button
               type="button"
               onClick={() => setIsPlaying((prev) => !prev)}
               className={cn(
-                "h-7 px-2.5 rounded-full flex items-center gap-1 text-xs font-medium transition-colors",
+                "h-6 px-2 sm:h-7 sm:px-2.5 rounded-full flex items-center gap-1 text-[11px] sm:text-xs font-medium transition-colors",
                 isPlaying
                   ? "text-primary bg-primary/10 hover:bg-primary/20"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted/80",
@@ -237,21 +236,21 @@ export const CylinderCarousel = React.forwardRef<HTMLDivElement, CylinderCarouse
             <button
               type="button"
               onClick={() => rotateStep("next")}
-              className="h-7 w-7 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors"
+              className="h-6 w-6 sm:h-7 sm:w-7 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors"
               title="Rotate Right (ArrowRight)"
               aria-label="Rotate Right"
             >
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </button>
 
             <button
               type="button"
               onClick={resetRotation}
-              className="h-7 w-7 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors"
+              className="hidden xs:flex h-6 w-6 sm:h-7 sm:w-7 rounded-full items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors"
               title="Reset Alignment"
               aria-label="Reset Rotation"
             >
-              <RotateCcw className="h-3.5 w-3.5" />
+              <RotateCcw className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
             </button>
           </div>
         </div>
@@ -264,7 +263,7 @@ export const CylinderCarousel = React.forwardRef<HTMLDivElement, CylinderCarouse
             isDragging ? "cursor-grabbing" : "cursor-grab",
           )}
           style={{
-            perspective: "42em",
+            perspective,
             maskImage:
               "linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%)",
             WebkitMaskImage:
@@ -367,13 +366,6 @@ export const CylinderCarousel = React.forwardRef<HTMLDivElement, CylinderCarouse
               ))}
             </div>
           </div>
-        </div>
-
-        {/* Bottom subtle indicator */}
-        <div className="mt-2 text-center">
-          <span className="text-xs text-muted-foreground/80 font-mono">
-            {N} captures • Continuous 3D auto-spin with interactive drag
-          </span>
         </div>
       </div>
     );
