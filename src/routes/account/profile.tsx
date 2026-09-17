@@ -178,7 +178,6 @@ function AccountProfilePage() {
 
       if (uploadError) {
         // If storage bucket is missing policy, fallback to blob preview + alert user
-        console.warn("Storage upload error:", uploadError.message);
         const localUrl = URL.createObjectURL(file);
         setAvatarPreview(localUrl);
         toast.info("Avatar preview updated (ensure avatars bucket storage policy is configured).");

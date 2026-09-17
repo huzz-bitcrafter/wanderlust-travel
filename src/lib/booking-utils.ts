@@ -50,7 +50,6 @@ export async function insertBookingWithRetry(
         error.message.includes("reference"))
     ) {
       lastError = new Error(`Collision on reference ${reference}: ${error.message}`);
-      console.warn(`Booking reference collision on attempt ${attempt}, retrying...`);
       continue;
     }
 
