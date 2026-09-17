@@ -38,4 +38,4 @@ Wanderlust is a full-stack travel booking & trip planning platform built with:
 1. **Unsplash Hero Placeholders (`src/config/hero-registry.ts`)**: 6 catalog page banners rely on external Unsplash URLs (`photo-1436491865332-7a61a109cc05`, `photo-1570077188670-e3a8d69ac5ff`, etc.). Scheduled for self-hosted WebP/AVIF asset migration in Phase 2.
 2. **2048px Brand Medallion (`public/Bookify_W_logo_transparent_2048px.png`)**: High-res logo file is 700.6 KB. Needs optimization to appropriately sized 256px/512px WebP variants.
 3. **Typography Payload**: Local hero eyebrow font `TheCrowInlineGrunge.otf` (717.7 KB) exceeds optimal font budget; recommended for subsetting or WOFF2 compression in follow-up asset pass.
-4. **Mockup Reference File in Public**: `public/flight-mockup-reference.png` (1.46 MB) is a static design reference sitting in the public directory; should be moved to docs or deleted.
+4. **Mockup Reference Pruned**: `public/flight-mockup-reference.png` (1.46 MB) pruned from public repository assets prior to Vercel deployment.
