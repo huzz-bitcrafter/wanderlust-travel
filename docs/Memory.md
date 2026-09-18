@@ -1,6 +1,6 @@
 # Memory — Wanderlust
 
-**Last updated:** 2026-09-18 | **Current phase:** Pre-Deployment Audit | **Target:** Production (Vercel · Nitro · Supabase)
+**Last updated:** 2026-09-18 | **Current phase:** Pre-Deployment Audit & Migration | **Target:** Production (Vercel · Nitro · Supabase)
 
 ## 1. Project Overview & Architecture
 
@@ -22,6 +22,8 @@ Wanderlust is a full-stack travel booking & trip planning platform built with:
 
 ## 3. Recent Milestones (Last 5 Sprints)
 
+- **Lovable Platform De-Integration & Standard Vite Config**:
+  Decoupled project from `@lovable.dev/vite-tanstack-config`, swapping `vite.config.ts` to standard TanStack Start plugins (`tanstackStart`, `@tailwindcss/vite`, `vite-tsconfig-paths`, `nitro/vite`, `@vitejs/plugin-react`). Configured Nitro default preset to `node-server` for local build parity with Vercel. Removed `.lovable/` folder, `lovable-error-reporting.ts`, `previewAuthStorage.ts`, and dead `cron-auth.ts`. Switched Supabase client to native browser `localStorage` auth storage. 0 residual `lovable` references across active codebase. Passed `npm run lint`, `npm run build`, local dev server, and production SSR smoke tests with 0 `LOVABLE_*` env vars.
 - **3D Photo Cylinder Showcase Polish (`/gallery`)**:
   Enlarged 3D stage height (`h-[70vh] sm:h-[76vh]`) with tuned perspective geometry (`cardWidth={340}`). Rendered card height increased ~2.5x to eliminate letterboxing. Replaced separate controls with a floating glass overlay row (`backdrop-blur-md`). Upgraded Unsplash cylinder images to `w=1000&q=85`.
 - **Real Airline Logo Marks on Flight Cards (`/flights`)**:

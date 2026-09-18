@@ -1,6 +1,6 @@
 /**
  * Phase 2 placeholder content for the Home page.
- * Replaced by live catalog data from Lovable Cloud in Phase 3.
+ * Replaced by live catalog data in Phase 3.
  */
 
 export type FeaturedDestination = {
