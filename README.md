@@ -72,32 +72,117 @@ Users can only read and modify their own bookings, itineraries, and reviews — 
 
 ## 🏗️ Architecture
 
-```mermaid
-flowchart TB
-    subgraph Client["Browser"]
-        UI["React 19 · shadcn/Radix"]
-        Router["TanStack Router<br/>(file-based, type-safe)"]
-        Query["TanStack Query v5<br/>(Suspense cache)"]
-    end
+flowchart TD
 
-    subgraph SSR["Server — Nitro (SSR)"]
-        SF["Server Functions<br/>(createServerFn RPC)"]
-        PUB["Public Client<br/>(publishable key)"]
-    end
+subgraph group_discovery["Travel discovery"]
+  node_home["Home discovery<br/>[index.tsx]"]
+  node_search["Search widget<br/>[SearchWidget.tsx]"]
+  node_catalog["Catalog pages<br/>[destinations.tsx]"]
+  node_destination["Destination detail"]
+  node_packages["Package catalog<br/>[packages.tsx]"]
+  node_package_detail["Package details<br/>[packages.$slug.tsx]"]
+  node_hotels["Hotel search<br/>[hotels.tsx]"]
+  node_hotel_detail["Hotel details<br/>[hotels.$id.tsx]"]
+  node_flights["Flight search<br/>[flights.tsx]"]
+  node_gallery["Photo gallery<br/>[gallery.tsx]"]
+  node_catalog_api["Catalog functions"]
+end
 
-    subgraph Supa["Supabase"]
-        PG[("PostgreSQL")]
-        RLS["Row Level Security<br/>+ security definers"]
-        AUTH["GoTrue Auth"]
-        ST["Storage (avatars)"]
-    end
+subgraph group_booking["Booking and trips"]
+  node_checkout["Checkout<br/>[checkout.tsx]"]
+  node_confirmation["Booking confirmation<br/>[confirmation.tsx]"]
+  node_account["Trip dashboard<br/>[index.tsx]"]
+  node_itineraries["Itinerary management<br/>[itineraries.tsx]"]
+end
 
-    UI --> Router --> Query --> SF
-    SF --> PUB --> PG
-    UI --> AUTH
-    PG --- RLS
-    PG --- ST
-```
+subgraph group_identity["Accounts and feedback"]
+  node_auth["Registration and login<br/>[register.tsx]"]
+  node_auth_provider{{"Supabase Auth"}}
+  node_reviews["Review experience<br/>[ReviewSection.tsx]"]
+  node_review_api["Review functions"]
+end
+
+subgraph group_operations["Platform operations"]
+  node_contact["Contact form<br/>[contact.tsx]"]
+  node_admin["Admin workspace<br/>[index.tsx]"]
+  node_admin_reviews["Review moderation<br/>[reviews.tsx]"]
+  node_supabase_client["Public Supabase client<br/>[client.ts]"]
+  node_supabase_server["Public server client"]
+  node_database[("Supabase database")]
+end
+
+node_traveler(("Traveler"))
+
+node_traveler -->|"browses"| node_home
+node_home -->|"loads featured data"| node_catalog_api
+node_home -->|"offers search"| node_search
+node_search -->|"opens results"| node_catalog
+node_search -->|"opens results"| node_packages
+node_search -->|"opens results"| node_hotels
+node_search -->|"opens results"| node_flights
+node_catalog -->|"opens details"| node_destination
+node_packages -->|"opens details"| node_package_detail
+node_hotels -->|"opens details"| node_hotel_detail
+node_traveler -->|"views"| node_gallery
+node_traveler -->|"books"| node_checkout
+node_package_detail -->|"starts booking"| node_checkout
+node_hotel_detail -->|"starts booking"| node_checkout
+node_flights -->|"starts booking"| node_checkout
+node_checkout -->|"confirms booking"| node_confirmation
+node_traveler -->|"registers or signs in"| node_auth
+node_auth -->|"authenticates"| node_auth_provider
+node_traveler -->|"manages trips"| node_account
+node_account -->|"manages itineraries"| node_itineraries
+node_destination -->|"shows reviews"| node_reviews
+node_package_detail -->|"shows reviews"| node_reviews
+node_hotel_detail -->|"shows reviews"| node_reviews
+node_reviews -->|"loads reviews and ratings"| node_review_api
+node_review_api -->|"queries public data"| node_supabase_server
+node_supabase_server -->|"reads"| node_database
+node_reviews -->|"submits reviews"| node_supabase_client
+node_supabase_client -->|"reads and writes"| node_database
+node_traveler -->|"sends inquiry"| node_contact
+node_admin -->|"moderates reviews"| node_admin_reviews
+node_admin_reviews -->|"deletes reviews"| node_supabase_client
+node_admin -->|"manages platform data"| node_supabase_client
+node_catalog_api -->|"loads catalog data"| node_supabase_server
+
+click node_home "https://github.com/huzz-bitcrafter/wanderlust-travel/blob/main/src/routes/index.tsx"
+click node_search "https://github.com/huzz-bitcrafter/wanderlust-travel/blob/main/src/components/home/SearchWidget.tsx"
+click node_catalog "https://github.com/huzz-bitcrafter/wanderlust-travel/blob/main/src/routes/destinations.tsx"
+click node_destination "https://github.com/huzz-bitcrafter/wanderlust-travel/blob/main/src/routes/destinations.%24slug.tsx"
+click node_packages "https://github.com/huzz-bitcrafter/wanderlust-travel/blob/main/src/routes/packages.tsx"
+click node_package_detail "https://github.com/huzz-bitcrafter/wanderlust-travel/blob/main/src/routes/packages.%24slug.tsx"
+click node_hotels "https://github.com/huzz-bitcrafter/wanderlust-travel/blob/main/src/routes/hotels.tsx"
+click node_hotel_detail "https://github.com/huzz-bitcrafter/wanderlust-travel/blob/main/src/routes/hotels.%24id.tsx"
+click node_flights "https://github.com/huzz-bitcrafter/wanderlust-travel/blob/main/src/routes/flights.tsx"
+click node_gallery "https://github.com/huzz-bitcrafter/wanderlust-travel/blob/main/src/routes/gallery.tsx"
+click node_checkout "https://github.com/huzz-bitcrafter/wanderlust-travel/blob/main/src/routes/checkout.tsx"
+click node_confirmation "https://github.com/huzz-bitcrafter/wanderlust-travel/blob/main/src/routes/checkout/confirmation.tsx"
+click node_account "https://github.com/huzz-bitcrafter/wanderlust-travel/blob/main/src/routes/account/index.tsx"
+click node_itineraries "https://github.com/huzz-bitcrafter/wanderlust-travel/blob/main/src/routes/account/itineraries.tsx"
+click node_auth "https://github.com/huzz-bitcrafter/wanderlust-travel/blob/main/src/routes/register.tsx"
+click node_reviews "https://github.com/huzz-bitcrafter/wanderlust-travel/blob/main/src/components/shared/ReviewSection.tsx"
+click node_review_api "https://github.com/huzz-bitcrafter/wanderlust-travel/blob/main/src/lib/review.functions.ts"
+click node_contact "https://github.com/huzz-bitcrafter/wanderlust-travel/blob/main/src/routes/contact.tsx"
+click node_admin "https://github.com/huzz-bitcrafter/wanderlust-travel/blob/main/src/routes/admin/index.tsx"
+click node_admin_reviews "https://github.com/huzz-bitcrafter/wanderlust-travel/blob/main/src/routes/admin/reviews.tsx"
+click node_catalog_api "https://github.com/huzz-bitcrafter/wanderlust-travel/blob/main/src/lib/catalog.functions.ts"
+click node_supabase_client "https://github.com/huzz-bitcrafter/wanderlust-travel/blob/main/src/integrations/supabase/client.ts"
+click node_supabase_server "https://github.com/huzz-bitcrafter/wanderlust-travel/blob/main/src/lib/supabase-public.server.ts"
+
+classDef toneNeutral fill:#f8fafc,stroke:#334155,stroke-width:1.5px,color:#0f172a
+classDef toneBlue fill:#dbeafe,stroke:#2563eb,stroke-width:1.5px,color:#172554
+classDef toneAmber fill:#fef3c7,stroke:#d97706,stroke-width:1.5px,color:#78350f
+classDef toneMint fill:#dcfce7,stroke:#16a34a,stroke-width:1.5px,color:#14532d
+classDef toneRose fill:#ffe4e6,stroke:#e11d48,stroke-width:1.5px,color:#881337
+classDef toneIndigo fill:#e0e7ff,stroke:#4f46e5,stroke-width:1.5px,color:#312e81
+classDef toneTeal fill:#ccfbf1,stroke:#0f766e,stroke-width:1.5px,color:#134e4a
+class node_home,node_search,node_catalog,node_destination,node_packages,node_package_detail,node_hotels,node_hotel_detail,node_flights,node_gallery,node_catalog_api toneBlue
+class node_checkout,node_confirmation,node_account,node_itineraries toneAmber
+class node_auth,node_auth_provider,node_reviews,node_review_api toneMint
+class node_contact,node_admin,node_admin_reviews,node_supabase_client,node_supabase_server,node_database toneRose
+class node_traveler toneIndigo
 
 **Key engineering decisions:**
 
