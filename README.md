@@ -31,13 +31,44 @@ _Cinematic travel discovery — destinations, tours, hotels, flights, itinerarie
 
 ## ✨ What It Does
 
-Wanderlust is a complete travel booking platform — **24 destinations** (international + India), tour packages, hotels, and flights — with real bookings, trip planning, moderated reviews, and a[...]
+Wanderlust is a complete, production-deployed travel booking and trip-planning platform covering the entire customer journey — discover → plan → book → manage. It serves 24 destinations (international + India), tour packages, hotels, and live flight search, backed by real bookings, moderated reviews, and a role-gated admin panel.
 
-| 🗺️ Discovery                                                                    | 🏨 Booking                                                                                             | 🧳 Planning                                                   | ⚙️ Management                           |
-| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------- | --------------------------------------- |
-| SSR destination & package catalogs with URL-synced search, filters & pagination | Multi-step checkout for **tours, hotels & flights** — multi-guest, live price math, booking references | Day-b[...]                                                    |
-| Photo gallery with keyboard-navigable lightbox                                  | Auth-gated booking flow with deep-link redirects                                                       | User dashboard: trips, itineraries, reviews, profile + avatar | Role-based access via `is_admi[...]     |
-| Reviews with star distribution & moderation workflow                            | Simulated payment (demo mode, clearly labeled)                                                         | Review system with approval gating                            | Real-time stats & 30-day booking charts |
+## 🧭 Feature Walkthrough
+
+| Capability | What you can actually do |
+| --- | --- |
+| 🔐 User Registration &amp; Login | Sign up with email + password — a verification link is emailed on signup, and accounts must verify before first login ("Please verify your email before logging in"). Or sign in with Google in one click. Password recovery via emailed reset links. |
+| 🗺️ Destination Listings | SSR-rendered catalog of 24 destinations with regional groupings, hero imagery, and rich detail pages linking to related packages and hotels. |
+| 🔎 Search &amp; Filter | Live search + filters on every catalog (destinations, packages, hotels, flights) with URL-synced state — filtered views are shareable, bookmarkable links. |
+| 🧳 Tour Package Details | Full detail pages per package: itinerary outline, inclusions/exclusions, duration, pricing, and availability — booking launches directly from here. |
+| 🏨 Hotel Booking | Search hotels by city, date, and guests; browse rooms and amenities; book through a multi-step checkout with live price math and a booking reference. |
+| ✈️ Flight Booking | Search real flight data by origin, destination, date, and passengers; filter by airline, stops, price, and departure window; compare carrier, duration, and fare at a glance; book in the same checkout flow (payment step is clearly labeled simulated demo — no real charges). |
+| 📅 Travel Itinerary | Registered users build and manage day-by-day itineraries for their trips from the user dashboard. |
+| 🖼️ Photo Gallery | Editorial travel photography with an interactive 3D cylinder showcase (auto-spin, drag-to-rotate) and a keyboard-navigable lightbox. |
+| ⭐ Reviews &amp; Ratings | Authenticated users post star ratings + written reviews on destinations, packages, and hotels. Reviews become publicly visible after moderation; listings show star-distribution summaries. |
+| ✉️ Contact Form | Validated contact form — submissions land in the database and the admin inbox. |
+| 📱 Responsive Design | Fully responsive from 375px mobile to ultrawide desktop, with measured light/dark themes (WCAG AA/AAA contrast) and prefers-reduced-motion respected. |
+| ⚙️ Admin Panel | Role-gated dashboard: manage users &amp; roles, bookings, tour packages, hotels, flights, review moderation, and contact messages, plus real-time stats and 30-day booking charts. |
+
+## 🔐 Roles &amp; Access — how it works
+
+Access runs in three tiers, and authorization is enforced at the database layer (PostgreSQL Row Level Security) — not just hidden in the UI:
+
+| Role | Can do | How it's obtained |
+| --- | --- | --- |
+| Visitor | Browse everything public: destinations, packages, hotels, flights, gallery, approved reviews | Just open the site — no account needed |
+| Member | Everything above plus: book tours/hotels/flights, build itineraries, write reviews, manage profile &amp; avatar | Register + verify email, or Continue with Google |
+| Admin | Everything above plus the full admin panel (users, bookings, catalog CRUD, moderation, stats) | Granted by the project owner via the user_roles table in Supabase — role escalation through the app itself is impossible by design |
+
+Users can only read and modify their own bookings, itineraries, and reviews — cross-account access is blocked by RLS at the query level (verified with cross-account tests). Catalog data is publicly readable but writable only by admins.
+
+## 🚀 Try it in 5 steps
+
+1. Browse the home page and any catalog — no account required.
+2. Create an account (check your inbox for the verification link) or Continue with Google.
+3. Search a flight (e.g., DEL → BLR), apply filters, and complete a booking through checkout.
+4. Open My Trips in the dashboard — your bookings, itineraries, and review tools live there.
+5. Toggle dark/light mode and resize the window — the entire experience adapts.
 
 ## 🏗️ Architecture
 
